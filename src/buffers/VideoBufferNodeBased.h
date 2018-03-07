@@ -1,12 +1,6 @@
-/*
- * VideoBuffer.h
- *
- *  Created on: 09-oct-2008
- *      Author: arturo castro
- */
 
-#ifndef VIDEOBUFFER_H_
-#define VIDEOBUFFER_H_
+#ifndef VIDEOBUFFERNODEBASED_H_
+#define VIDEOBUFFERNODEBASED_H_
 
 #include "VideoFrame.h"
 #include "pmUtils.h"
@@ -15,6 +9,8 @@
 #include "VideoSink.h"
 #include "map"
 #include "deque"
+#include "ofxOceanodeNodeModel.h"
+
 
 
 
@@ -26,13 +22,11 @@
 // of the headers
 
 namespace ofxPm{
-class VideoBuffer: public Buffer, public VideoSink, public VideoSource {
+class VideoBufferNodeBased: public Buffer, public VideoSink, public VideoSource, public ofxOceanodeNodeModel{
 public:
-	VideoBuffer(VideoSource & source, int size);
-	VideoBuffer();
-	virtual ~VideoBuffer();
+	VideoBufferNodeBased();
+	virtual ~VideoBufferNodeBased();
 
-	void setup(VideoSource & source, int size, bool allocateOnSetup=false);
     void setupNodeBased(int size, bool allocateOnSetup=false);
 
     // of working in threaded mode,
@@ -72,8 +66,6 @@ public:
 	//double getRealFPS();                             // aprox fps from source
 	//int currentPos;                                 // currentPos in the buffer
 
-	void draw();                                    // draws the stats of the buffer
-
     void stop();                                    // stop receiving new frames
     void resume();                                  // continue receiving new frames
     bool isStopped();
@@ -87,7 +79,6 @@ protected:
     long    totalFrames;
     Timestamp initTime;
     TimeDiff  stopTime;
-    VideoSource* source;
 
     bool stopped;
     unsigned int maxSize;
@@ -97,16 +88,14 @@ protected:
     
     
     // FEATURE NODE
-    ofParameterGroup*                   parameters;
-    ofParameter<ofxPm::VideoBuffer*>    paramVideoBufferOut;
+    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
+
+    ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferOut;
     ofParameter<bool>                   paramIsRecording;
     ofParameter<float>                  paramFPS;
-    //ofParameter<ofxPm::VideoFrame>      paramFrameIn;
-//    ofParameter<ofxPm::VideoFrame>      paramFrameOut;
-    bool                                isNodeBased;
     
     void changedIsRecording(bool& _b);
     
 };
 }
-#endif /* VIDEOBUFFER_H_ */
+#endif /* VIDEOBUFFERNODEBASED_H_ */
