@@ -70,7 +70,7 @@ MultixFilter::~MultixFilter()
 
     //------------------------------------------------------------------
     int MultixFilter::getNumHeaders(){
-        return videoHeader.size();
+        return paramNumHeaders;
     }
 
     
@@ -154,26 +154,35 @@ MultixFilter::~MultixFilter()
     {
         if(paramVideoBufferInput.get()!=NULL)
         {
-            // CLEAN headers and renderers and resize the to new
-            //setNumHeaders(_vf.size());
-            int currNumHeaders = videoHeader.size();
-            if(currNumHeaders!=paramNumHeaders){
-                videoHeader.resize(paramNumHeaders);
-                videoRenderer.resize(paramNumHeaders);
-                for(int i=0;i<paramNumHeaders;i++)
-                {
-                    videoHeader[i].setup(paramVideoBufferInput.get());
-                    //videoRenderer[i].setup(videoHeader[i]);
-                }
-                cout << "Multix::Renderer::Update Ms WARNING : currNumHeaders!=numHeaders" << endl;
-            }
+            multixDelaysInMs.resize(paramNumHeaders);
             
             // update the delayMs for each
             for(int i=_vf.size()-1; i>=0; i--)
             {
-                videoHeader[i].setDelayMs(_vf[i]);
+                multixDelaysInMs[i] = _vf[i];
             }
-            videoHeader[0].setDelayMs(0);
+            multixDelaysInMs[0] = 0.0;
+
+//            // CLEAN headers and renderers and resize the to new
+//            //setNumHeaders(_vf.size());
+//            int currNumHeaders = videoHeader.size();
+//            if(currNumHeaders!=paramNumHeaders){
+//                videoHeader.resize(paramNumHeaders);
+//                videoRenderer.resize(paramNumHeaders);
+//                for(int i=0;i<paramNumHeaders;i++)
+//                {
+//                    videoHeader[i].setup(paramVideoBufferInput.get());
+//                    //videoRenderer[i].setup(videoHeader[i]);
+//                }
+//                cout << "Multix::Renderer::Update Ms WARNING : currNumHeaders!=numHeaders" << endl;
+//            }
+//            
+//            // update the delayMs for each
+//            for(int i=_vf.size()-1; i>=0; i--)
+//            {
+//                videoHeader[i].setDelayMs(_vf[i]);
+//            }
+//            videoHeader[0].setDelayMs(0);
 
         }
 
@@ -229,38 +238,29 @@ VideoFrame MultixFilter::getNextVideoFrame()
 //--------------------------------------------------------
 void MultixFilter::newVideoFrame(VideoFrame & _frame)
 {
-    //	//front = VideoFrame::newVideoFrame(frame);
-    //
-    
-    //    VideoFrame f = source->getNextVideoFrame() ;
-    //	if(f!=NULL)
-    //    {
-    //        frame = f;
-    //    }
-    //
-    //
 
-    fbo.begin();
+    if(paramNumHeaders>0)
     {
-        if(paramMinMaxBlend) ofClear(0,0,0,255);
-        else ofClear(255,255,255,255);
-        ofSetColor(255);
-        //ofDrawRectangle(0,0,fbo.getWidth()-ofGetMouseX(),fbo.getHeight());
-        //_frame.getTextureRef().draw(0,0,fbo.getWidth(),fbo.getHeight());
-        //videoRenderer[1].draw(ofGetMouseX(),ofGetMouseY(),fbo.getWidth(),fbo.getHeight());
-        drawIntoFbo(0,0,fbo.getWidth(),fbo.getHeight());
-//        ofDrawCircle(320,240,50);
+        fbo.begin();
+        {
+            if(paramMinMaxBlend) ofClear(0,0,0,255);
+            else ofClear(255,255,255,255);
+            ofSetColor(255);
+            //ofDrawRectangle(0,0,fbo.getWidth()-ofGetMouseX(),fbo.getHeight());
+            //_frame.getTextureRef().draw(0,0,fbo.getWidth(),fbo.getHeight());
+            //videoRenderer[1].draw(ofGetMouseX(),ofGetMouseY(),fbo.getWidth(),fbo.getHeight());
+            drawIntoFbo(0,0,fbo.getWidth(),fbo.getHeight());
+            //        ofDrawCircle(320,240,50);
+            
+        }
+        fbo.end();
         
+        
+        frame = VideoFrame::newVideoFrame(fbo);
+        
+        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+
     }
-    fbo.end();
-    
-
-    frame = VideoFrame::newVideoFrame(fbo);
-    
-    parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
-    
-
-    //cout << "MultixFilter : Got a new VideoFrame ! " << endl;
 }
 
 //--------------------------------------------------------
@@ -276,14 +276,12 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
         glBlendEquationEXT(GL_MIN);
     }
 
-    
-    // As we've
     int headersInAction = 0;
     float oneFrameMs	= 1000.0 / paramVideoBufferInput.get()->getFps();
     float totalBufferSizeInMs = paramVideoBufferInput.get()->getMaxSize() * oneFrameMs;
 
     float opac = 1.0;
-	for(int i = videoHeader.size()-1; i>=0; i--)
+	for(int i = paramNumHeaders; i>=0; i--)
     {
         // if delay time of each videoRenderer is in the right range of Ms (0..TotalMs)
         switch(paramOpacityMode)
@@ -292,22 +290,23 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
                 opac = 1.0;
                 break;
             case 1 :
-                opac = (1.0/videoHeader.size()) * (videoHeader.size()-i);
+                opac = (1.0/paramNumHeaders) * (paramNumHeaders-i);
                 break;
             case 2 :
-                opac = 1.0-(1.0/videoHeader.size()) * (videoHeader.size()-i-1);
+                opac = 1.0-(1.0/paramNumHeaders) * (paramNumHeaders-i-1);
                 break;
 
         }
         //cout << "MultixFilter :: i : " << i << " Opac[0..1] : " << opac << endl;
 
-        if((videoHeader[i].getDelayMs()>=0)&&(videoHeader[i].getDelayMs() < totalBufferSizeInMs))
+        if((multixDelaysInMs[i]>=0)&&(multixDelaysInMs[i] < totalBufferSizeInMs))
         {
             headersInAction++;
             ofSetColor((opac*255.0),255);
             // or the opposite order size-i-1 ? or just "i"
             //videoRenderer[i].draw(x,y,w,h);
-            videoHeader[i].getNextVideoFrame().getTextureRef().draw(x,y,w,h);
+            videoHeader.setDelayMs(multixDelaysInMs[i]);
+            videoHeader.getNextVideoFrame().getTextureRef().draw(x,y,w,h);
         }
 	}
     //cout << "MultixFilter :: Headers in Action : " << headersInAction << endl;
@@ -338,26 +337,12 @@ bool MultixFilter::isMinmaxBlend() const
 {
     return paramMinMaxBlend;
 }
-
-
-
-
-
-VideoHeaderNodeBased * MultixFilter::getHeader(int header){
-	return &videoHeader[header];
-}
-
-VideoRendererNodeBased * MultixFilter::getRenderer(int renderer){
-	return &videoRenderer[renderer];
-}
  
     //-----------------------------------------
     void MultixFilter::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
     {
-        
-        
         // allocate fbo where to draw
-        if (fbo.getWidth()<=0)
+        if ((fbo.getWidth()<=0) && (paramVideoBufferInput.get()->getWidth()) )
         {
             // setup FBO
             int resX = paramVideoBufferInput.get()->getWidth();
@@ -366,25 +351,12 @@ VideoRendererNodeBased * MultixFilter::getRenderer(int renderer){
             
             
             // setup Headers
-            videoHeader.resize(paramNumHeaders);
-            videoRenderer.resize(paramNumHeaders);
-            for (int i=0;i<paramNumHeaders;i++){
-                videoHeader[i].setup(paramVideoBufferInput.get());
-                //videoRenderer[i].setup(videoHeader[i]);
-                if(i==0)
-                {
-                    videoHeader[i].setDelayMs(1);
-                }
-                else videoHeader[i].setDelayMs(-1);
-                
-            }
-
+            videoHeader.setup(paramVideoBufferInput.get());
+            videoHeader.setDelayMs(0.0);
         }
-
-        
+    
         ofxPm::VideoFrame vf;
         newVideoFrame(vf);
-        
 
     }
 

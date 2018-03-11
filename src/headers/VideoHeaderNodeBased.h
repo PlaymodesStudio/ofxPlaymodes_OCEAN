@@ -23,7 +23,7 @@ public:
     void setupNodeBased();
     
     VideoBufferNodeBased *getBuffer();
-    void        setVideoBuffer(VideoBufferNodeBased* &videoBuffer);
+    void        changedVideoBuffer(VideoBufferNodeBased* &videoBuffer);
 
     VideoFrame  getNextVideoFrame();
     Timestamp   getNextFrameTimestamp();

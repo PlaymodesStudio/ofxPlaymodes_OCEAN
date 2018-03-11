@@ -70,6 +70,12 @@ namespace ofxPm
     {
         if(!frame.isNull())
         {
+            int w = frame.getWidth();
+            int h = frame.getHeight();
+            
+            VideoSource::setWidth(w);
+            VideoSource::setHeight(h);
+            
             if(!isStopped())
             {
                 int64_t time = frame.getTimestamp().epochMicroseconds();

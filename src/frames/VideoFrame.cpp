@@ -210,7 +210,8 @@ public:
 	}
 
 	int VideoFrame::getWidth(){
-		return data->pixels.getWidth();
+        ofPixels pix = data->pixels;
+		return pix.getWidth();
 	}
 
 	int VideoFrame::getHeight(){

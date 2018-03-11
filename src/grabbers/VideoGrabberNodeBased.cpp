@@ -99,7 +99,7 @@ namespace ofxPm{
         }
 
         VideoSource::setWidth(ofVideoGrabber::getWidth());
-        VideoSource::setHeigth(ofVideoGrabber::getHeight());
+        VideoSource::setHeight(ofVideoGrabber::getHeight());
         cout << "VideoGrabberNodeBased::reconnecting to grabber device " << paramDeviceId << " at : " << paramResolutionX << " , " << paramResolutionY << " || FPS : " << paramFps << endl;
     }
     

@@ -69,7 +69,7 @@ namespace ofxPm
         {
             if(vFrame.getTextureRef().isAllocated())
             {
-                vFrame.getTextureRef().draw(0,0,vFrame.getWidth(),vFrame.getHeight());
+                vFrame.getTextureRef().draw(20,20,vFrame.getWidth(),vFrame.getHeight());
             }
         }
     }

@@ -21,7 +21,7 @@ VideoSource::~VideoSource() {
 	{
 		width=w;
 	}
-	void VideoSource::setHeigth(int h)
+	void VideoSource::setHeight(int h)
 	{
 		height=h;
 	}

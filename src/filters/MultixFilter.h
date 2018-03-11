@@ -35,8 +35,6 @@ public:
     void    setNumHeaders(int numHeaders);
     int     getNumHeaders();
 
-    ofxPm::VideoHeaderNodeBased * getHeader(int header);
-    ofxPm::VideoRendererNodeBased * getRenderer(int renderer);
     
     ofxPm::VideoBufferNodeBased *getVideoBuffer() const;
     void    changedVideoBuffer(ofxPm::VideoBufferNodeBased* &videoBuffer);
@@ -60,8 +58,9 @@ public:
     void                                    changedDistributionVector(vector<float> &_b);
     
 protected:
-    vector<ofxPm::VideoHeaderNodeBased>              videoHeader;
-    vector<ofxPm::VideoRendererNodeBased>            videoRenderer;
+    
+    ofxPm::VideoHeaderNodeBased         videoHeader;
+    vector<float>                       multixDelaysInMs;
     
     //NodeBased
 

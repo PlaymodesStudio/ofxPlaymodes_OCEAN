@@ -66,7 +66,7 @@ namespace ofxPm{
         parameters->add(paramFrameOut.set("Frame Output",VideoFrame::VideoFrame()));
         
         
-        paramVideoBufferInput.addListener(this, &VideoHeaderNodeBased::setVideoBuffer);
+        paramVideoBufferInput.addListener(this, &VideoHeaderNodeBased::changedVideoBuffer);
         
         
 //        VideoSource::width = _buffer.getWidth();
@@ -190,7 +190,7 @@ namespace ofxPm{
     }
 
     //-----------------------------------------
-    void VideoHeaderNodeBased::setVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
+    void VideoHeaderNodeBased::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
     {
             //cout << "VideoBufferNodeBased::setting Video Buffer and sending new frame to header !!"  << endl;
 
