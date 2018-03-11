@@ -9,43 +9,37 @@
 #define FEEEDBACK_FILTER_H
 
 #include "VideoFilter.h"
+#include "ofxOceanodeNodeModel.h"
 
 namespace ofxPm{
     
-class FeedbackFilterNodeBased: public VideoFilter {
+class FeedbackFilterNodeBased: public VideoFilter,public ofxOceanodeNodeModel {
 public:
 	FeedbackFilterNodeBased();
 	virtual ~FeedbackFilterNodeBased();
 
-    void setup(VideoSource & source1);
     void setupNodeBased();
     
     VideoFrame getNextVideoFrame();
 	void newVideoFrame(VideoFrame & frame);
-    float getFps(){return source->getFps();};
+    float getFps(){return fps;};
 
+    
 private:
 	VideoFrame      frame;
     ofFbo           fbo;
-	VideoSource     *source;
 	ofShader        shader;
 	bool            newFrame;
     ofPlanePrimitive plane;
 	//ofMutex swapBuffersMutex;
-
     float fps;
+    VideoFrame      lastFrameRendered;
     
-    //    float gradientWidth;
-    //    int gradientXorY;
-    // FEATURE NODE
-    ofParameterGroup*                   parameters;
+    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
+
     ofParameter<float>                  paramScale;
     ofParameter<float>                  paramMixAmmount;
-    
-    
-    bool                                isNodeBased;
 
-    VideoFrame                          lastFrameRendered;
 };
 }
 

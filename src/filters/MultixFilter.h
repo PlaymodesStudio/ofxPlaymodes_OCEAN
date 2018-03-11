@@ -8,23 +8,24 @@
 #ifndef MULTIXFILTER_H
 #define MULTIXFILTER_H
 
-#include "VideoBuffer.h"
-#include "VideoHeader.h"
-#include "VideoRenderer.h"
+#include "VideoBufferNodeBased.h"
+#include "VideoHeaderNodeBased.h"
+#include "VideoRendererNodeBased.h"
+#include "ofxOceanodeNodeModel.h"
 
 #include "ofMain.h"
 
 namespace ofxPm{
         
-class MultixFilter: public VideoSource
+class MultixFilter: public VideoSource,public ofxOceanodeNodeModel
 {
 public:
     MultixFilter();
-    MultixFilter(ofxPm::VideoBuffer & buffer, int numHeaders=2);
+//    MultixFilter(ofxPm::VideoBuffer & buffer, int numHeaders=2);
 
     virtual ~MultixFilter();
 
-    void    setup(ofxPm::VideoBuffer & buffer, int numHeaders=2);
+//    void    setup(ofxPm::VideoBuffer & buffer, int numHeaders=2);
     void    setupNodeBased();
 
     void    updateValuesPct(vector<float> _vf);
@@ -34,20 +35,19 @@ public:
     void    setNumHeaders(int numHeaders);
     int     getNumHeaders();
 
-    ofxPm::VideoHeader * getHeader(int header);
-    ofxPm::VideoRenderer * getRenderer(int renderer);
+    ofxPm::VideoHeaderNodeBased * getHeader(int header);
+    ofxPm::VideoRendererNodeBased * getRenderer(int renderer);
     
-    ofxPm::VideoBuffer *getVideoBuffer() const;
-    void    setVideoBuffer(ofxPm::VideoBuffer* &videoBuffer);
-    void    setVideoHeader(vector<ofxPm::VideoHeader*> videoHeader);
-    void    setVideoRenderer(vector<ofxPm::VideoRenderer*> videoRenderer);
+    ofxPm::VideoBufferNodeBased *getVideoBuffer() const;
+    void    changedVideoBuffer(ofxPm::VideoBufferNodeBased* &videoBuffer);
+    void    setVideoHeader(vector<ofxPm::VideoHeaderNodeBased*> videoHeader);
     
     ofMutex     mutex;
     bool        isMinmaxBlend() const;
     
     // + 
     void                                    newVideoFrame(VideoFrame & _frame);
-    ofEvent<VideoFrame>                     newFrameEvent;
+//    ofEvent<VideoFrame>                     newFrameEvent;
     VideoFrame                              getNextVideoFrame();
     float                                   getFps(){return paramVideoBufferInput.get()->getFps();};
 
@@ -60,12 +60,10 @@ public:
     void                                    changedDistributionVector(vector<float> &_b);
     
 protected:
-    vector<ofxPm::VideoHeader>              videoHeader;
-    vector<ofxPm::VideoRenderer>            videoRenderer;
-//    ofxPm::VideoBuffer *                    videoBuffer;
+    vector<ofxPm::VideoHeaderNodeBased>              videoHeader;
+    vector<ofxPm::VideoRendererNodeBased>            videoRenderer;
     
     //NodeBased
-    ofParameterGroup*                   parameters;
 
     ofParameter<int>                    paramNumHeaders;
     ofParameter<int>                    paramOpacityMode;
@@ -75,12 +73,12 @@ protected:
     ofParameter<float>                  paramManualOffsetMs;
     ofParameter<int>                    paramOffsetBeatDiv;
     ofParameter<int>                    paramOffsetBeatMult;
-    ofParameter<ofxPm::VideoBuffer*>    paramVideoBufferInput;
+    ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferInput;
     ofParameter<vector<float>>          paramDistributionVector;
+
+    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
+
     
-    bool                                isNodeBased;
-
-
 private:
 
     int numHeaders;

@@ -70,35 +70,34 @@ namespace ofxPm
     {
         if(!frame.isNull())
         {
-            
-            int64_t time = frame.getTimestamp().epochMicroseconds();
-            if(microsOneSec==-1) microsOneSec=time;
-            framesOneSec++;
-            int64_t diff = time-microsOneSec;
-            if(diff>=1000000){
-                //realFps = double(framesOneSec*1000000.)/double(diff);
-                framesOneSec = 0;
-                microsOneSec = time-(diff-1000000);
-            }
-            totalFrames++;
-            //    if(size()==0)initTime=frame.getTimestamp();
-            TimeDiff tdiff = frame.getTimestamp() - initTime;
-            //cout << "Buff::NewVideoFrame:: with TS = " << tdiff << " Which comes from frameTS : " << frame.getTimestamp().raw() << " - initTime " << initTime.raw() << endl;
-            frame.setTimestamp(tdiff );
-            //timeMutex.lock();
-            frames.push_back(frame);
-            //cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().raw() << endl;
-            while(getSizeInFrames()>maxSize){
-                frames.erase(frames.begin());
-            }
-            //timeMutex.unlock();
-            
-            if(!stopped)
+            if(!isStopped())
             {
+                int64_t time = frame.getTimestamp().epochMicroseconds();
+                if(microsOneSec==-1) microsOneSec=time;
+                framesOneSec++;
+                int64_t diff = time-microsOneSec;
+                if(diff>=1000000){
+                    //realFps = double(framesOneSec*1000000.)/double(diff);
+                    framesOneSec = 0;
+                    microsOneSec = time-(diff-1000000);
+                }
+                totalFrames++;
+                //    if(size()==0)initTime=frame.getTimestamp();
+                TimeDiff tdiff = frame.getTimestamp() - initTime;
+                //cout << "Buff::NewVideoFrame:: with TS = " << tdiff << " Which comes from frameTS : " << frame.getTimestamp().raw() << " - initTime " << initTime.raw() << endl;
+                frame.setTimestamp(tdiff );
+                //timeMutex.lock();
+                frames.push_back(frame);
+                //cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().raw() << endl;
+                while(getSizeInFrames()>maxSize){
+                    frames.erase(frames.begin());
+                }
+                //timeMutex.unlock();
                 parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
-                parameters->get("Buffer Output").cast<ofxPm::VideoBufferNodeBased*>() = (ofxPm::VideoBufferNodeBased*)this;
             }
+
         }
+        parameters->get("Buffer Output").cast<ofxPm::VideoBufferNodeBased*>() = (ofxPm::VideoBufferNodeBased*)this;
    
     }
     //-------------------------------------------------------------------
@@ -152,6 +151,10 @@ namespace ofxPm
                 
             }
             //cout<<"Buffer : Getting frame at closest TS : " << ts.raw()<< " :: Closest Position :: " << closestPosition<<endl;
+            if(closestPosition>frames.size())
+            {
+                closestPosition=frames.size();
+            }
             
             frame = frames[closestPosition];
         }
@@ -217,7 +220,7 @@ namespace ofxPm
     //----------------------------------------------
     void VideoBufferNodeBased::stop()
     {
-        paramFrameIn.removeListener(this,&VideoBufferNodeBased::newVideoFrame);
+        //paramFrameIn.removeListener(this,&VideoBufferNodeBased::newVideoFrame);
         
         stopped = true;
         

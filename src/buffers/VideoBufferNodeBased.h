@@ -9,17 +9,9 @@
 #include "VideoSink.h"
 #include "map"
 #include "deque"
+
 #include "ofxOceanodeNodeModel.h"
 
-
-
-
-// a buffer can be connected to any source and stores
-// VIDEO_BUFFER_NUM_FRAMES. once the buffer is full
-// it begins to delete the first stored frames
-// provides different access methods to the frames
-// but doesn't do any time control, that is responsability
-// of the headers
 
 namespace ofxPm{
 class VideoBufferNodeBased: public Buffer, public VideoSink, public VideoSource, public ofxOceanodeNodeModel{
@@ -49,9 +41,6 @@ public:
 
 
 	virtual void newVideoFrame(VideoFrame &frame);  // for notification of new frame event
-    void newVideoFrame2(VideoFrame* &frame){
-        newVideoFrame(*frame);
-    }
 
     unsigned int getSizeInFrames();
 	unsigned int getMaxSize();                         // max size of the buffer
@@ -72,6 +61,7 @@ public:
 
     void clear();
     
+    
 
 protected:
     deque<VideoFrame> frames;
@@ -87,7 +77,6 @@ protected:
     //double realFps;
     
     
-    // FEATURE NODE
     ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
 
     ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferOut;

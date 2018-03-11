@@ -4,7 +4,7 @@
 namespace ofxPm{
     
     //--------------------------------------------------------------
-    LumaFilterNodeBased::LumaFilterNodeBased():ofxOceanodeNodeModel("Luma  Shader")
+    LumaFilterNodeBased::LumaFilterNodeBased():ofxOceanodeNodeModel("LumaKey FX")
     {
         setupNodeBased();
     }

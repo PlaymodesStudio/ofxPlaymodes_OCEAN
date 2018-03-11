@@ -26,7 +26,9 @@ namespace ofxPm
         
         parameters->setName("Video Renderer");
         parameters->add(paramFrameIn.set("Frame In", vFrame));
+        parameters->add(vecdeF.set("Vec",{0},{0},{1}));
 
+                        
         paramFrameIn.addListener(this, &VideoRendererNodeBased::newVideoFrame);
         
         ofAddListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);

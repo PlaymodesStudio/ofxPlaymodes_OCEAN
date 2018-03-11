@@ -23,6 +23,9 @@ public:
 
     ofTexture getLastFrameTexture();
     
+    ofParameter<vector<float>>                  vecdeF;
+
+    
     ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
     
 

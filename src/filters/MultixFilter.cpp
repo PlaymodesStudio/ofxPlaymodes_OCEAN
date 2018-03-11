@@ -6,86 +6,28 @@
  */
 
 #include "MultixFilter.h"
-#include "parametersControl.h"
+#include "ofxOceanodeContainer.h"
 
 
 namespace ofxPm{
 
-
-MultixFilter::MultixFilter(VideoBuffer & _buffer, int numHeaders)
-{
-//	setup(_buffer,numHeaders);
-}
 
 MultixFilter::~MultixFilter()
 {
     //dtor
 }
 
-MultixFilter::MultixFilter()
-{
-	
-}
-
-    void MultixFilter::setup(VideoBuffer & _buffer, int _numHeaders)
+    MultixFilter::MultixFilter(): ofxOceanodeNodeModel("Multix FX")
     {
-    
-//        videoBuffer=&_buffer;
-//        numHeaders=_numHeaders;
-//        paramMinMaxBlend=0;
-//        opacityMode=0;
-//        numHeaders=0;
-//        isNodeBased = false;
-//        
-//        videoHeader.resize(numHeaders);
-//        videoRenderer.resize(numHeaders);
-//        for (int i=0;i<numHeaders;i++){
-//            videoHeader[i].setup(*videoBuffer);
-//            videoRenderer[i].setup(videoHeader[i]);
-//            if(i==0)
-//            {
-//                videoHeader[i].setDelayMs(1);
-//            }
-//            else videoHeader[i].setDelayMs(-1);
-//
-//        }
-//        
-//        // RENDERING
-//        
-//        paramMinMaxBlend=false;
-//        
-//        
-//        // get initial video frame
-//        VideoFrame v = videoBuffer->getNextVideoFrame();
-//        if(!v.isNull())
-//        {
-//            cout << "Multix..." << endl;
-//            frame = VideoFrame::newVideoFrame(videoBuffer->getNextVideoFrame());
-//        }
-//        ofAddListener(videoBuffer->newFrameEvent,this,&MultixFilter::newVideoFrame);
-//
-//        
-//        // allocate fbo where to draw
-//        if(videoBuffer->getWidth()>0) fbo.allocate(videoBuffer->getWidth(),videoBuffer->getHeight(),GL_RGBA);
-//        else
-//        {
-//            cout << "MultixFilter !! WARNING : Fbo setup with default size !!" << endl;
-//            fbo.allocate(640,480,GL_RGBA);
-//        }
-//
-
+        setupNodeBased();
     }
+
     
     //------------------------------------------------------------------
     void MultixFilter::setupNodeBased()
     {
-        isNodeBased = true;
-        
-
         // parametersGroup
         
-        parameters = new ofParameterGroup();
-        parameters->setName("Multix Filter");
         parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
         parameters->add(paramNumHeaders.set("Num Headers",0,0,480));
         parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
@@ -95,19 +37,25 @@ MultixFilter::MultixFilter()
         parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
         parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
         parameters->add(paramLinearDistribution.set("Linear Distribution",true));
-        parameters->add(paramDistributionVector.set("Distribution Vector",{0}));
+        parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
         parameters->add(paramFrameOut.set("Frame Output", frame));
 
-        
-        parametersControl::getInstance().createGuiFromParams(parameters,ofColor::orange);
-        
         paramOffsetBeatDiv.addListener(this, &MultixFilter::recalculate);
         paramOffsetBeatMult.addListener(this, &MultixFilter::recalculate);
         paramNumHeaders.addListener(this,&MultixFilter::recalculate);
-        paramVideoBufferInput.addListener(this, &MultixFilter::setVideoBuffer);
+        paramVideoBufferInput.addListener(this, &MultixFilter::changedVideoBuffer);
         paramDistributionVector.addListener(this,&MultixFilter::changedDistributionVector);
         
     }
+    //--------------------------------------------------------------
+    ofxOceanodeAbstractConnection* MultixFilter::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
+    {
+        if(source.type() == typeid(ofParameter<ofxPm::VideoBufferNodeBased*>).name())
+        {
+            return c.connectConnection(source.cast<ofxPm::VideoBufferNodeBased*>(), sink.cast<ofxPm::VideoBufferNodeBased*>());
+        }
+    }
+
     //------------------------------------------------------------------
     void MultixFilter::changedDistributionVector(vector<float> &_v)
     {
@@ -130,7 +78,8 @@ MultixFilter::MultixFilter()
     void ofxPm::MultixFilter::recalculate(int &_i)
     {
         
-        float gBPM = parametersControl::getInstance().getGlobalBPM();
+//        float gBPM = parametersControl::getInstance().getGlobalBPM();
+        float gBPM = 120.0;
         float BPMfactor;
         if(paramOffsetBeatDiv!=0)
         {
@@ -213,8 +162,8 @@ MultixFilter::MultixFilter()
                 videoRenderer.resize(paramNumHeaders);
                 for(int i=0;i<paramNumHeaders;i++)
                 {
-                    videoHeader[i].setup(*paramVideoBufferInput.get());
-                    videoRenderer[i].setup(videoHeader[i]);
+                    videoHeader[i].setup(paramVideoBufferInput.get());
+                    //videoRenderer[i].setup(videoHeader[i]);
                 }
                 cout << "Multix::Renderer::Update Ms WARNING : currNumHeaders!=numHeaders" << endl;
             }
@@ -308,11 +257,7 @@ void MultixFilter::newVideoFrame(VideoFrame & _frame)
 
     frame = VideoFrame::newVideoFrame(fbo);
     
-    if(!isNodeBased) ofNotifyEvent(newFrameEvent,frame);
-    else
-    {
-        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
-    }
+    parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
     
 
     //cout << "MultixFilter : Got a new VideoFrame ! " << endl;
@@ -361,7 +306,8 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
             headersInAction++;
             ofSetColor((opac*255.0),255);
             // or the opposite order size-i-1 ? or just "i"
-            videoRenderer[i].draw(x,y,w,h);
+            //videoRenderer[i].draw(x,y,w,h);
+            videoHeader[i].getNextVideoFrame().getTextureRef().draw(x,y,w,h);
         }
 	}
     //cout << "MultixFilter :: Headers in Action : " << headersInAction << endl;
@@ -397,16 +343,16 @@ bool MultixFilter::isMinmaxBlend() const
 
 
 
-VideoHeader * MultixFilter::getHeader(int header){
+VideoHeaderNodeBased * MultixFilter::getHeader(int header){
 	return &videoHeader[header];
 }
 
-VideoRenderer * MultixFilter::getRenderer(int renderer){
+VideoRendererNodeBased * MultixFilter::getRenderer(int renderer){
 	return &videoRenderer[renderer];
 }
  
     //-----------------------------------------
-    void MultixFilter::setVideoBuffer(ofxPm::VideoBuffer* &_videoBuffer)
+    void MultixFilter::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
     {
         
         
@@ -423,8 +369,8 @@ VideoRenderer * MultixFilter::getRenderer(int renderer){
             videoHeader.resize(paramNumHeaders);
             videoRenderer.resize(paramNumHeaders);
             for (int i=0;i<paramNumHeaders;i++){
-                videoHeader[i].setup(*paramVideoBufferInput.get());
-                videoRenderer[i].setup(videoHeader[i]);
+                videoHeader[i].setup(paramVideoBufferInput.get());
+                //videoRenderer[i].setup(videoHeader[i]);
                 if(i==0)
                 {
                     videoHeader[i].setDelayMs(1);
