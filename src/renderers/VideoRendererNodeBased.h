@@ -23,8 +23,11 @@ public:
 
     ofTexture getLastFrameTexture();
     
-    ofParameter<vector<float>>                  vecdeF;
-
+    ofParameter<int>            paramResolutionX;
+    ofParameter<int>            paramResolutionY;
+    ofParameter<int>            paramPositionX;
+    ofParameter<int>            paramPositionY;
+    ofParameter<float>          paramOpacity;
     
     ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
     

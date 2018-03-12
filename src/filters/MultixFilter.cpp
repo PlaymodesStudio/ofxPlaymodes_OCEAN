@@ -157,7 +157,7 @@ MultixFilter::~MultixFilter()
             multixDelaysInMs.resize(paramNumHeaders);
             
             // update the delayMs for each
-            for(int i=_vf.size()-1; i>=0; i--)
+            for(int i=multixDelaysInMs.size()-1; i>=0; i--)
             {
                 multixDelaysInMs[i] = _vf[i];
             }

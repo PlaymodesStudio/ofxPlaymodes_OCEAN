@@ -26,7 +26,11 @@ namespace ofxPm
         
         parameters->setName("Video Renderer");
         parameters->add(paramFrameIn.set("Frame In", vFrame));
-        parameters->add(vecdeF.set("Vec",{0},{0},{1}));
+        parameters->add(paramResolutionX.set("Resolution X",640,0,1920));
+        parameters->add(paramResolutionY.set("Resolution Y",480,0,1080));
+        parameters->add(paramPositionX.set("Position X",0,0,1920));
+        parameters->add(paramPositionY.set("Position Y",0,0,1080));
+        parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
 
                         
         paramFrameIn.addListener(this, &VideoRendererNodeBased::newVideoFrame);
@@ -58,6 +62,7 @@ namespace ofxPm
         {
             if(vFrame.getTextureRef().isAllocated())
             {
+                ofSetColor(255*paramOpacity);
                 vFrame.getTextureRef().draw(x,y,w,h);
             }
         }
@@ -65,13 +70,7 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererNodeBased::draw()
     {
-        if(!vFrame.isNull())
-        {
-            if(vFrame.getTextureRef().isAllocated())
-            {
-                vFrame.getTextureRef().draw(20,20,vFrame.getWidth(),vFrame.getHeight());
-            }
-        }
+        draw(paramPositionX,paramPositionY,paramResolutionX,paramResolutionY);
     }
     //--------------------------------------------------------------
     void VideoRendererNodeBased::draw(ofEventArgs &e)

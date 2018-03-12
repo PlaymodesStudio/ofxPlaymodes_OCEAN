@@ -37,13 +37,11 @@ namespace ofxPm
         microsOneSec=-1;
         
         // parametersGroup
+        parameters->add(paramFrameIn.set("Frame Input",VideoFrame::VideoFrame()));
         parameters->add(paramIsRecording.set("Is recording",true));
         parameters->add(paramFPS.set("FPS",60,0,60));
-        parameters->add(paramFrameIn.set("Frame Input",VideoFrame::VideoFrame()));
         parameters->add(paramFrameOut.set("Frame Output",VideoFrame::VideoFrame()));
         parameters->add(paramVideoBufferOut.set("Buffer Output",nullptr));
-        
-        //    parameters->add(paramFrameIn.set("Frame Output",vf));
         
         paramIsRecording.addListener(this,&VideoBufferNodeBased::changedIsRecording);
         // do this the last to avoid sending nullptr frame
@@ -165,7 +163,7 @@ namespace ofxPm
             frame = frames[closestPosition];
         }
         // ??? is this a good way to go ?
-        // i've added a "index position" to a videoFrame ... this allows us to draw header based on pos, not TS
+        // i've added a "index position" to a videoFrame ... this allows us to draw header based on pos, not TS?
         frame.setBufferIndex(closestPosition);
         return frame;
     }
@@ -187,10 +185,8 @@ namespace ofxPm
     //----------------------------------------------
 
     VideoFrame VideoBufferNodeBased::getVideoFrame(int position){
-        //return buffer.find(times[times.size()-position])->second;
         if(getSizeInFrames()){
             position = CLAMP(position,0,int(getSizeInFrames())-1);
-            //cout << "frame " << position << " retained " << frames[position]->_useCountOfThisObject << "\n";
             return frames[position];
         }else{
             return VideoFrame();
@@ -226,15 +222,8 @@ namespace ofxPm
     //----------------------------------------------
     void VideoBufferNodeBased::stop()
     {
-        //paramFrameIn.removeListener(this,&VideoBufferNodeBased::newVideoFrame);
-        
         stopped = true;
-        
         stopTime = initTime.elapsed();
-        
-        
-        
-        cout << "VideoBufferNodeBased:: Stopped Buffer!" << endl;
     }
     
     //----------------------------------------------
