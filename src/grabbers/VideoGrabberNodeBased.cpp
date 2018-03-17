@@ -9,6 +9,7 @@ namespace ofxPm{
     VideoGrabberNodeBased::VideoGrabberNodeBased(): ofxOceanodeNodeModel("Video Grabber")
     {
         numGrabberDevices = VideoGrabberNodeBased::listDevices().size();;
+        
         parameters->add(paramDeviceId.set("DeviceId", 0, 0, numGrabberDevices-1));
         parameters->add(paramGrab.set("Grab",true));
         parameters->add(paramConnect.set("Connect"));
@@ -32,8 +33,7 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     VideoGrabberNodeBased::~VideoGrabberNodeBased()
     {
-        
-        ofRemoveListener(ofEvents().update, this, &VideoGrabberNodeBased::update);
+        cout << "VideoGrabberNodeBased::Destroying Grabber..." << endl;
         ofVideoGrabber::close();
     }
 
@@ -93,10 +93,10 @@ namespace ofxPm{
         ofVideoGrabber::setDesiredFrameRate(paramFps);
         
         ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
-        if(ofVideoGrabber::isInitialized())
-        {
-            ofAddListener(ofEvents().update, this, &VideoGrabberNodeBased::update);
-        }
+//        if(ofVideoGrabber::isInitialized())
+//        {
+//            ofAddListener(ofEvents().update, this, &VideoGrabberNodeBased::update);
+//        }
 
         VideoSource::setWidth(ofVideoGrabber::getWidth());
         VideoSource::setHeight(ofVideoGrabber::getHeight());

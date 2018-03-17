@@ -14,7 +14,8 @@ namespace ofxPm
     //--------------------------------------------------------------
     VideoRendererNodeBased::~VideoRendererNodeBased()
     {
-        ofRemoveListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
+        
+        //ofRemoveListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
     }
 
 
@@ -24,7 +25,6 @@ namespace ofxPm
 
         vFrame = ofxPm::VideoFrame();
         
-        parameters->setName("Video Renderer");
         parameters->add(paramFrameIn.set("Frame In", vFrame));
         parameters->add(paramResolutionX.set("Resolution X",640,0,1920));
         parameters->add(paramResolutionY.set("Resolution Y",480,0,1080));
@@ -35,7 +35,7 @@ namespace ofxPm
                         
         paramFrameIn.addListener(this, &VideoRendererNodeBased::newVideoFrame);
         
-        ofAddListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
+        //ofAddListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
     }
     
     //--------------------------------------------------------------

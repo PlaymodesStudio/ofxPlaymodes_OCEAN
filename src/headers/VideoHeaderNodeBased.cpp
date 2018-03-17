@@ -115,7 +115,9 @@ namespace ofxPm{
         Timestamp ts;
         
         // when buffer is not stopped we need to update the nowTS which is used to update TS of delay,inTS,outTS ...
-        if(!paramVideoBufferInput.get()->isStopped() && (paramVideoBufferInput.get()->getSizeInFrames()>0))
+        bool isStopped = paramVideoBufferInput.get()->isStopped();
+        int  bufferSizeInFrames = paramVideoBufferInput.get()->getSizeInFrames();
+        if(!isStopped && (bufferSizeInFrames>0))
         {
             nowTS = paramVideoBufferInput.get()->getFirstFrameTimestamp();
         }

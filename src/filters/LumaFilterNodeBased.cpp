@@ -31,10 +31,9 @@ namespace ofxPm{
             fbo.allocate(source->getWidth(),source->getHeight(),GL_RGBA);
         }
                 
-        parameters->setName("Luma Key");
+        parameters->add(paramFrameIn.set("Frame Input", frame));
         parameters->add(paramLumaThrshold.set("Threshold",0.25,0.0,1.0));
         parameters->add(paramLumaSmooth.set("Smooth",0.25,0.0,1.0));
-        parameters->add(paramFrameIn.set("Frame Input", frame));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
         
@@ -83,7 +82,10 @@ namespace ofxPm{
                         shader.setUniform1f("u_max",lumaThreshold);
                         
                         ofSetColor(255);
-                        _frame.getTextureRef().draw(0,0,_frame.getWidth(),_frame.getHeight());
+                        int w = _frame.getWidth();
+                        int h = _frame.getHeight();
+                        
+                        _frame.getTextureRef().draw(0,0,w,h);
                     }
                     shader.end();
                 }

@@ -10,7 +10,6 @@
 
 #include "VideoBufferNodeBased.h"
 #include "VideoHeaderNodeBased.h"
-#include "VideoRendererNodeBased.h"
 #include "ofxOceanodeNodeModel.h"
 
 #include "ofMain.h"

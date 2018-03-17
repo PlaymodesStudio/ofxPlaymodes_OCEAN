@@ -29,7 +29,7 @@ MultixFilter::~MultixFilter()
         // parametersGroup
         
         parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
-        parameters->add(paramNumHeaders.set("Num Headers",0,0,480));
+        parameters->add(paramNumHeaders.set("Num Headers",0,1,480));
         parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
         parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
         parameters->add(paramUseBPM.set("Use BPM",true));
@@ -161,7 +161,7 @@ MultixFilter::~MultixFilter()
             {
                 multixDelaysInMs[i] = _vf[i];
             }
-            multixDelaysInMs[0] = 0.0;
+            if(multixDelaysInMs.size()>0) multixDelaysInMs[0] = 0.0;
 
 //            // CLEAN headers and renderers and resize the to new
 //            //setNumHeaders(_vf.size());
@@ -306,7 +306,8 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
             // or the opposite order size-i-1 ? or just "i"
             //videoRenderer[i].draw(x,y,w,h);
             videoHeader.setDelayMs(multixDelaysInMs[i]);
-            videoHeader.getNextVideoFrame().getTextureRef().draw(x,y,w,h);
+            VideoFrame vf = videoHeader.getNextVideoFrame();
+            vf.getTextureRef().draw(x,y,w,h);
         }
 	}
     //cout << "MultixFilter :: Headers in Action : " << headersInAction << endl;
