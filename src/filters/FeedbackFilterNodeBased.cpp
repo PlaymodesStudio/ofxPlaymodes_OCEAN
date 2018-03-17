@@ -1,9 +1,3 @@
-/*
- * VideoMixerGPU.cpp
- *
- *  Created on: Jan 18, 2013
- *      Author: arturo
- */
 
 #include "FeedbackFilterNodeBased.h"
 #include "ofxOceanodeContainer.h"
@@ -41,9 +35,11 @@ namespace ofxPm{
         
         parameters = new ofParameterGroup();
         parameters->setName("Feedback");
+        parameters->add(paramFrameIn.set("Frame Input", frame));
         parameters->add(paramScale.set("Scale",0.98,-1.0,2.0));
         parameters->add(paramMixAmmount.set("Mix Ammount",0.1,0.0,1.0));
-        parameters->add(paramFrameIn.set("Frame Input", frame));
+        parameters->add(paramOriginX.set("OriginX",0.5,-1.0,1.0));
+        parameters->add(paramOriginY.set("OriginY",0.5,-1.0,1.0));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
         paramFrameIn.addListener(this, &FeedbackFilterNodeBased::newVideoFrame);
@@ -79,6 +75,9 @@ namespace ofxPm{
                         shader.setUniformTexture("tex1",frame.getTextureRef(),1);
                         shader.setUniform1f("u_scale",paramScale);
                         shader.setUniform1f("u_mixAmmount",paramMixAmmount);
+                        shader.setUniform1f("u_originX",paramOriginX);
+                        shader.setUniform1f("u_originY",paramOriginY);
+
                         float* res = new float[2];
                         res[0]=_frame.getWidth();
                         res[1]=_frame.getHeight();

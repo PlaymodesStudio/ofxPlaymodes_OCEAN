@@ -13,7 +13,8 @@
 
 namespace ofxPm{
     
-class FeedbackFilterNodeBased: public VideoFilter,public ofxOceanodeNodeModel {
+class FeedbackFilterNodeBased: public VideoFilter,public ofxOceanodeNodeModel
+    {
 public:
 	FeedbackFilterNodeBased();
 	virtual ~FeedbackFilterNodeBased();
@@ -39,6 +40,8 @@ private:
 
     ofParameter<float>                  paramScale;
     ofParameter<float>                  paramMixAmmount;
+    ofParameter<float>                  paramOriginX;
+    ofParameter<float>                  paramOriginY;
 
 };
 }
