@@ -20,7 +20,7 @@ namespace ofxPm{
         int i=1;
         loopTimeChanged(i);
         loopStarted=0.0;
-        loopDurationWhenTriggered=0.0;
+        loopDurationMsWhenTriggered=0.0;
         BPMfactor=1.0;
         
         parameters->add(paramFrameIn.set("Frame In", myFrame));
@@ -55,9 +55,10 @@ namespace ofxPm{
         bool frameIsNull = _frame.isNull();
         int buffNumFrames = buffer.getSizeInFrames();
         
+        //TODO : is this the best way to configure header and buffer ?
         if(buffNumFrames==0)
         {
-            cout << "Buffer is 0" << endl;
+            cout << "LooperFilter::Buffer is 0 frame long..." << endl;
         }
         else
         {
@@ -67,41 +68,42 @@ namespace ofxPm{
         if(!frameIsNull)
         {
             double elapsedSincePressedLoop = ofGetElapsedTimeMillis()-loopStarted;
-//            cout << "LooperFilter::newVideoFrame Buffer Size is : " << buffNumFrames << endl;
-            cout << "LooperFilter:: elapsedSincrePressedLoop : " << elapsedSincePressedLoop << " // Loop Started : " << loopStarted << " // Loop Duration " << loopDuration << endl;
-            if((!paramDoLoop) || (paramDoLoop && (elapsedSincePressedLoop < loopDuration)))
+            //cout << "LooperFilter:: elapsedSincrePressedLoop : " << elapsedSincePressedLoop << " // Loop Started : " << loopStarted << " // Loop Duration " << loopDurationMs << endl;
+            if((!paramDoLoop) || (paramDoLoop && (elapsedSincePressedLoop < loopDurationMs)))
             {
-                //buffer.resume();
+                // We've pressed "loop" , so capturing into buffer enable and we need to let the time of loop pass before stoping the capture
+                
                 buffer.newVideoFrame(_frame);
-//                parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = _frame;
                 paramFrameOut = _frame;
-                cout << "!!!!!!!!!!! " << endl;
+                //cout << "LooperFilter::capturing loooop" << endl;
             }
             else
             {
-                //buffer.stop();
-                float loopDelay = loopDurationWhenTriggered - fmod(ofGetElapsedTimeMillis()-loopStarted,loopDuration);
-                videoHeader.setDelayMs(loopDelay);
+                // Loop already captured, relooping 
+                float loopStart = loopDurationMsWhenTriggered;
+                float loopEnd = loopDurationMsWhenTriggered - loopDurationMs;
+                float loopDelayMs = loopDurationMsWhenTriggered - fmod(ofGetElapsedTimeMillis()-loopStarted,loopDurationMs);
+                videoHeader.setDelayMs(loopDelayMs);
                 
+                float whichPctOfLoopDone = ofMap(loopDelayMs,loopStart,loopEnd,0.0,1.0);
 
-                float whichPctOfLoopDone = 1.0 - (loopDelay / loopDuration);
-                cout << "whichPctOfLoopDone : " << whichPctOfLoopDone << endl;
-                if(whichPctOfLoopDone < (paramGatePct*BPMfactor))
-//                    if(false)
+//                cout << endl;
+//                cout << " ............................. " << endl;
+//                cout << "LoopDelayMs " << loopDelayMs << " // LoopDurationMs : " << loopDurationMs << " // whichPctOfLoopDone : " << whichPctOfLoopDone << " >?? " << (1.0-paramGatePct) << endl;
+//                cout << " ____ BPMFactor :  " << BPMfactor << " // paramGatePct :  "  << paramGatePct << " // loopDurationWhenTriggered : " << loopDurationMsWhenTriggered <<  endl ;
+
+                // Gate management
+                if(whichPctOfLoopDone > (1.0 - paramGatePct))
                 {
+                    // we need to set to black, we're GATING !!
                     ofxPm::VideoFrame vfAux;
-                    //parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = vfAux;
                     paramFrameOut = vfAux;
+//                    cout << "LooperFilter::BLACK of Gate!!" <<endl;
                 }
                 else
                 {
-//                    parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = videoHeader.getNextVideoFrame();
                     paramFrameOut = videoHeader.getNextVideoFrame();
-                    
                 }
-                   
-
-                cout << "LoopDelay : " << loopDelay << endl;
             }
         }
     }
@@ -120,15 +122,15 @@ namespace ofxPm{
         else  BPMfactor = 1.0;
         
         float oneBeatMs = (60.0/gBPM)*1000;
-        loopDuration = oneBeatMs / BPMfactor;
-        cout << "LooperFilter:: Setting Loop Duration = " << loopDuration << endl;
+        loopDurationMs = oneBeatMs / BPMfactor;
+        cout << "LooperFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms !!!!!!!!!!!!!!! " <<  endl;
     }
     //-----------------------------------------
     void LooperFilter::doLoopChanged(bool& _b)
     {
         int i=0;
         loopTimeChanged(i);
-        loopDurationWhenTriggered = loopDuration;
+        loopDurationMsWhenTriggered = loopDurationMs;
 
         loopStarted = ofGetElapsedTimeMillis();
         

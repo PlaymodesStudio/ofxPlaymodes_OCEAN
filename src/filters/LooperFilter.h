@@ -47,9 +47,9 @@ private:
 
     // rendering
     VideoFrame                          myFrame;
-    double                              loopDuration;
+    double                              loopDurationMs;
     double                              loopStarted;
-    double                              loopDurationWhenTriggered;
+    double                              loopDurationMsWhenTriggered;
     double                              BPMfactor;
     
 };
