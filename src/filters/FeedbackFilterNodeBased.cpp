@@ -21,10 +21,10 @@ namespace ofxPm{
     void FeedbackFilterNodeBased::setupNodeBased(){
         
         fps = -1;
-        frame = VideoFrame();
-        ofFbo fboAux;
-        fboAux.allocate(640,480);
-        frame = VideoFrame::newVideoFrame(fboAux);
+//        frame = VideoFrame();
+//        ofFbo fboAux;
+//        fboAux.allocate(640,480);
+//        frame = VideoFrame::newVideoFrame(fboAux);
         
         shader.load("shaders/feedback");
         
