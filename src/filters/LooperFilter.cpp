@@ -73,7 +73,8 @@ namespace ofxPm{
             {
                 //buffer.resume();
                 buffer.newVideoFrame(_frame);
-                parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = _frame;
+//                parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = _frame;
+                paramFrameOut = _frame;
                 cout << "!!!!!!!!!!! " << endl;
             }
             else
@@ -89,11 +90,14 @@ namespace ofxPm{
 //                    if(false)
                 {
                     ofxPm::VideoFrame vfAux;
-                    parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = vfAux;
+                    //parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = vfAux;
+                    paramFrameOut = vfAux;
                 }
                 else
                 {
-                    parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = videoHeader.getNextVideoFrame();
+//                    parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = videoHeader.getNextVideoFrame();
+                    paramFrameOut = videoHeader.getNextVideoFrame();
+                    
                 }
                    
 

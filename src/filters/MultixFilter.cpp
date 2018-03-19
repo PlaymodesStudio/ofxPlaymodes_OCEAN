@@ -1,35 +1,26 @@
-/*
- * AudioFrame.h
- *
- *  Created on: 09-oct-2008
- *      Author: arturo castro
- */
 
 #include "MultixFilter.h"
 #include "ofxOceanodeContainer.h"
 
-
 namespace ofxPm{
 
-
-MultixFilter::~MultixFilter()
-{
-    //dtor
-}
-
+    //------------------------------------------------------------------
     MultixFilter::MultixFilter(): ofxOceanodeNodeModel("Multix FX")
     {
         setupNodeBased();
     }
+    //------------------------------------------------------------------
+    MultixFilter::~MultixFilter()
+    {
+        fbo.clear();
+        multixDelaysInMs.clear();
+    }
 
-    
     //------------------------------------------------------------------
     void MultixFilter::setupNodeBased()
     {
-        // parametersGroup
-        
         parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
-        parameters->add(paramNumHeaders.set("Num Headers",0,1,480));
+        parameters->add(paramNumHeaders.set("Num Headers",1,1,480));
         parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
         parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
         parameters->add(paramUseBPM.set("Use BPM",true));
@@ -46,7 +37,20 @@ MultixFilter::~MultixFilter()
         paramVideoBufferInput.addListener(this, &MultixFilter::changedVideoBuffer);
         paramDistributionVector.addListener(this,&MultixFilter::changedDistributionVector);
         
+        int i=0;
+        recalculate(i);
+
     }
+    //------------------------------------------------------------
+    void MultixFilter::update(ofEventArgs &e)
+    {
+        if(fboHasToBeAllocated != glm::vec2(-1, -1))
+        {
+            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
+            fboHasToBeAllocated = glm::vec2(-1, -1);
+        }
+    }
+
     //--------------------------------------------------------------
     ofxOceanodeAbstractConnection* MultixFilter::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
     {
@@ -152,7 +156,8 @@ MultixFilter::~MultixFilter()
     //--------------------------------------------------------
     void MultixFilter::updateValuesMs(vector<float> _vf)
     {
-        if(paramVideoBufferInput.get()!=NULL)
+//        if(paramVideoBufferInput.get()!=NULL)
+        if(true)
         {
             multixDelaysInMs.resize(paramNumHeaders);
             
@@ -238,28 +243,21 @@ VideoFrame MultixFilter::getNextVideoFrame()
 //--------------------------------------------------------
 void MultixFilter::newVideoFrame(VideoFrame & _frame)
 {
-
     if(paramNumHeaders>0)
     {
         fbo.begin();
         {
             if(paramMinMaxBlend) ofClear(0,0,0,255);
             else ofClear(255,255,255,255);
-            ofSetColor(255);
-            //ofDrawRectangle(0,0,fbo.getWidth()-ofGetMouseX(),fbo.getHeight());
-            //_frame.getTextureRef().draw(0,0,fbo.getWidth(),fbo.getHeight());
-            //videoRenderer[1].draw(ofGetMouseX(),ofGetMouseY(),fbo.getWidth(),fbo.getHeight());
-            drawIntoFbo(0,0,fbo.getWidth(),fbo.getHeight());
-            //        ofDrawCircle(320,240,50);
             
+            ofSetColor(255);
+            drawIntoFbo(0,0,fbo.getWidth(),fbo.getHeight());
         }
         fbo.end();
         
-        
         frame = VideoFrame::newVideoFrame(fbo);
         
-        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
-
+        paramFrameOut = frame;
     }
 }
 
@@ -307,7 +305,8 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
             //videoRenderer[i].draw(x,y,w,h);
             videoHeader.setDelayMs(multixDelaysInMs[i]);
             VideoFrame vf = videoHeader.getNextVideoFrame();
-            vf.getTextureRef().draw(x,y,w,h);
+            cout << "MultixFilter:: Copy : " << i << " Delayed : " << multixDelaysInMs[i] << " And Buffer is " << paramVideoBufferInput.get()->getSizeInFrames() << endl;
+            if(!vf.isNull()) vf.getTextureRef().draw(x,y,w,h);
         }
 	}
     //cout << "MultixFilter :: Headers in Action : " << headersInAction << endl;

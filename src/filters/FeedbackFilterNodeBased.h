@@ -20,7 +20,9 @@ public:
 	virtual ~FeedbackFilterNodeBased();
 
     void setupNodeBased();
-    
+    void update(ofEventArgs &e) override;
+
+        
     VideoFrame getNextVideoFrame();
 	void newVideoFrame(VideoFrame & frame);
     float getFps(){return fps;};
@@ -35,6 +37,8 @@ private:
 	//ofMutex swapBuffersMutex;
     float fps;
     VideoFrame      lastFrameRendered;
+    glm::vec2       fboHasToBeAllocated;
+
     
     ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
 

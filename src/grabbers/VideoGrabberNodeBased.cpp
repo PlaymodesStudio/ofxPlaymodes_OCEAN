@@ -63,7 +63,8 @@ namespace ofxPm{
     void VideoGrabberNodeBased::newFrame(ofPixels & pixels)
     {
         frame = VideoFrame::newVideoFrame(pixels);
-        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+//        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+        paramFrameOut = frame;
     }
 
     //------------------------------------------------------

@@ -26,6 +26,8 @@ public:
 
 //    void    setup(ofxPm::VideoBuffer & buffer, int numHeaders=2);
     void    setupNodeBased();
+    void update(ofEventArgs &e) override;
+
 
     void    updateValuesPct(vector<float> _vf);
     void    updateValuesMs(vector<float> _vf);
@@ -79,7 +81,8 @@ protected:
     
 private:
 
-    int numHeaders;
+    int             numHeaders;
+    glm::vec2       fboHasToBeAllocated;
 
     // rendering
     VideoFrame      frame;

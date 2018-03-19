@@ -97,11 +97,13 @@ namespace ofxPm
                     frames.erase(frames.begin());
                 }
                 //timeMutex.unlock();
-                parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+                //parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+                paramFrameOut = frame;
             }
 
         }
-        parameters->get("Buffer Output").cast<ofxPm::VideoBufferNodeBased*>() = (ofxPm::VideoBufferNodeBased*)this;
+        paramVideoBufferOut = this;
+        //parameters->get("Buffer Output").cast<ofxPm::VideoBufferNodeBased*>() = (ofxPm::VideoBufferNodeBased*)this;
    
     }
     //-------------------------------------------------------------------

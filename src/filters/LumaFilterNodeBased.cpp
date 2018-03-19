@@ -10,8 +10,10 @@ namespace ofxPm{
     }
 
     //--------------------------------------------------------------
-    LumaFilterNodeBased::~LumaFilterNodeBased() {
-        
+    LumaFilterNodeBased::~LumaFilterNodeBased()
+    {
+        fbo.clear();
+        shader.unload();
     }
 
     //--------------------------------------------------------------
@@ -36,13 +38,22 @@ namespace ofxPm{
         parameters->add(paramLumaSmooth.set("Smooth",0.25,0.0,1.0));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        
         paramLumaThrshold.addListener(this, &LumaFilterNodeBased::setLumaThreshold);
         paramLumaSmooth.addListener(this, &LumaFilterNodeBased::setLumaSmooth);
         
         paramFrameIn.addListener(this, &LumaFilterNodeBased::newVideoFrame);
         
     }
+    //------------------------------------------------------------
+    void LumaFilterNodeBased::update(ofEventArgs &e)
+    {
+        if(fboHasToBeAllocated != glm::vec2(-1, -1))
+        {
+            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
+            fboHasToBeAllocated = glm::vec2(-1, -1);
+        }
+    }
+    
 
     //--------------------------------------------------------------
     VideoFrame LumaFilterNodeBased::getNextVideoFrame()
@@ -64,12 +75,11 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
-            if (!isAllocated)
+            if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
-                fbo.allocate(_frame.getWidth(), _frame.getHeight());
-                cout << "LumaFilter :: newVideoFrame. Allocating FBO to : " << _frame.getWidth() << " , " << _frame.getHeight()<< endl;
+                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
             }
-            
+
             if(fbo.isAllocated())
             {
                 fbo.begin();
@@ -94,7 +104,7 @@ namespace ofxPm{
                 frame = VideoFrame::newVideoFrame(fbo);
             }
         }
-        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+        paramFrameOut = frame;
     }
 
     //--------------------------------------------------------------

@@ -19,6 +19,8 @@ public:
 	virtual ~LumaFilterNodeBased();
 
     void setupNodeBased();
+    void update(ofEventArgs &e) override;
+
     
     VideoFrame getNextVideoFrame();
 	void newVideoFrame(VideoFrame & frame);
@@ -37,6 +39,8 @@ private:
 	bool            newFrame;
     ofPlanePrimitive plane;
 	//ofMutex swapBuffersMutex;
+    glm::vec2       fboHasToBeAllocated;
+
     
     float lumaThreshold;
     float lumaSmooth;

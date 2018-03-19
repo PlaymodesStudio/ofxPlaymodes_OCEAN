@@ -13,7 +13,8 @@ namespace ofxPm{
     //------------------------------------------------------------
     FeedbackFilterNodeBased::~FeedbackFilterNodeBased()
     {
-	
+        fbo.clear();
+        shader.unload();
     }
 
     //------------------------------------------------------------
@@ -24,7 +25,6 @@ namespace ofxPm{
         ofFbo fboAux;
         fboAux.allocate(640,480);
         frame = VideoFrame::newVideoFrame(fboAux);
-        //ofAddListener(source->newFrameEvent,this,&GradientEdgesFilter::newVideoFrame);
         
         shader.load("shaders/feedback");
         
@@ -46,6 +46,16 @@ namespace ofxPm{
     }
 
     //------------------------------------------------------------
+    void FeedbackFilterNodeBased::update(ofEventArgs &e)
+    {
+        if(fboHasToBeAllocated != glm::vec2(-1, -1))
+        {
+            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
+            fboHasToBeAllocated = glm::vec2(-1, -1);
+        }
+    }
+
+    //------------------------------------------------------------
     VideoFrame FeedbackFilterNodeBased::getNextVideoFrame()
     {
         return frame;
@@ -60,9 +70,9 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
-            if (!isAllocated)
+            if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
-                fbo.allocate(_frame.getWidth(), _frame.getHeight());
+                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
             }
             else
             {
@@ -77,16 +87,11 @@ namespace ofxPm{
                         shader.setUniform1f("u_mixAmmount",paramMixAmmount);
                         shader.setUniform1f("u_originX",paramOriginX);
                         shader.setUniform1f("u_originY",paramOriginY);
-
                         float* res = new float[2];
                         res[0]=_frame.getWidth();
                         res[1]=_frame.getHeight();
                         shader.setUniform2fv("u_resolution",res);
                         ofSetColor(255);
-                        //    frame.getTextureRef().bind();
-                        //	ofDrawRectangle(0,0,frame.getWidth(),frame.getHeight());
-                        //            plane.draw();
-                        //image.getTexture().draw(0, 0,640,480);
                         _frame.getTextureRef().draw(0,0,_frame.getWidth(),_frame.getHeight());
                     }
                     shader.end();
@@ -94,9 +99,7 @@ namespace ofxPm{
                 fbo.end();
                 
                 frame = VideoFrame::newVideoFrame(fbo);
-                
-                parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
-                
+                paramFrameOut = frame;
             }
         }
     }

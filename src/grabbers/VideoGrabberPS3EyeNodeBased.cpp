@@ -81,7 +81,8 @@ namespace ofxPm{
     {
         frame = VideoFrame::newVideoFrame(pixels);
         //frame.getTextureRef();
-        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+//        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+        paramFrameOut = frame;
     }
 
     //------------------------------------------------------

@@ -42,8 +42,8 @@ namespace ofxPm{
         height = -11;
         
 
-        //paramVideoBufferInput = _buff;
-        parameters->get("Buffer Input").cast<ofxPm::VideoBufferNodeBased*>() = _buff;
+        paramVideoBufferInput = _buff;
+//        parameters->get("Buffer Input").cast<ofxPm::VideoBufferNodeBased*>() = _buff;
     }
 
     //------------------------------------------------------
@@ -94,17 +94,19 @@ namespace ofxPm{
             
         // frame to be returned;
         VideoFrame frame;
-        
-        paramVideoBufferInput.get()->lock();
+        if(paramVideoBufferInput.get()->getSizeInFrames()>0)
         {
-            // get the next frame timeStamp based on current behaviour
-            currentFrameTs = getNextFrameTimestamp();
-            // fetch closest video frame from buffer
-            frame = paramVideoBufferInput.get()->getVideoFrame(currentFrameTs);
-            // get the index of the fetched frame
-            currentFrameIndex = frame.getBufferIndex();
+            paramVideoBufferInput.get()->lock();
+            {
+                // get the next frame timeStamp based on current behaviour
+                currentFrameTs = getNextFrameTimestamp();
+                // fetch closest video frame from buffer
+                frame = paramVideoBufferInput.get()->getVideoFrame(currentFrameTs);
+                // get the index of the fetched frame
+                currentFrameIndex = frame.getBufferIndex();
+            }
+            paramVideoBufferInput.get()->unlock();
         }
-        paramVideoBufferInput.get()->unlock();
         return frame;
     }
 
@@ -194,14 +196,13 @@ namespace ofxPm{
     //-----------------------------------------
     void VideoHeaderNodeBased::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
     {
-            //cout << "VideoBufferNodeBased::setting Video Buffer and sending new frame to header !!"  << endl;
-
-            ofxPm::VideoFrame vf;
-            if(_videoBuffer!=NULL)
-            {
-                vf = getNextVideoFrame();
-            }
-            parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = vf;
+        ofxPm::VideoFrame vf;
+        if(_videoBuffer!=NULL)
+        {
+            vf = getNextVideoFrame();
+        }
+        paramFrameOut = vf;
+//        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = vf;
     }
 
     
