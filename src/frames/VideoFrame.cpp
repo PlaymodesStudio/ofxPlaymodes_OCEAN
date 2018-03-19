@@ -6,14 +6,15 @@
  */
 
 #include "VideoFrame.h"
-using Poco::ScopedLock;
+//using Poco::ScopedLock;
 
 namespace ofxPm
 {
 int VideoFrame::total_num_frames=0;
 map<VideoFormat,vector<ofPtr<VideoFrame::Obj> > > VideoFrame::pool;
-ofMutex VideoFrame::poolMutex;
-
+//ofMutex VideoFrame::poolMutex;
+std::mutex VideoFrame::poolMutex;
+    
 class VideoFrame::Obj{
 public:
 	Obj()
@@ -34,7 +35,7 @@ public:
 	:pixelsChanged(false)
 	,createdTexPixels(false)
 	{
-		pixels.allocate(videoFrame.getWidth(),videoFrame.getHeight(),ofGetImageTypeFromGLType(videoFrame.texData.glInternalFormat));
+    pixels.allocate(videoFrame.getWidth(),videoFrame.getHeight(),ofGetImageTypeFromGLType(videoFrame.texData.glInternalFormat));
 		updateTexture(videoFrame);
 		total_num_frames++;
 	}
@@ -184,10 +185,20 @@ public:
 		}
 	}
 
-	void VideoFrame::poolDeleter(VideoFrame::Obj * obj){
-		poolMutex.lock();
-		pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
-		poolMutex.unlock();
+	void VideoFrame::poolDeleter(VideoFrame::Obj * obj)
+    {
+//        poolMutex.lock();
+//        pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
+//        poolMutex.unlock();
+        try
+        {
+            std::unique_lock<std::mutex> lock(poolMutex);
+            pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
+        }
+        catch(const std::exception& e)
+        {
+            /* When program terminates, acquiring lock is impossible. */
+        }
 	}
 
 	ofPixels & VideoFrame::getPixelsRef(){
@@ -219,8 +230,10 @@ public:
 	}
 
 	int VideoFrame::getPoolSize(const VideoFormat & format){
-		ScopedLock<ofMutex> lock(poolMutex);
-		return pool[format].size();
+//        ScopedLock<ofMutex> lock(poolMutex);
+//        return pool[format].size();
+        std::unique_lock<std::mutex> lock(poolMutex);
+        return pool[format].size();
 	}
 
 
