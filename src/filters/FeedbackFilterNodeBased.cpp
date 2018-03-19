@@ -21,10 +21,11 @@ namespace ofxPm{
     void FeedbackFilterNodeBased::setupNodeBased(){
         
         fps = -1;
-//        frame = VideoFrame();
-//        ofFbo fboAux;
-//        fboAux.allocate(640,480);
-//        frame = VideoFrame::newVideoFrame(fboAux);
+        
+        //frame = VideoFrame();
+        //ofFbo fboAux;
+        //fboAux.allocate(640,480);
+        //frame = VideoFrame::newVideoFrame(fboAux);
         
         shader.load("shaders/feedback");
         
@@ -68,8 +69,16 @@ namespace ofxPm{
         bool isAllocated = fbo.isAllocated();
         bool frameIsNull = _frame.isNull();
         
+        
         if(!frameIsNull)
         {
+            // this is for the start of the module ... we need to have something on "frame" as the lastframe.
+            if(frame.isNull())
+            {
+                frame = _frame;
+            }
+
+            // 
             if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
                 fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
@@ -97,7 +106,6 @@ namespace ofxPm{
                     shader.end();
                 }
                 fbo.end();
-                
                 frame = VideoFrame::newVideoFrame(fbo);
                 paramFrameOut = frame;
             }
