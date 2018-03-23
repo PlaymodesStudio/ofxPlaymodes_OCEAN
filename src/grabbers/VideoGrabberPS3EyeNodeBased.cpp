@@ -27,7 +27,10 @@ namespace ofxPm{
     VideoGrabberPS3EyeNodeBased::~VideoGrabberPS3EyeNodeBased()
     {
         cout << "VideoGrabberPS3EyeNodeBased::Destroying Grabber PS3Eye..." << endl;
-
+        if(eye)
+        {
+            eye->stop();
+        }
     }
 
     //-----------------------------------------------------------------------------------
@@ -68,12 +71,15 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     void VideoGrabberPS3EyeNodeBased::update(ofEventArgs &e)
     {
-       eye->getFrame(videoFrame);
-        videoTexture.loadData(videoFrame, eye->getWidth(),eye->getHeight(), GL_BGR_EXT);
-        ofPixels p;
-        p.setFromPixels(videoFrame, 640, 480,OF_PIXELS_BGR);
-
-        newFrame(p);
+        if(eye!=nullptr)
+        {
+            eye->getFrame(videoFrame);
+            videoTexture.loadData(videoFrame, eye->getWidth(),eye->getHeight(), GL_BGR_EXT);
+            ofPixels p;
+            p.setFromPixels(videoFrame, 640, 480,OF_PIXELS_BGR);
+            
+            newFrame(p);
+        }
     }
 
     //-----------------------------------------------------------------------------------

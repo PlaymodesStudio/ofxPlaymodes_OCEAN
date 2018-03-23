@@ -30,10 +30,10 @@ public:
 	
     void update(ofEventArgs &e);
 
-    void setAutoWhiteBalance(bool &_b){eye->setAutoWhiteBalance(_b);};
-    void setAutoGain(bool &_b){eye->setAutogain(_b);};
-    void setExposure(int &_i){eye->setExposure(_i);};
-    void setHue(int &_i){eye->setHue((uint8_t)_i);};
+    void setAutoWhiteBalance(bool &_b){if(eye!=nullptr) eye->setAutoWhiteBalance(_b);};
+    void setAutoGain(bool &_b){if(eye!=nullptr) eye->setAutogain(_b);};
+    void setExposure(int &_i){if(eye!=nullptr) eye->setExposure(_i);};
+    void setHue(int &_i){if(eye!=nullptr) eye->setHue((uint8_t)_i);};
 
 private:
     void newFrame(ofPixels & frame);
