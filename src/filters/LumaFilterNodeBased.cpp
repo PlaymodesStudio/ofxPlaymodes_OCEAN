@@ -56,8 +56,8 @@ namespace ofxPm{
     
 
     //--------------------------------------------------------------
-    VideoFrame LumaFilterNodeBased::getNextVideoFrame()
-    {
+    //VideoFrame LumaFilterNodeBased::getNextVideoFrame()
+    //{
     /*
         if(source->getNextVideoFrame()!=NULL)
         {
@@ -65,7 +65,7 @@ namespace ofxPm{
         }
         return frame;
      */
-    }
+    //}
 
     //--------------------------------------------------------------
     void LumaFilterNodeBased::newVideoFrame(VideoFrame & _frame)
@@ -114,6 +114,7 @@ namespace ofxPm{
         {
             return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
         }
+        return nullptr;
     }
 
 }

@@ -63,7 +63,7 @@ namespace ofxPm{
         
         parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
         parameters->add(paramDelayMs.set("Delay Ms",0.0,0.0,3000.0));
-        parameters->add(paramFrameOut.set("Frame Output",VideoFrame::VideoFrame()));
+        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         
         paramVideoBufferInput.addListener(this, &VideoHeaderNodeBased::changedVideoBuffer);
@@ -82,6 +82,7 @@ namespace ofxPm{
         {
             return c.connectConnection(source.cast<ofxPm::VideoBufferNodeBased*>(), sink.cast<ofxPm::VideoBufferNodeBased*>());
         }
+        return nullptr;
     }
 
     //------------------------------------------------------

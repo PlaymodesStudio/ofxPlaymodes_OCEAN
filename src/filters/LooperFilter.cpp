@@ -47,6 +47,7 @@ namespace ofxPm{
         {
             return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
         }
+        return nullptr;
     }
     //--------------------------------------------------------
     VideoFrame LooperFilter::getNextVideoFrame()

@@ -37,10 +37,10 @@ namespace ofxPm
         microsOneSec=-1;
         
         // parametersGroup
-        parameters->add(paramFrameIn.set("Frame Input",VideoFrame::VideoFrame()));
+        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
         parameters->add(paramIsRecording.set("Is recording",true));
         parameters->add(paramFPS.set("FPS",60,0,60));
-        parameters->add(paramFrameOut.set("Frame Output",VideoFrame::VideoFrame()));
+        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         parameters->add(paramVideoBufferOut.set("Buffer Output",nullptr));
         
         paramIsRecording.addListener(this,&VideoBufferNodeBased::changedIsRecording);
@@ -55,6 +55,7 @@ namespace ofxPm
         {
             return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
         }
+        return nullptr;
     }
 
     //-------------------------------------------------------------------

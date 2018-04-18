@@ -58,6 +58,7 @@ namespace ofxPm{
         {
             return c.connectConnection(source.cast<ofxPm::VideoBufferNodeBased*>(), sink.cast<ofxPm::VideoBufferNodeBased*>());
         }
+        return nullptr;
     }
 
     //------------------------------------------------------------------
