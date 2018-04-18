@@ -305,7 +305,7 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
             //videoRenderer[i].draw(x,y,w,h);
             videoHeader.setDelayMs(multixDelaysInMs[i]);
             VideoFrame vf = videoHeader.getNextVideoFrame();
-            cout << "MultixFilter:: Copy : " << i << " Delayed : " << multixDelaysInMs[i] << " And Buffer is " << paramVideoBufferInput.get()->getSizeInFrames() << endl;
+//            cout << "MultixFilter:: Copy : " << i << " Delayed : " << multixDelaysInMs[i] << " And Buffer is " << paramVideoBufferInput.get()->getSizeInFrames() << endl;
             if(!vf.isNull()) vf.getTextureRef().draw(x,y,w,h);
         }
 	}

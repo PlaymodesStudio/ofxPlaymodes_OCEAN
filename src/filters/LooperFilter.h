@@ -12,6 +12,7 @@
 #include "VideoBufferNodeBased.h"
 #include "VideoHeaderNodeBased.h"
 #include "ofxOceanodeNodeModel.h"
+#include "defaultNodes.h"
 
 #include "ofMain.h"
 
@@ -35,12 +36,17 @@ protected:
     ofParameter<int>                    paramOffsetBeatDiv;
     ofParameter<int>                    paramOffsetBeatMult;
     ofParameter<float>                  paramGatePct;
+    ofParameter<void>                   paramRestart;
+    ofParameter<ofxPm::VideoFrame>      paramAuxFrame;
+    
 
     ofxPm::VideoBufferNodeBased                 buffer;
     ofxPm::VideoHeaderNodeBased                 videoHeader;
+    bool                                        restart;
 
     void                                loopTimeChanged(int& _i);
     void                                doLoopChanged(bool& _b);
+    void                                doRestart();
     ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
 
 private:
@@ -48,9 +54,12 @@ private:
     // rendering
     VideoFrame                          myFrame;
     double                              loopDurationMs;
-    double                              loopStarted;
+    double                              loopStartedAtMs;
     double                              loopDurationMsWhenTriggered;
     double                              BPMfactor;
+    
+    phasor                              phasor;
+    
     
 };
 }

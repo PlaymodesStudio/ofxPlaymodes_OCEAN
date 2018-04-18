@@ -24,6 +24,7 @@ namespace ofxPm{
 
     private:
         void                                newFrame(ofPixels & frame);
+        void                                newFrame(ofTexture & tex);
         VideoFrame                          frame;
         int                                 numGrabberDevices;
         

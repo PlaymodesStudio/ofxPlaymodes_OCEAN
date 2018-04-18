@@ -8,7 +8,9 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     VideoGrabberNodeBased::VideoGrabberNodeBased(): ofxOceanodeNodeModel("Video Grabber")
     {
-        numGrabberDevices = VideoGrabberNodeBased::listDevices().size();;
+        //numGrabberDevices = VideoGrabberNodeBased::listDevices().size();
+        // TODO : this is provisional !!
+        numGrabberDevices = 2;
         
         parameters->add(paramDeviceId.set("DeviceId", 0, 0, numGrabberDevices-1));
         parameters->add(paramGrab.set("Grab",true));
@@ -53,7 +55,8 @@ namespace ofxPm{
                 ofVideoGrabber::update();
                 if(ofVideoGrabber::isFrameNew())
                 {
-                    newFrame(getPixelsRef());
+                    //newFrame(getPixelsRef());
+                    newFrame(getTexture());
                 }
             }            
         }
@@ -63,7 +66,12 @@ namespace ofxPm{
     void VideoGrabberNodeBased::newFrame(ofPixels & pixels)
     {
         frame = VideoFrame::newVideoFrame(pixels);
-//        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
+        paramFrameOut = frame;
+    }
+    //-----------------------------------------------------------------------------------
+    void VideoGrabberNodeBased::newFrame(ofTexture & tex)
+    {
+        frame = VideoFrame::newVideoFrame(tex);
         paramFrameOut = frame;
     }
 
@@ -88,16 +96,12 @@ namespace ofxPm{
     {
         cout << "VideoGrabberNodeBased::set Reconnect .... " << endl;
         
-        ofVideoGrabber::close();
-        ofVideoGrabber::listDevices();
-        ofVideoGrabber::setDeviceID(paramDeviceId);
+        VideoGrabberNodeBased::close();
+        VideoGrabberNodeBased::listDevices();
+        VideoGrabberNodeBased::setDeviceID(paramDeviceId);
         ofVideoGrabber::setDesiredFrameRate(paramFps);
         
-        ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
-//        if(ofVideoGrabber::isInitialized())
-//        {
-//            ofAddListener(ofEvents().update, this, &VideoGrabberNodeBased::update);
-//        }
+        VideoGrabberNodeBased::setup(paramResolutionX,paramResolutionY);
 
         VideoSource::setWidth(ofVideoGrabber::getWidth());
         VideoSource::setHeight(ofVideoGrabber::getHeight());

@@ -57,14 +57,24 @@ public:
 		ofMesh mesh;
 		mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 		mesh.addTexCoord(ofVec2f(0,0));
-		mesh.addTexCoord(ofVec2f(videoFrame.getWidth(),0));
-		mesh.addTexCoord(ofVec2f(videoFrame.getWidth(),videoFrame.getHeight()));
-		mesh.addTexCoord(ofVec2f(0,videoFrame.getHeight()));
+		mesh.addTexCoord(ofVec2f(1.0,0));
+		mesh.addTexCoord(ofVec2f(1.0,1.0));
+		mesh.addTexCoord(ofVec2f(0,1.0));
 		mesh.addVertex(ofVec3f(0,0));
 		mesh.addVertex(ofVec3f(videoFrame.getWidth(),0));
 		mesh.addVertex(ofVec3f(videoFrame.getWidth(),videoFrame.getHeight()));
 		mesh.addVertex(ofVec3f(0,videoFrame.getHeight()));
-		mesh.draw();
+
+//        mesh.addTexCoord(ofVec2f(0,0));
+//        mesh.addTexCoord(ofVec2f(videoFrame.getWidth(),0));
+//        mesh.addTexCoord(ofVec2f(videoFrame.getWidth(),videoFrame.getHeight()));
+//        mesh.addTexCoord(ofVec2f(0,videoFrame.getHeight()));
+//        mesh.addVertex(ofVec3f(0,0));
+//        mesh.addVertex(ofVec3f(videoFrame.getWidth(),0));
+//        mesh.addVertex(ofVec3f(videoFrame.getWidth(),videoFrame.getHeight()));
+//        mesh.addVertex(ofVec3f(0,videoFrame.getHeight()));
+
+        mesh.draw();
 		videoFrame.unbind();
 		fbo.end();
 	}
@@ -133,8 +143,8 @@ public:
         
 	}
 
-	VideoFrame VideoFrame::newVideoFrame(ofTexture & videoFrame){
-		VideoFormat format(videoFrame);
+	VideoFrame VideoFrame::newVideoFrame(ofTexture & tex){
+		VideoFormat format(tex);
 		poolMutex.lock();
 		if(!pool[format].empty()){
 			VideoFrame frame;
@@ -145,13 +155,13 @@ public:
 
 			frame.refreshTimestamp();
 			frame.getFboRef();
-			frame.data->updateTexture(videoFrame);
+			frame.data->updateTexture(tex);
 			frame.data->pixelsChanged = false;
 			frame.data->createdTexPixels = false;
 			return frame;
 		}else{
 			poolMutex.unlock();
-			return VideoFrame(videoFrame);
+			return VideoFrame(tex);
 		}
 	}
 
