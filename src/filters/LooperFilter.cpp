@@ -27,18 +27,19 @@ namespace ofxPm{
         parameters->add(paramFrameIn.set("Frame In", myFrame));
         parameters->add(paramDoLoop.set("Loop", false));
         parameters->add(paramRestart.set("Restart"));
-        parameters->add(paramOffsetBeatDiv.set("Beats Div",1,1,32));
-        parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
+        parameters->add(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
+        parameters->add(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
         parameters->add(paramGatePct.set("Gate",0.0,0.0,1.0));
+        parameters->add(paramOffsetMs.set("Offset Ms",0.0,0.0,5000.0));
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
-        parameters->add(paramAuxFrame.set("Frame Aux", myFrame));
-        
-        
+
+
         paramRestart.addListener(this,&LooperFilter::doRestart);
         paramDoLoop.addListener(this, &LooperFilter::doLoopChanged);
-        paramOffsetBeatDiv.addListener(this, &LooperFilter::loopTimeChanged);
-        paramOffsetBeatMult.addListener(this, &LooperFilter::loopTimeChanged);
+        paramCapturedTimeBeatMult.addListener(this, &LooperFilter::loopTimeChanged);
+        paramCapturedTimeBeatDiv.addListener(this, &LooperFilter::loopTimeChanged);
         paramFrameIn.addListener(this, &LooperFilter::newVideoFrame);
+        
     }
     //--------------------------------------------------------------
     ofxOceanodeAbstractConnection* LooperFilter::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
@@ -80,22 +81,25 @@ namespace ofxPm{
             
             if(!paramDoLoop)
             {
+                // NO LOOP
                 // not looping, so just feeding the buffer with the incoming frame.
                 buffer.newVideoFrame(_frame);
                 paramFrameOut = _frame;
             }
             else if((paramDoLoop && (elapsedSincePressedLoop < loopDurationMs)))
             {
+                // RECORDING LOOP
                 // We've pressed "loop" , so capturing into buffer enable and we need to let the time of loop pass before stoping the capture
                 
                 buffer.newVideoFrame(_frame);
                 paramFrameOut = _frame;
-                phasor.resetPhasor();
+                _phasor.resetPhasor();
                 timeOffsetOnLoop = elapsedSincePressedLoop - loopDurationMs;
                 cout << "LooperFilter::capturing loooop : " << timeOffsetOnLoop  << endl;
             }
             else
             {
+                // PLAYING LOOP
                 timeOffsetOnLoop = elapsedSincePressedLoop - loopDurationMs;
                 //cout << "LooperFilter::PLAYING loooop with offset: " << timeOffsetOnLoop  << endl;
                 // Loop already captured, relooping
@@ -103,8 +107,13 @@ namespace ofxPm{
 //                float loopDelayMs = loopDurationMsWhenTriggered - fmod(f,loopDurationMs);
                 //setting the delay of the header that we will put as frame out .
                 // ^^PHASOR^^
-                float loopDelayMs = (1.0-phasor.getPhasor())*loopDurationMs;
-                videoHeader.setDelayMs(loopDelayMs);
+                
+                float phase = 1.0-_phasor.getPhasor();
+                float loopDelayMs = phase * loopDurationMs;
+                
+                //cout << "LOOPING: DurationMs  " << loopDurationMs << " __ Ph : " << phase << " __ Loop Delay : " <<loopDelayMs << endl;
+                //cout << "Phasor : " << _phasor.getBpm() << " M : " << _phasor.getBeatsMult() << " D : " << _phasor.getBeatsDiv() << endl;
+                videoHeader.setDelayMs(loopDelayMs + paramOffsetMs);
                 
 //                float loopStart = loopDurationMsWhenTriggered;
 //                float loopEnd = loopDurationMsWhenTriggered - loopDurationMs;
@@ -141,10 +150,13 @@ namespace ofxPm{
 
         //        float gBPM = parametersControl::getInstance().getGlobalBPM();
         float gBPM = 120.0;
+        _phasor.setBeatDiv(paramCapturedTimeBeatDiv);
+        _phasor.setBeatMult(paramCapturedTimeBeatMult);
         
-        if(paramOffsetBeatDiv!=0)
+        cout << paramCapturedTimeBeatDiv << endl;
+        if(paramCapturedTimeBeatDiv!=0)
         {
-            BPMfactor = (float(paramOffsetBeatMult)/float(paramOffsetBeatDiv));
+            BPMfactor = (float(paramCapturedTimeBeatMult)/float(paramCapturedTimeBeatDiv));
         }
         else  BPMfactor = 1.0;
         
@@ -159,18 +171,17 @@ namespace ofxPm{
         loopTimeChanged(i);
         loopDurationMsWhenTriggered = loopDurationMs;
         
-        phasor.resetPhasor();
+        _phasor.resetPhasor();
         cout << "LooperFilter::PRESSED LOOP !! " << endl;
         loopStartedAtMs = ofGetElapsedTimeMillis();
         
-        paramAuxFrame = paramFrameOut;
     }
     //-----------------------------------------
     void LooperFilter::doRestart()
     {
         cout << "LooperFilter::Restarting!!" << endl;
         restart = true;
-        phasor.resetPhasor();
+        _phasor.resetPhasor();
     }
     
 }

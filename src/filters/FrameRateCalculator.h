@@ -29,7 +29,9 @@ namespace ofxPm{
         ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
 
         ofParameter<float>                  paramFPSNow;
-        ofParameter<int>                  paramFPSAccum;
+        ofParameter<int>                    paramFPSAccum;
+        ofParameter<int>                    paramFrameWidth;
+        ofParameter<int>                    paramFrameHeight;
         float                               lastTimeMillis;
         deque<float>                        lastTimesVector;
         

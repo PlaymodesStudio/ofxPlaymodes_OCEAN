@@ -33,12 +33,11 @@ protected:
     
     float                               fps;
     ofParameter<bool>                   paramDoLoop;
-    ofParameter<int>                    paramOffsetBeatDiv;
-    ofParameter<int>                    paramOffsetBeatMult;
+    ofParameter<int>                    paramCapturedTimeBeatDiv;
+    ofParameter<int>                    paramCapturedTimeBeatMult;
     ofParameter<float>                  paramGatePct;
     ofParameter<void>                   paramRestart;
-    ofParameter<ofxPm::VideoFrame>      paramAuxFrame;
-    
+    ofParameter<int>                    paramOffsetMs;
 
     ofxPm::VideoBufferNodeBased                 buffer;
     ofxPm::VideoHeaderNodeBased                 videoHeader;
@@ -58,7 +57,7 @@ private:
     double                              loopDurationMsWhenTriggered;
     double                              BPMfactor;
     
-    phasor                              phasor;
+    phasor                              _phasor;
     
     
 };

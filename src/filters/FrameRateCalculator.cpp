@@ -25,7 +25,8 @@ namespace ofxPm{
         parameters->add(paramFrameIn.set("Frame Input", frame));
         parameters->add(paramFPSNow.set("FPS now",0,0.0,120.0));
         parameters->add(paramFPSAccum.set("FPS Vector",0,0,120));
-        
+        parameters->add(paramFrameWidth.set("Frame Width",0,0,2048));
+        parameters->add(paramFrameHeight.set("Frame Height",0,0,2048));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
         paramFrameIn.addListener(this, &FrameRateCalculator::newVideoFrame);
@@ -60,6 +61,8 @@ namespace ofxPm{
         if(!frameIsNull)
         {
             paramFrameOut = _frame;
+            paramFrameWidth = _frame.getWidth();
+            paramFrameHeight = _frame.getHeight();
         }
          
     }
