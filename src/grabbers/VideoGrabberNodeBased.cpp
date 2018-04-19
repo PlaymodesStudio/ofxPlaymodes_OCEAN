@@ -55,8 +55,8 @@ namespace ofxPm{
                 ofVideoGrabber::update();
                 if(ofVideoGrabber::isFrameNew())
                 {
-                    //newFrame(getPixelsRef());
-                    newFrame(getTexture());
+                    newFrame(getPixelsRef());
+                    //newFrame(getTexture());
                 }
             }            
         }
