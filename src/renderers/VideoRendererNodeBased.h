@@ -28,9 +28,7 @@ public:
     ofParameter<int>            paramPositionX;
     ofParameter<int>            paramPositionY;
     ofParameter<float>          paramOpacity;
-    
-    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-    
+        
 
 private:
     VideoFrame  vFrame;

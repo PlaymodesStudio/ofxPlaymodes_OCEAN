@@ -1,6 +1,5 @@
 
 #include "FrameRateCalculator.h"
-#include "ofxOceanodeContainer.h"
 
 namespace ofxPm{
     
@@ -65,14 +64,6 @@ namespace ofxPm{
             paramFrameHeight = _frame.getHeight();
         }
          
-    }
-    //--------------------------------------------------------------
-    ofxOceanodeAbstractConnection* FrameRateCalculator::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
-    {
-        if(source.type() == typeid(ofParameter<ofxPm::VideoFrame>).name())
-        {
-            return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
-        }
     }
     //------------------------------------------------------------
     float FrameRateCalculator::getVectorMean()

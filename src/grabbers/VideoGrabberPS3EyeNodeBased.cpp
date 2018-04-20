@@ -1,6 +1,5 @@
 
 #include "VideoGrabberPS3EyeNodeBased.h"
-#include "ofxOceanodeContainer.h"
 
 namespace ofxPm{
     

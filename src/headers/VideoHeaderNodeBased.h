@@ -64,8 +64,6 @@ protected:
     ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferInput;
     ofParameter<float>                  paramDelayMs;
     
-    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-
     bool isNodeBased;
 
     

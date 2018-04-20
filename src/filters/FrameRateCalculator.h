@@ -26,8 +26,6 @@ namespace ofxPm{
         VideoFrame      frame;
         VideoFrame      lastFrameRendered;
 
-        ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-
         ofParameter<float>                  paramFPSNow;
         ofParameter<int>                    paramFPSAccum;
         ofParameter<int>                    paramFrameWidth;

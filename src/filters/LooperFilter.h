@@ -46,7 +46,6 @@ protected:
     void                                loopTimeChanged(int& _i);
     void                                doLoopChanged(bool& _b);
     void                                doRestart();
-    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
 
 private:
 

@@ -28,8 +28,6 @@ public:
     void setLumaThreshold(float &f){lumaThreshold=f;};
     void setLumaSmooth(float &f){lumaSmooth=f;};
     
-    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-
 
 private:
 	VideoFrame      frame;

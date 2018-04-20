@@ -1,6 +1,5 @@
 
 #include "LooperFilter.h"
-#include "ofxOceanodeContainer.h"
 
 namespace ofxPm{
 
@@ -40,15 +39,6 @@ namespace ofxPm{
         paramCapturedTimeBeatDiv.addListener(this, &LooperFilter::loopTimeChanged);
         paramFrameIn.addListener(this, &LooperFilter::newVideoFrame);
         
-    }
-    //--------------------------------------------------------------
-    ofxOceanodeAbstractConnection* LooperFilter::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
-    {
-        if(source.type() == typeid(ofParameter<ofxPm::VideoFrame>).name())
-        {
-            return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
-        }
-        return nullptr;
     }
     //--------------------------------------------------------
     VideoFrame LooperFilter::getNextVideoFrame()

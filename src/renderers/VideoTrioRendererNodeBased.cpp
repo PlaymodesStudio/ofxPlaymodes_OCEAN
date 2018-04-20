@@ -1,6 +1,5 @@
 
 #include "VideoTrioRendererNodeBased.h"
-#include "ofxOceanodeContainer.h"
 
 
 namespace ofxPm
@@ -41,15 +40,6 @@ namespace ofxPm
         paramFrameIn3.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame3);
 
         //ofAddListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
-    }
-    
-    //--------------------------------------------------------------
-    ofxOceanodeAbstractConnection* VideoTrioRendererNodeBased::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
-    {
-        if(source.type() == typeid(ofParameter<ofxPm::VideoFrame>).name())
-        {
-            return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
-        }
     }
 
     

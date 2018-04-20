@@ -1,6 +1,5 @@
 
 #include "FeedbackFilterNodeBased.h"
-#include "ofxOceanodeContainer.h"
 
 namespace ofxPm{
     
@@ -110,15 +109,6 @@ namespace ofxPm{
                 paramFrameOut = frame;
             }
         }
-    }
-    //--------------------------------------------------------------
-    ofxOceanodeAbstractConnection* FeedbackFilterNodeBased::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
-    {
-        if(source.type() == typeid(ofParameter<ofxPm::VideoFrame>).name())
-        {
-            return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
-        }
-        return nullptr;
     }
 
 }

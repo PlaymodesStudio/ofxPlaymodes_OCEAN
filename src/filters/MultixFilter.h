@@ -76,8 +76,6 @@ protected:
     ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferInput;
     ofParameter<vector<float>>          paramDistributionVector;
 
-    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-
     
 private:
 

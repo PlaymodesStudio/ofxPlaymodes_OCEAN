@@ -40,8 +40,6 @@ private:
     glm::vec2       fboHasToBeAllocated;
 
     
-    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-
     ofParameter<float>                  paramScale;
     ofParameter<float>                  paramMixAmmount;
     ofParameter<float>                  paramOriginX;

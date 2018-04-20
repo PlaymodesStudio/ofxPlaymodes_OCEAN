@@ -32,9 +32,6 @@ namespace ofxPm{
         ofParameter<bool>           paramMinMaxBlend;
         ofParameter<ofxPm::VideoFrame>      paramFrameIn2;
         ofParameter<ofxPm::VideoFrame>      paramFrameIn3;
-
-        ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-
         
     private:
         VideoFrame  vFrame;

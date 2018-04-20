@@ -6,7 +6,6 @@
  */
 
 #include "VideoHeaderNodeBased.h"
-#include "ofxOceanodeContainer.h"
 
 namespace ofxPm{
 
@@ -73,16 +72,6 @@ namespace ofxPm{
 //        VideoSource::height = _buffer.getHeight();
 //        
 //        printf("VideoHeader::setup %d %d @ FPS %f\n",_buffer.getWidth(),_buffer.getHeight(),fps);
-    }
-
-    //--------------------------------------------------------------
-    ofxOceanodeAbstractConnection* VideoHeaderNodeBased::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
-    {
-        if(source.type() == typeid(ofParameter<ofxPm::VideoBufferNodeBased*>).name())
-        {
-            return c.connectConnection(source.cast<ofxPm::VideoBufferNodeBased*>(), sink.cast<ofxPm::VideoBufferNodeBased*>());
-        }
-        return nullptr;
     }
 
     //------------------------------------------------------

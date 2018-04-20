@@ -77,8 +77,6 @@ protected:
     //double realFps;
     
     
-    ofxOceanodeAbstractConnection* createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink) override;
-
     ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferOut;
     ofParameter<bool>                   paramIsRecording;
     ofParameter<float>                  paramFPS;

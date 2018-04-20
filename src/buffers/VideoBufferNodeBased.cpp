@@ -1,6 +1,5 @@
 
 #include "VideoBufferNodeBased.h"
-#include "ofxOceanodeContainer.h"
 
 namespace ofxPm
 {
@@ -47,16 +46,7 @@ namespace ofxPm
         // do this the last to avoid sending nullptr frame
         resume();
     }
-    
-    //--------------------------------------------------------------
-    ofxOceanodeAbstractConnection* VideoBufferNodeBased::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
-    {
-        if(source.type() == typeid(ofParameter<ofxPm::VideoFrame>).name())
-        {
-            return c.connectConnection(source.cast<ofxPm::VideoFrame>(), sink.cast<ofxPm::VideoFrame>());
-        }
-        return nullptr;
-    }
+
 
     //-------------------------------------------------------------------
     VideoBufferNodeBased::~VideoBufferNodeBased()

@@ -1,6 +1,5 @@
 
 #include "MultixFilter.h"
-#include "ofxOceanodeContainer.h"
 
 namespace ofxPm{
 
@@ -51,15 +50,6 @@ namespace ofxPm{
         }
     }
 
-    //--------------------------------------------------------------
-    ofxOceanodeAbstractConnection* MultixFilter::createConnectionFromCustomType(ofxOceanodeContainer& c, ofAbstractParameter& source, ofAbstractParameter& sink)
-    {
-        if(source.type() == typeid(ofParameter<ofxPm::VideoBufferNodeBased*>).name())
-        {
-            return c.connectConnection(source.cast<ofxPm::VideoBufferNodeBased*>(), sink.cast<ofxPm::VideoBufferNodeBased*>());
-        }
-        return nullptr;
-    }
 
     //------------------------------------------------------------------
     void MultixFilter::changedDistributionVector(vector<float> &_v)
