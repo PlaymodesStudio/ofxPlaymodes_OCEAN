@@ -8,12 +8,12 @@
 namespace ofxPm{
     
 
-    class FrameRateCalculator: public VideoFilter,public ofxOceanodeNodeModel
+    class FrameInspector: public VideoFilter,public ofxOceanodeNodeModel
     {
     public:
         
-        FrameRateCalculator();
-        virtual ~FrameRateCalculator();
+        FrameInspector();
+        virtual ~FrameInspector();
         void setupNodeBased();
         
         VideoFrame  getNextVideoFrame() override;

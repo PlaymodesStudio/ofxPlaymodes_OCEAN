@@ -1,22 +1,22 @@
 
-#include "FrameRateCalculator.h"
+#include "FrameInspector.h"
 
 namespace ofxPm{
     
     //------------------------------------------------------------
-    FrameRateCalculator::FrameRateCalculator(): ofxOceanodeNodeModel("FPS Calculator")
+    FrameInspector::FrameInspector(): ofxOceanodeNodeModel("Frame Inspector")
     {
         setupNodeBased();
         recordedTimes = 0;
     }
 
     //------------------------------------------------------------
-    FrameRateCalculator::~FrameRateCalculator()
+    FrameInspector::~FrameInspector()
     {
     }
 
     //------------------------------------------------------------
-    void FrameRateCalculator::setupNodeBased()
+    void FrameInspector::setupNodeBased()
     {
         lastFrameRendered = ofxPm::VideoFrame();
 
@@ -28,7 +28,7 @@ namespace ofxPm{
         parameters->add(paramFrameHeight.set("Frame Height",0,0,2048));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        paramFrameIn.addListener(this, &FrameRateCalculator::newVideoFrame);
+        paramFrameIn.addListener(this, &FrameInspector::newVideoFrame);
         
         lastTimeMillis = ofGetElapsedTimeMillis();
         recordedTimes++;
@@ -36,14 +36,14 @@ namespace ofxPm{
 
 
     //------------------------------------------------------------
-    VideoFrame FrameRateCalculator::getNextVideoFrame()
+    VideoFrame FrameInspector::getNextVideoFrame()
     {
         return frame;
 
     }
 
     //------------------------------------------------------------
-    void FrameRateCalculator::newVideoFrame(VideoFrame & _frame)
+    void FrameInspector::newVideoFrame(VideoFrame & _frame)
     {
         //
         paramFPSNow = 1.0 / ((ofGetElapsedTimeMillis() - lastTimeMillis)/1000.0);
@@ -66,7 +66,7 @@ namespace ofxPm{
          
     }
     //------------------------------------------------------------
-    float FrameRateCalculator::getVectorMean()
+    float FrameInspector::getVectorMean()
     {
         float ac=0.0;
         for(int i=0;i<lastTimesVector.size();i++)

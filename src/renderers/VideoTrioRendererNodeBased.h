@@ -4,6 +4,7 @@
 #define VIDEOTRIORENDERERNODEBASED_H_
 
 #include "VideoSink.h"
+#include "EdgeBlendNodeBased.h"
 #include "ofxOceanodeNodeModelExternalWindow.h"
 
 
@@ -26,12 +27,16 @@ namespace ofxPm{
 
         ofTexture getLastFrameTexture();
         
-        ofParameter<float>          paramOpacity;
-        ofParameter<float>          paramScale;
-        ofParameter<float>            paramOverlap;
-        ofParameter<bool>           paramMinMaxBlend;
+        ofParameter<float>                  paramOpacity;
+        ofParameter<float>                  paramScale;
+        ofParameter<float>                  paramOverlap;
+        ofParameter<bool>                   paramMinMaxBlend;
         ofParameter<ofxPm::VideoFrame>      paramFrameIn2;
         ofParameter<ofxPm::VideoFrame>      paramFrameIn3;
+        ofParameter<float>                  paramGradientWidth;
+        ofParameter<int>                    paramGradientXorY;
+
+        ofxPm::EdgeBlendNodeBased           edgeBlend;
         
     private:
         VideoFrame  vFrame;

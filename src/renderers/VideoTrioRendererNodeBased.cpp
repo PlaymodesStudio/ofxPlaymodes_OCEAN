@@ -34,6 +34,14 @@ namespace ofxPm
         parameters->add(paramOverlap.set("Overlap",0.0,-1.0,1.0));
         parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
 
+        ofParameter<char> pc("Edge Blend",' ');
+        parameters->add(pc);
+        ofParameterGroup* p = edgeBlend.getParameterGroup();
+        for(int i=1 ; i<p->size()-1; i++)
+        {
+            ofAbstractParameter &absParam = p->get(i);
+            parameters->add(absParam);
+        }
         
         paramFrameIn.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame);
         paramFrameIn2.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame2);
@@ -47,19 +55,32 @@ namespace ofxPm
     
     void VideoTrioRendererNodeBased::newVideoFrame(VideoFrame & frame)
     {
-        vFrame = frame;
+        ofEventArgs e;
+        edgeBlend.update(e);
+        edgeBlend.newVideoFrame(frame);
+        
+        vFrame = edgeBlend.getNextVideoFrame();
+        
     }
     //--------------------------------------------------------------
     
     void VideoTrioRendererNodeBased::newVideoFrame2(VideoFrame & frame)
     {
-        vFrame2 = frame;
+        ofEventArgs e;
+        edgeBlend.update(e);
+        edgeBlend.newVideoFrame(frame);
+        
+        vFrame2 = edgeBlend.getNextVideoFrame();
     }
     //--------------------------------------------------------------
     
     void VideoTrioRendererNodeBased::newVideoFrame3(VideoFrame & frame)
     {
-        vFrame3 = frame;
+        ofEventArgs e;
+        edgeBlend.update(e);
+        edgeBlend.newVideoFrame(frame);
+        
+        vFrame3 = edgeBlend.getNextVideoFrame();
     }
 
     
