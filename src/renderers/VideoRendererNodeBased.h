@@ -19,7 +19,7 @@ public:
     void draw(int x,int y);
     void draw();
     void draw(ofEventArgs &e);
-    virtual void newVideoFrame(VideoFrame & frame);
+    void newVideoFrame(VideoFrame & frame);
 
     ofTexture getLastFrameTexture();
     
