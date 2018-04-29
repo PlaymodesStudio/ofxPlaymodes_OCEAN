@@ -5,7 +5,7 @@ namespace ofxPm{
 
     //------------------------------------------------------------------
     LooperFilter::LooperFilter():
-        ofxOceanodeNodeModel("Looper FX")
+        ofxOceanodeNodeModelLocalPreset("Looper FX")
     {
         setupNodeBased();
     }
@@ -24,7 +24,7 @@ namespace ofxPm{
         restart=false;
         
         parameters->add(paramFrameIn.set("Frame In", myFrame));
-        parameters->add(paramDoLoop.set("Loop", false));
+        addParameterToGroupAndInfo(paramDoLoop.set("Loop", false)).isSavePreset = false;
         parameters->add(paramRestart.set("Restart"));
         parameters->add(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
         parameters->add(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
@@ -140,8 +140,8 @@ namespace ofxPm{
 
         //        float gBPM = parametersControl::getInstance().getGlobalBPM();
         float gBPM = 120.0;
-        _phasor.setBeatDiv(paramCapturedTimeBeatDiv);
-        _phasor.setBeatMult(paramCapturedTimeBeatMult);
+        _phasor.beatsDiv_Param = paramCapturedTimeBeatDiv;
+        _phasor.beatsMult_Param = paramCapturedTimeBeatMult;
         
         cout << paramCapturedTimeBeatDiv << endl;
         if(paramCapturedTimeBeatDiv!=0)

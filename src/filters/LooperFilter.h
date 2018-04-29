@@ -11,14 +11,14 @@
 #include "VideoFilter.h"
 #include "VideoBufferNodeBased.h"
 #include "VideoHeaderNodeBased.h"
-#include "ofxOceanodeNodeModel.h"
-#include "defaultNodes.h"
+#include "ofxOceanodeNodeModelLocalPreset.h"
+#include "basePhasor.h"
 
 #include "ofMain.h"
 
 namespace ofxPm{
         
-class LooperFilter: public VideoFilter,public ofxOceanodeNodeModel
+class LooperFilter: public VideoFilter,public ofxOceanodeNodeModelLocalPreset
 {
 public:
     LooperFilter();
@@ -56,7 +56,7 @@ private:
     double                              loopDurationMsWhenTriggered;
     double                              BPMfactor;
     
-    phasor                              _phasor;
+    basePhasor                          _phasor;
     
     
 };
