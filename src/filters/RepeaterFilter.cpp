@@ -101,8 +101,8 @@ namespace ofxPm{
                 // PLAYING LOOP
                 // Loop already captured, relooping
                 timeOffsetOnLoop = elapsedSincePressedLoop - loopDurationMs;
-                
                 phase = 1.0-fmod(_phasor.getPhasor()*paramSpeedBoost,1.0);
+                //phase = 1.0 - _phasor.getPhasor();
                 float loopDelayMs = phase * loopDurationMs;
                 
                 videoHeader.setDelayMs(loopDelayMs);
@@ -135,8 +135,6 @@ namespace ofxPm{
     void RepeaterFilter::loopTimeChanged(int &_i)
     {
 
-        //        float gBPM = parametersControl::getInstance().getGlobalBPM();
-        float gBPM = 120.0;
         _phasor.beatsDiv_Param = paramCapturedTimeBeatDiv;
         _phasor.beatsMult_Param = paramCapturedTimeBeatMult;
         
@@ -147,9 +145,9 @@ namespace ofxPm{
         }
         else  BPMfactor = 1.0;
         
-        float oneBeatMs = (60.0/gBPM)*1000;
+        float oneBeatMs = (60.0/myBPM)*1000;
         loopDurationMs = oneBeatMs / BPMfactor;
-        cout << "LooperFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms !!!!!!!!!!!!!!! " <<  endl;
+        cout << "LooperFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms !! BPM : " <<  myBPM << endl;
     }
     //-----------------------------------------
     void RepeaterFilter::doLoopChanged(bool& _b)
@@ -193,6 +191,8 @@ namespace ofxPm{
             phasorNumCycles = 0;
         }
     }
+    
+
     
 }
 

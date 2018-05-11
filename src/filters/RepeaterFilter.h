@@ -42,7 +42,8 @@ protected:
     void                                loopTimeChanged(int& _i);
     void                                doLoopChanged(bool& _b);
     void                                doRestart();
-
+    // when global BPM changes, it will call this function so I can know the global bpm
+    void                                setBpm(float _bpm) override{myBPM=_bpm;int i;loopTimeChanged(i);};
 private:
 
     // rendering
@@ -51,7 +52,7 @@ private:
     double                              loopStartedAtMs;
     double                              loopDurationMsWhenTriggered;
     double                              BPMfactor;
-    
+    float                               myBPM;
     bool                                oldDoLoop;
     
     basePhasor                          _phasor;
