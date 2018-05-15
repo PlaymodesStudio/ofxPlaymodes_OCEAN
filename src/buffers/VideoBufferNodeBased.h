@@ -48,10 +48,9 @@ public:
 	float getFps();                                   // fps of the video source
 
     Timestamp getLastTimestamp();                 // timestamp for the last frame
-	TimeDiff getTotalTime();                      // total time of the buffer in microseconds
-	Timestamp getInitTime();                      // time of the first frame in the recording
+//    TimeDiff getTotalTime();                      // total time of the buffer in microseconds
+//    Timestamp getInitTime();                      // time of the first frame in the recording
 
-    long getTotalFrames();                          // total frames since the beginning of the recording
 	//double getRealFPS();                             // aprox fps from source
 	//int currentPos;                                 // currentPos in the buffer
 
@@ -61,14 +60,16 @@ public:
 
     void clear();
     
-    
+    void changedIsRecording(bool& _b);
 
 protected:
     deque<VideoFrame> frames;
 
-    long    totalFrames;
-    Timestamp initTime;
-    TimeDiff  stopTime;
+
+    Timestamp startRecordingTs;
+    Timestamp stopRecordingTs;
+    Timestamp::TimeVal lastFrameTimeValEpochMs;
+    Timestamp::TimeVal lastFrameTimeValEpochMsAtStop;
 
     bool stopped;
     unsigned int maxSize;
@@ -81,7 +82,6 @@ protected:
     ofParameter<bool>                   paramIsRecording;
     ofParameter<float>                  paramFPS;
     
-    void changedIsRecording(bool& _b);
     
 };
 }

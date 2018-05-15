@@ -14,8 +14,9 @@ namespace ofxPm
     //------------------------------------------------------
     void VideoBufferNodeBased::setupNodeBased(int size, bool allocateOnSetup)
     {
-        totalFrames=0;
         maxSize = size;
+        lastFrameTimeValEpochMs = 0;
+        lastFrameTimeValEpochMsAtStop = 0;
         
         VideoSource::width = -1;
         VideoSource::height = -1;
@@ -37,14 +38,14 @@ namespace ofxPm
         
         // parametersGroup
         parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        parameters->add(paramIsRecording.set("Is recording",true));
+        parameters->add(paramIsRecording.set("Is recording",false));
         parameters->add(paramFPS.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         parameters->add(paramVideoBufferOut.set("Buffer Output",nullptr));
         
         paramIsRecording.addListener(this,&VideoBufferNodeBased::changedIsRecording);
         // do this the last to avoid sending nullptr frame
-        resume();
+//        resume();
     }
 
 
@@ -76,19 +77,30 @@ namespace ofxPm
                     framesOneSec = 0;
                     microsOneSec = time-(diff-1000000);
                 }
-                totalFrames++;
+                
                 //    if(size()==0)initTime=frame.getTimestamp();
-                TimeDiff tdiff = frame.getTimestamp() - initTime;
+                lastFrameTimeValEpochMs = lastFrameTimeValEpochMsAtStop + (frame.getTimestamp().epochMicroseconds() - startRecordingTs.epochMicroseconds());
                 //cout << "Buff::NewVideoFrame:: with TS = " << tdiff << " Which comes from frameTS : " << frame.getTimestamp().raw() << " - initTime " << initTime.raw() << endl;
-                frame.setTimestamp(tdiff );
+                
+                //cout << "Frame : " << frame.getTimestamp().epochMicroseconds() << " __ startRec : " << startRecordingTs.epochMicroseconds() << " MINUS in EpochMS= " << frame.getTimestamp().epochMicroseconds() - startRecordingTs.epochMicroseconds() << endl;
+                //cout << ">> >> LAST FRAME ADDED A TS EPOCHMS = " << lastFrameTimeValEpochMs << " IN SECs :: "  << lastFrameTimeValEpochMs/1000000.0 << endl;
+                
+                frame.setTimestamp(lastFrameTimeValEpochMs);
                 //timeMutex.lock();
                 frames.push_back(frame);
                 //cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().raw() << endl;
+
+                
+//                Timestamp tis = frame.getTimestamp() - startRecordingTs.epochMicroseconds() ;
+//                cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().epochMicroseconds() << " startRecTs : " << startRecordingTs.epochMicroseconds() << endl;
+//                cout << " | Difference From start of Rec = " << tis.epochMicroseconds()  << endl;
+//                cout << " ......... " << endl;
+                
+                
                 while(getSizeInFrames()>maxSize){
                     frames.erase(frames.begin());
                 }
                 //timeMutex.unlock();
-                //parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
                 paramFrameOut = frame;
             }
 
@@ -106,16 +118,20 @@ namespace ofxPm
             return Timestamp();
     }
 
-    //-------------------------------------------------------------------
-    TimeDiff VideoBufferNodeBased::getTotalTime()
-    {
-        return getLastTimestamp()-getInitTime();
-    }
+//    //-------------------------------------------------------------------
+//    TimeDiff VideoBufferNodeBased::getTotalTime()
+//    {
+//        return -1;
+    
+//        //getLastTimestamp()-getInitTime(); as we've moved to a relative timestamp of frames in buffer
+//        //maybe it makes non sense to getTotalTime() ?
+//
+//    }
 
-    //-------------------------------------------------------------------
-    Timestamp VideoBufferNodeBased::getInitTime(){
-        return initTime;
-    }
+//    //-------------------------------------------------------------------
+//    Timestamp VideoBufferNodeBased::getInitTime(){
+//        return initTime;
+//    }
 
     //----------------------------------------------
     unsigned int VideoBufferNodeBased::getMaxSize(){
@@ -137,7 +153,7 @@ namespace ofxPm
             TimeDiff tdiff = 1000000000000000;
             for(int i=0;i<getSizeInFrames();i++)
             {
-                TimeDiff tdiff2 = abs(ts - frames[i].getTimestamp());
+                TimeDiff tdiff2 = abs(ts.epochMicroseconds() - frames[i].getTimestamp().epochMicroseconds());
                 //cout << "Buffer:GetVFr:: Frame : "<< i << " has a TS of : " << frames[i].getTimestamp().raw()  <<  " and we look for " << ts.raw() << " . The diff is = " << tdiff2 << endl;
                 if(tdiff2<tdiff)
                 {
@@ -189,7 +205,7 @@ namespace ofxPm
     //----------------------------------------------
     VideoFrame VideoBufferNodeBased::getVideoFrame(float pct)
     {
-        return getVideoFrame(getLastTimestamp()-(getInitTime()+getTotalTime()*pct));
+        return getVideoFrame(getMaxSize()*pct);
     }
 
     //----------------------------------------------
@@ -206,17 +222,20 @@ namespace ofxPm
         return res;
     }
 
-    //----------------------------------------------
-    long VideoBufferNodeBased::getTotalFrames()
-    {
-        return totalFrames;
-    }
 
     //----------------------------------------------
     void VideoBufferNodeBased::stop()
     {
         stopped = true;
-        stopTime = initTime.elapsed();
+        
+        stopRecordingTs.update();
+        cout << "[] [STOP] [] Buffer STOP recording at Ts Epoch MicroS : " << stopRecordingTs.epochMicroseconds() << endl;
+        Timestamp di = stopRecordingTs - startRecordingTs;
+        cout << "Difference between start and stop in Epoch MicroS = " << di.epochMicroseconds() << endl;
+        
+        // when STOP we get the last frame timeValEpocMs(the timestamps of the last frame captured before stop)
+        // to be able to keep the timestamping relative to recording time instead of captur absolut time
+        lastFrameTimeValEpochMsAtStop = lastFrameTimeValEpochMs;
     }
     
     //----------------------------------------------
@@ -226,8 +245,10 @@ namespace ofxPm
         
         stopped = false;
         
-        initTime.update();
-        initTime -= stopTime;
+        startRecordingTs.update();
+
+        cout << "[] [RECORDING INTO BUFFER] []" << endl;
+        cout << "Buffer started recording at Ts Epoch MicroS : " << startRecordingTs.epochMicroseconds() << endl;
         
     }
     
@@ -248,8 +269,16 @@ namespace ofxPm
     //----------------------------------------------
     void VideoBufferNodeBased::changedIsRecording(bool& _b)
     {
-        if(_b) resume();
-        else stop();
+        if(_b)
+        {
+            cout << "Buffer : START REC !!" << endl;
+            resume();
+        }
+        else
+        {
+            cout << "Buffer : STOPING REC !!" << endl;
+            stop();
+        }
     }
 }
 
