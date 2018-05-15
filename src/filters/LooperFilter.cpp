@@ -7,6 +7,7 @@ namespace ofxPm{
     LooperFilter::LooperFilter():
         ofxOceanodeNodeModelLocalPreset("Looper FX")
     {
+        color = ofColor::orange;
         setupNodeBased();
     }
     //------------------------------------------------------------------
@@ -22,14 +23,22 @@ namespace ofxPm{
         loopDurationMsWhenTriggered=0.0;
         BPMfactor=1.0;
         restart=false;
+        oldDoLoop=false;
+        phasorNumCycles=0;
+        paramOffsetMs=0;
         
         parameters->add(paramFrameIn.set("Frame In", myFrame));
+        addParameterToGroupAndInfo(paramDoRec.set("Rec", false)).isSavePreset = false;
         addParameterToGroupAndInfo(paramDoLoop.set("Loop", false)).isSavePreset = false;
         parameters->add(paramRestart.set("Restart"));
         parameters->add(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
         parameters->add(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
-        parameters->add(paramGatePct.set("Gate",0.0,0.0,1.0));
-        parameters->add(paramOffsetMs.set("Offset Ms",0.0,0.0,5000.0));
+//        parameters->add(paramGatePct.set("Gate",0.0,0.0,1.0));
+        addParameterToGroupAndInfo(paramGatePct.set("Gate",0.0,0.0,1.0)).isSavePreset = false;
+        parameters->add(paramRefreshLoopAt.set("Refresh At",4,0,32));
+        parameters->add(paramSpeedBoost.set("Speed Boost",1.0,-4.0,4.0));
+        parameters->add(paramOffsetMs.set("Offset",0.0,0.0,64.0));
+        
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
 
 
@@ -38,6 +47,9 @@ namespace ofxPm{
         paramCapturedTimeBeatMult.addListener(this, &LooperFilter::loopTimeChanged);
         paramCapturedTimeBeatDiv.addListener(this, &LooperFilter::loopTimeChanged);
         paramFrameIn.addListener(this, &LooperFilter::newVideoFrame);
+        
+        ofAddListener(_phasor.phasorCycle, this, &LooperFilter::phasorCycleEvent);
+        
         
     }
     //--------------------------------------------------------
@@ -51,6 +63,8 @@ namespace ofxPm{
     {
         bool frameIsNull = _frame.isNull();
         int buffNumFrames = buffer.getSizeInFrames();
+        ofxPm::VideoFrame vfAux;
+        float phase=0.0;
         
         //TODO : is this the best way to configure header and buffer ?
         if(buffNumFrames==0)
@@ -69,68 +83,52 @@ namespace ofxPm{
             
             float timeOffsetOnLoop = 0.0;
             
-            if(!paramDoLoop)
+            // always pass the incoming frame to output... if REC -> to the buffer too
+            // if LOOP -> it will overwrite vfAux with the corresponding one
+            vfAux = _frame;
+            
+            if(paramDoRec)
             {
-                // NO LOOP
-                // not looping, so just feeding the buffer with the incoming frame.
+                // RECORDING !!
+                // feeding the buffer with the incoming frame.
                 buffer.newVideoFrame(_frame);
-                paramFrameOut = _frame;
-            }
-            else if((paramDoLoop && (elapsedSincePressedLoop < loopDurationMs)))
-            {
-                // RECORDING LOOP
-                // We've pressed "loop" , so capturing into buffer enable and we need to let the time of loop pass before stoping the capture
                 
-                buffer.newVideoFrame(_frame);
-                paramFrameOut = _frame;
-                _phasor.resetPhasor();
+            }
+            if(paramDoLoop)
+            {
+                // PLAYING LOOP
+                // Loop already captured, relooping
                 timeOffsetOnLoop = elapsedSincePressedLoop - loopDurationMs;
-                cout << "LooperFilter::capturing loooop : " << timeOffsetOnLoop  << endl;
+                
+                phase = 1.0-fmod(_phasor.getPhasor()*paramSpeedBoost,1.0);
+                float loopDelayMs = phase * loopDurationMs;
+                
+                
+                float offsetInMs = (paramOffsetMs * loopDurationMs);
+                
+                videoHeader.setDelayMs(loopDelayMs + offsetInMs);
+                
+                float loopEnd = videoHeader.getDelayMs() + loopDurationMs;
+                float loopStart = loopEnd+loopDurationMs;
+                float whichPctOfLoopDone = ofMap(loopDelayMs,loopStart,loopEnd,0.0,1.0);
+
+                vfAux = videoHeader.getNextVideoFrame();
+
+            }
+            
+            // Gate management
+            //if(whichPctOfLoopDone > (1.0 - paramGatePct))
+            float ph = _phasor.getPhasor();
+            if(paramDoLoop && ((ph)> (1.0 - paramGatePct)))
+            {
+                // we need to set to black, we're GATING !!
+//                ofxPm::VideoFrame vfBlack;
+                paramFrameOut = myFrame;
             }
             else
             {
-                // PLAYING LOOP
-                timeOffsetOnLoop = elapsedSincePressedLoop - loopDurationMs;
-                //cout << "LooperFilter::PLAYING loooop with offset: " << timeOffsetOnLoop  << endl;
-                // Loop already captured, relooping
-//                float f = ofGetElapsedTimeMillis()-loopStartedAtMs;
-//                float loopDelayMs = loopDurationMsWhenTriggered - fmod(f,loopDurationMs);
-                //setting the delay of the header that we will put as frame out .
-                // ^^PHASOR^^
-                
-                float phase = 1.0-_phasor.getPhasor();
-                float loopDelayMs = phase * loopDurationMs;
-                
-                //cout << "LOOPING: DurationMs  " << loopDurationMs << " __ Ph : " << phase << " __ Loop Delay : " <<loopDelayMs << endl;
-                //cout << "Phasor : " << _phasor.getBpm() << " M : " << _phasor.getBeatsMult() << " D : " << _phasor.getBeatsDiv() << endl;
-                videoHeader.setDelayMs(loopDelayMs + paramOffsetMs);
-                
-//                float loopStart = loopDurationMsWhenTriggered;
-//                float loopEnd = loopDurationMsWhenTriggered - loopDurationMs;
-//                float whichPctOfLoopDone = ofMap(loopDelayMs,loopStart,loopEnd,0.0,1.0);
-
-//                cout << endl;
-//                cout << " ............................. " << endl;
-//                cout << "LoopDelayMs " << loopDelayMs << " // LoopDurationMs : " << loopDurationMs << " // whichPctOfLoopDone : " << whichPctOfLoopDone << " >?? " << (1.0-paramGatePct) << endl;
-//                cout << " ____ BPMFactor :  " << BPMfactor << " // paramGatePct :  "  << paramGatePct << " // loopDurationWhenTriggered : " << loopDurationMsWhenTriggered <<  endl ;
-
-                /*
-                // Gate management
-                if(whichPctOfLoopDone > (1.0 - paramGatePct))
-                {
-                    // we need to set to black, we're GATING !!
-                    ofxPm::VideoFrame vfAux;
-                    paramFrameOut = vfAux;
-//                    cout << "LooperFilter::BLACK of Gate!!" <<endl;
-                }
-                else
-                {
-                    paramFrameOut = videoHeader.getNextVideoFrame();
-                }
-                 */
-                paramFrameOut = videoHeader.getNextVideoFrame();
+                paramFrameOut = vfAux;
             }
-                 
         }
     }
 
@@ -143,27 +141,33 @@ namespace ofxPm{
         _phasor.beatsDiv_Param = paramCapturedTimeBeatDiv;
         _phasor.beatsMult_Param = paramCapturedTimeBeatMult;
         
-        cout << paramCapturedTimeBeatDiv << endl;
         if(paramCapturedTimeBeatDiv!=0)
         {
             BPMfactor = (float(paramCapturedTimeBeatMult)/float(paramCapturedTimeBeatDiv));
         }
         else  BPMfactor = 1.0;
         
-        float oneBeatMs = (60.0/gBPM)*1000;
+        float oneBeatMs = (60.0/myBPM)*1000;
         loopDurationMs = oneBeatMs / BPMfactor;
-        cout << "LooperFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms !!!!!!!!!!!!!!! " <<  endl;
+        //cout << "LooperFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms ! BPM :  "<< myBPM <<  endl;
     }
     //-----------------------------------------
     void LooperFilter::doLoopChanged(bool& _b)
     {
-        int i=0;
-        loopTimeChanged(i);
-        loopDurationMsWhenTriggered = loopDurationMs;
+//        if(paramDoLoop!=oldDoLoop)
         
-        _phasor.resetPhasor();
-        cout << "LooperFilter::PRESSED LOOP !! " << endl;
-        loopStartedAtMs = ofGetElapsedTimeMillis();
+        {
+            int i=0;
+            loopTimeChanged(i);
+            loopDurationMsWhenTriggered = loopDurationMs;
+            _phasor.resetPhasor();
+            //cout << "LooperFilter::PRESSED LOOP !! DuraitonMs : " << loopDurationMs << endl;
+            loopStartedAtMs = ofGetElapsedTimeMillis();
+
+        }
+        
+        oldDoLoop=paramDoLoop;
+        
         
     }
     //-----------------------------------------
@@ -173,6 +177,23 @@ namespace ofxPm{
         restart = true;
         _phasor.resetPhasor();
     }
+    //-----------------------------------------
+    void LooperFilter::phasorCycleEvent()
+    {
+        if(paramDoLoop) phasorNumCycles = phasorNumCycles +1;
+        else phasorNumCycles = 0;
+
+        //cout << "Phasor Cycle ! : "  << phasorNumCycles << endl;
+
+        if((phasorNumCycles>=paramRefreshLoopAt)&&(paramRefreshLoopAt>0))
+        {
+            paramDoLoop = true;
+            bool b = true;
+            doLoopChanged(b);
+            phasorNumCycles = 0;
+        }
+    }
     
 }
+
 

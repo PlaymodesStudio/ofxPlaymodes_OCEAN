@@ -1,9 +1,4 @@
-/*
- * AudioFrame.h
- *
- *  Created on: 09-oct-2008
- *      Author: arturo castro
- */
+
 
 #ifndef LOOPERFILTER_H
 #define LOOPERFILTER_H
@@ -33,11 +28,15 @@ protected:
     
     float                               fps;
     ofParameter<bool>                   paramDoLoop;
+    ofParameter<bool>                   paramDoRec;
     ofParameter<int>                    paramCapturedTimeBeatDiv;
     ofParameter<int>                    paramCapturedTimeBeatMult;
     ofParameter<float>                  paramGatePct;
     ofParameter<void>                   paramRestart;
-    ofParameter<int>                    paramOffsetMs;
+    ofParameter<int>                    paramRefreshLoopAt;
+    ofParameter<float>                  paramSpeedBoost;
+    ofParameter<float>                  paramOffsetMs;
+    
 
     ofxPm::VideoBufferNodeBased                 buffer;
     ofxPm::VideoHeaderNodeBased                 videoHeader;
@@ -46,6 +45,9 @@ protected:
     void                                loopTimeChanged(int& _i);
     void                                doLoopChanged(bool& _b);
     void                                doRestart();
+    // when global BPM changes, it will call this function so I can know the global bpm
+    void                                setBpm(float _bpm) override{myBPM=_bpm;int i;loopTimeChanged(i);};
+
 
 private:
 
@@ -55,8 +57,14 @@ private:
     double                              loopStartedAtMs;
     double                              loopDurationMsWhenTriggered;
     double                              BPMfactor;
+    float                               myBPM;
+
+    bool                                oldDoLoop;
     
     basePhasor                          _phasor;
+    
+    void                                phasorCycleEvent();
+    int                                 phasorNumCycles;
     
     
 };
