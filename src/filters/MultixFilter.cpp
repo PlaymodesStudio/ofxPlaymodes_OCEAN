@@ -112,12 +112,21 @@ namespace ofxPm{
                 // TO DO
 //                float outMin,outMax;
                 
-                int oscillatorReIndex = int(ofMap(i,0,float(paramNumHeaders),0,float(paramVideoBufferInput.get()->getSizeInFrames())));
+//                int oscillatorReIndex = int(ofMap(i,0,float(paramNumHeaders),0,float(paramVideoBufferInput.get()->getSizeInFrames())));
+                float headerPct = float(i) / float(paramNumHeaders);
+                
+                int oscillatorReIndex = int(headerPct * paramDistributionVector.get().size());
+                
+                
 //                int oscillatorReIndex = int(ofMap(i,0,float(paramNumHeaders),0,float(numOscillatorBanks)));
-                float m;
+                float m=0.0;
                 mutex.lock();
                 {
-                    m = paramDistributionVector.get().at(oscillatorReIndex);
+                    int vecSiz = paramDistributionVector.get().size();
+                    if(oscillatorReIndex<(vecSiz))
+                    {
+                        m = paramDistributionVector.get().at(oscillatorReIndex);
+                    }
                     vf.push_back(ofMap(m,0.0,1.0, 0.0, oneCopyMs));
                     //vf.push_back(ofMap(guiMultixValues.get()[oscillatorReIndex],0.0,1.0, 0.0, oneCopyMs));
                 }
@@ -332,23 +341,25 @@ bool MultixFilter::isMinmaxBlend() const
     //-----------------------------------------
     void MultixFilter::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
     {
-        // allocate fbo where to draw
-        if ((fbo.getWidth()<=0) && (paramVideoBufferInput.get()->getWidth()) )
+        if(_videoBuffer!=NULL)
         {
-            // setup FBO
-            int resX = paramVideoBufferInput.get()->getWidth();
-            int resY = paramVideoBufferInput.get()->getHeight();
-            fbo.allocate(resX,resY,GL_RGBA);
-            
-            
-            // setup Headers
-            videoHeader.setup(paramVideoBufferInput.get());
-            videoHeader.setDelayMs(0.0);
+            // allocate fbo where to draw
+            if ((fbo.getWidth()<=0) && (paramVideoBufferInput.get()->getWidth()) )
+            {
+                // setup FBO
+                int resX = paramVideoBufferInput.get()->getWidth();
+                int resY = paramVideoBufferInput.get()->getHeight();
+                fbo.allocate(resX,resY,GL_RGBA);
+                
+                
+                // setup Headers
+                videoHeader.setup(paramVideoBufferInput.get());
+                videoHeader.setDelayMs(0.0);
+            }
+        
+            ofxPm::VideoFrame vf;
+            newVideoFrame(vf);
         }
-    
-        ofxPm::VideoFrame vf;
-        newVideoFrame(vf);
-
     }
 
     

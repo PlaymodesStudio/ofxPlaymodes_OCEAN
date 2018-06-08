@@ -218,7 +218,10 @@ namespace ofxPm
     unsigned int VideoBufferNodeBased::getSizeInFrames()
     {
         int res = 0;
-        if(!frames.empty()) res=frames.size();
+        if(frames.size()>0)
+        {
+            if(!frames.empty()) res=frames.size();
+        }
         return res;
     }
 

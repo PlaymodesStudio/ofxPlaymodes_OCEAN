@@ -70,7 +70,7 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     void VideoGrabberPS3EyeNodeBased::update(ofEventArgs &e)
     {
-        if(eye!=nullptr)
+        if((eye!=nullptr)&&(eye->isStreaming()))
         {
             eye->getFrame(videoFrame);
             videoTexture.loadData(videoFrame, eye->getWidth(),eye->getHeight(), GL_BGR_EXT);

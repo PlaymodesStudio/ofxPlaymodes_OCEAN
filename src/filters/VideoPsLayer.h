@@ -1,0 +1,52 @@
+
+
+#ifndef VIDEOPSLAYERFX_H_
+#define VIDEOPSLAYERFX_H_
+
+#include "VideoFilter.h"
+#include "ofxOceanodeNodeModel.h"
+#include "ofxPSBlend.h"
+
+namespace ofxPm{
+    
+class VideoPsLayer: public VideoFilter,public ofxOceanodeNodeModel {
+public:
+	VideoPsLayer();
+	virtual ~VideoPsLayer();
+
+    void setupNodeBased();
+    void update(ofEventArgs &e) override;
+
+    
+    VideoFrame getNextVideoFrame(){return VideoFrame();};
+	void newVideoFrame(VideoFrame & frame);
+    float getFps(){return source->getFps();};
+    
+
+private:
+    VideoFrame      frame;
+    VideoFrame      input2;
+
+    ofFbo           fbo;
+	VideoSource     *source;
+    ofxPSBlend      mixer;
+	bool            newFrame;
+    ofPlanePrimitive plane;
+	//ofMutex swapBuffersMutex;
+    glm::vec2       fboHasToBeAllocated;
+    
+    float fps;
+    
+    glm::vec2                           frameResolution;
+    void                                setFrameResolution(int _w, int _h);
+
+    // FEATURE NODE
+    ofParameter<VideoFrame>             paramFrameIn2;
+    ofParameter<float>                  paramOpacityBase;
+    ofParameter<float>                  paramOpacityTarget;
+    ofParameter<int>                    paramBlendMode;
+    
+};
+}
+
+#endif /* VIDEOPSLAYERFX_H_ */
