@@ -52,12 +52,22 @@ namespace ofxPm
     //-------------------------------------------------------------------
     VideoBufferNodeBased::~VideoBufferNodeBased()
     {
+        // try to delete the whole buffer data ?
+        int i = 0;
+        while(getSizeInFrames()>0)
+        {
+            i++;
+            frames.erase(frames.begin());
+        }
+        cout << " VideoBuffer:: Cleaning Buffer Data - Cleaned " << i << " frames."<< endl;
+
 
     }
 
     //-------------------------------------------------------------------
     void VideoBufferNodeBased::newVideoFrame(VideoFrame & frame)
     {
+        
         if(!frame.isNull())
         {
             int w = frame.getWidth();
@@ -88,7 +98,7 @@ namespace ofxPm
                 frame.setTimestamp(lastFrameTimeValEpochMs);
                 //timeMutex.lock();
                 frames.push_back(frame);
-                //cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().raw() << endl;
+                cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().raw() << " Frames vector size is :" << frames.size() << endl;
 
                 
 //                Timestamp tis = frame.getTimestamp() - startRecordingTs.epochMicroseconds() ;
@@ -218,6 +228,12 @@ namespace ofxPm
     unsigned int VideoBufferNodeBased::getSizeInFrames()
     {
         int res = 0;
+        
+//        if(frames.empty())
+//        {
+//            if(frames.size()>0) res=frames.size();
+//        }
+        
         if(frames.size()>0)
         {
             if(!frames.empty()) res=frames.size();

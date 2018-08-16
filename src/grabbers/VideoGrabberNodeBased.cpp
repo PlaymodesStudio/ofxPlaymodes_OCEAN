@@ -93,7 +93,7 @@ namespace ofxPm{
         VideoGrabberNodeBased::setDeviceID(paramDeviceId);
         ofVideoGrabber::setDesiredFrameRate(paramFps);
         
-        VideoGrabberNodeBased::setup(paramResolutionX,paramResolutionY);
+        ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
 
         VideoSource::setWidth(ofVideoGrabber::getWidth());
         VideoSource::setHeight(ofVideoGrabber::getHeight());

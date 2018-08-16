@@ -84,18 +84,23 @@ namespace ofxPm{
             
         // frame to be returned;
         VideoFrame frame;
-        if(paramVideoBufferInput.get()->getSizeInFrames()>0)
+ 
+            // check that the buffer is not NULL or size = 0
+        if(paramVideoBufferInput.get()!=NULL)
         {
-            paramVideoBufferInput.get()->lock();
+            if(paramVideoBufferInput.get()->getSizeInFrames()>0)
             {
-                // get the next frame timeStamp based on current behaviour
-                currentFrameTs = getNextFrameTimestamp();
-                // fetch closest video frame from buffer
-                frame = paramVideoBufferInput.get()->getVideoFrame(currentFrameTs);
-                // get the index of the fetched frame
-                currentFrameIndex = frame.getBufferIndex();
+                paramVideoBufferInput.get()->lock();
+                {
+                    // get the next frame timeStamp based on current behaviour
+                    currentFrameTs = getNextFrameTimestamp();
+                    // fetch closest video frame from buffer
+                    frame = paramVideoBufferInput.get()->getVideoFrame(currentFrameTs);
+                    // get the index of the fetched frame
+                    currentFrameIndex = frame.getBufferIndex();
+                }
+                paramVideoBufferInput.get()->unlock();
             }
-            paramVideoBufferInput.get()->unlock();
         }
         return frame;
     }

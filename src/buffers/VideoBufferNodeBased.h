@@ -78,9 +78,9 @@ protected:
     //double realFps;
     
     
-    ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferOut;
-    ofParameter<bool>                   paramIsRecording;
-    ofParameter<float>                  paramFPS;
+    ofParameter<ofxPm::VideoBufferNodeBased*>   paramVideoBufferOut;
+    ofParameter<bool>                           paramIsRecording;
+    ofParameter<float>                          paramFPS;
     
     
 };
