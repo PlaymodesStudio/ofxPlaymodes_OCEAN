@@ -34,7 +34,7 @@ namespace ofxPm{
                 
         parameters->add(paramFrameIn.set("Frame Input", frame));
 
-        parameters->add(paramSides.set("Sides",2.0,1.0,64.0));
+        parameters->add(paramSides.set("Sides",2,0,24));
         parameters->add(paramAngle.set("Angle",0.0,-1.0,1.0));
         parameters->add(paramSlideX.set("Slide x",0.5,0.0,1.0));
         parameters->add(paramSlideY.set("Slide y",0.5,0.0,1.0));
@@ -71,21 +71,29 @@ namespace ofxPm{
                 fbo.begin();
                 {
                     ofClear(0, 0, 0, 255);
-                    shader.begin();
-                    {
-                        shader.setUniformTexture("tex0",_frame.getTextureRef(),11);
-                        shader.setUniform1f("sides",paramSides);
-                        shader.setUniform1f("angle",paramAngle);
-                        shader.setUniform1f("slidex",paramSlideX);
-                        shader.setUniform1f("slidey",paramSlideY);
+                    int w = _frame.getWidth();
+                    int h = _frame.getHeight();
 
-                        ofSetColor(255);
-                        int w = _frame.getWidth();
-                        int h = _frame.getHeight();
-                        
+                    if(paramSides>0)
+                    {
+                        shader.begin();
+                        {
+                            shader.setUniformTexture("tex0",_frame.getTextureRef(),11);
+                            shader.setUniform1f("sides",paramSides);
+                            shader.setUniform1f("angle",paramAngle);
+                            shader.setUniform1f("slidex",paramSlideX);
+                            shader.setUniform1f("slidey",paramSlideY);
+
+                            ofSetColor(255);
+                            
+                            _frame.getTextureRef().draw(0,0,w,h);
+                        }
+                        shader.end();
+                    }
+                    else
+                    {
                         _frame.getTextureRef().draw(0,0,w,h);
                     }
-                    shader.end();
                 }
                 fbo.end();
                 

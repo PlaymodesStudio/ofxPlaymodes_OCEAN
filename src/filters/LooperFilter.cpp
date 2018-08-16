@@ -67,7 +67,7 @@ namespace ofxPm{
         //TODO : is this the best way to configure header and buffer ? each frame header.setup(buffer) ???
         if(buffNumFrames==0)
         {
-            //cout << "LooperFilter::Buffer is 0 frame long..." << endl;
+            cout << "LooperFilter::Buffer is 0 frame long..." << endl;
         }
         else
         {
@@ -85,6 +85,7 @@ namespace ofxPm{
                 // RECORDING !!
                 // feeding the buffer with the incoming frame.
                 buffer.newVideoFrame(_frame);
+                cout << "LooperFilter : Doing REC new frame !! Size of buffer is : " << buffer.getSizeInFrames() << endl;
                 
             }
             if(paramDoLoop)

@@ -35,7 +35,7 @@ private:
     float fps;
     
     // FEATURE NODE
-    ofParameter<float>                  paramSides;
+    ofParameter<int>                    paramSides;
     ofParameter<float>                  paramAngle;
     ofParameter<float>                  paramSlideX;
     ofParameter<float>                  paramSlideY;

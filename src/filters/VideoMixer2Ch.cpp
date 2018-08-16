@@ -33,7 +33,7 @@ namespace ofxPm{
         parameters->add(paramFrameIn.set("Frame Input 1", frame));
         parameters->add(paramFrameIn2.set("Frame Input 2", frame));
         parameters->add(paramCrossfade.set("Crossfade",0.0,0.0,1.0));
-        parameters->add(paramMixMode.set("Mix Mode",0,0,1));
+        parameters->add(paramMixMode.set("Mix Mode",0,0,2));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
 //        paramLumaThrshold.addListener(this, &VideoMixer2Ch::setLumaThreshold);
