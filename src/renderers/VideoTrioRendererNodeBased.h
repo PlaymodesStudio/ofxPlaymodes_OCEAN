@@ -35,6 +35,8 @@ namespace ofxPm{
         ofParameter<ofxPm::VideoFrame>      paramFrameIn3;
         ofParameter<float>                  paramGradientWidth;
         ofParameter<int>                    paramGradientXorY;
+        
+        ofParameter<int>                    paramFlipMode;
 
         ofxPm::EdgeBlendNodeBased           edgeBlend;
         
@@ -42,6 +44,10 @@ namespace ofxPm{
         VideoFrame  vFrame;
         VideoFrame  vFrame2;
         VideoFrame  vFrame3;
+
+        vector<vector<int>> flips;
+        void changedFlipMode(int &m);
+        
 
         void drawInExternalWindow(ofEventArgs &e) override;
         void keyPressed(ofKeyEventArgs &a) override;

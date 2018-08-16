@@ -6,7 +6,7 @@ namespace ofxPm
 {
     VideoTrioRendererNodeBased::VideoTrioRendererNodeBased():ofxOceanodeNodeModelExternalWindow("Video Trio Window")
     {
-        setup();
+        //setup();
     }
     
     
@@ -43,16 +43,43 @@ namespace ofxPm
             parameters->add(absParam);
         }
         
+        parameters->add(createDropdownAbstractParameter("Flips", {">>>", "<>>", ">><", "<<<", "<<>", "><<"}, paramFlipMode));
+        
+        
         paramFrameIn.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame);
         paramFrameIn2.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame2);
         paramFrameIn3.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame3);
-
+        paramFlipMode.addListener(this, &VideoTrioRendererNodeBased::changedFlipMode);
+        
         //ofAddListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
+        
+        
+        // populate flips vector for fliping textre x -1.0 o 1.0
+        vector<int> flips3;
+        flips3 = {1,1,1};
+        flips.push_back(flips3);
+        flips3 = {-1,1,1};
+        flips.push_back(flips3);
+        flips3 = {1,1,-1};
+        flips.push_back(flips3);
+        flips3 = {-1,-1,-1};
+        flips.push_back(flips3);
+        flips3 = {-1,-1,1};
+        flips.push_back(flips3);
+        flips3 = {1,-1,-1};
+        flips.push_back(flips3);
+
     }
 
     
     //--------------------------------------------------------------
-    
+    void VideoTrioRendererNodeBased::changedFlipMode(int &m)
+    {
+        cout << "flip mode : " << m << endl;
+    }
+
+    //--------------------------------------------------------------
+
     void VideoTrioRendererNodeBased::newVideoFrame(VideoFrame & frame)
     {
         ofEventArgs e;
@@ -64,21 +91,21 @@ namespace ofxPm
     }
     //--------------------------------------------------------------
     
-    void VideoTrioRendererNodeBased::newVideoFrame2(VideoFrame & frame)
+    void VideoTrioRendererNodeBased::newVideoFrame2(VideoFrame & frame2)
     {
         ofEventArgs e;
         edgeBlend.update(e);
-        edgeBlend.newVideoFrame(frame);
+        edgeBlend.newVideoFrame(frame2);
         
         vFrame2 = edgeBlend.getNextVideoFrame();
     }
     //--------------------------------------------------------------
     
-    void VideoTrioRendererNodeBased::newVideoFrame3(VideoFrame & frame)
+    void VideoTrioRendererNodeBased::newVideoFrame3(VideoFrame & frame3)
     {
         ofEventArgs e;
         edgeBlend.update(e);
-        edgeBlend.newVideoFrame(frame);
+        edgeBlend.newVideoFrame(frame3);
         
         vFrame3 = edgeBlend.getNextVideoFrame();
     }
@@ -126,11 +153,41 @@ void VideoTrioRendererNodeBased::draw(int x,int y,int w,int h)
 {
     ofSetRectMode(OF_RECTMODE_CENTER);
     
-    if(!vFrame.isNull()&&!vFrame2.isNull())
-    {
-        ofVec2f frameResolution = ofVec2f(vFrame.getWidth(),vFrame.getHeight());
-        float frameAspectRatio = frameResolution.x / frameResolution.y;
+    // check wich option to draw based on incoming frames
+    bool b1,b2,b3 = false;
 
+    if(!vFrame.isNull())
+    {
+        b1=true;
+    }
+    if(!vFrame2.isNull())
+    {
+        b2=true;
+    }
+    if(!vFrame3.isNull())
+    {
+        b3=true;
+    }
+
+    if(b1 || b2 || b3)
+    {
+        
+        // start drawing
+        ofVec2f frameResolution;
+        if(b1)
+        {
+            frameResolution = ofVec2f(vFrame.getWidth(),vFrame.getHeight());
+        }
+        else if(b2)
+        {
+            frameResolution = ofVec2f(vFrame2.getWidth(),vFrame.getHeight());
+        }
+        else if(b3)
+        {
+            frameResolution = ofVec2f(vFrame3.getWidth(),vFrame.getHeight());
+        }
+
+        float frameAspectRatio = frameResolution.x / frameResolution.y;
         
         if(paramMinMaxBlend)
         {
@@ -142,30 +199,61 @@ void VideoTrioRendererNodeBased::draw(int x,int y,int w,int h)
             ofBackground(255);
             glBlendEquationEXT(GL_MIN);
         }
-
         
         ofPushMatrix();
-        
+
         ofTranslate(paramScale*frameResolution.y/2.0,paramScale*frameResolution.x/2.0,0);
         // rotate to portrait
         ofRotate(90,0,0, 1);
         // flip x
         ofRotate(180,1,0,0);
         //ofTranslate(-frameResolution.x/2.0,-frameResolution.y/2.0,0);
+//        ofTranslate(paramScale*frameResolution.y/2.0,paramScale*frameResolution.x/2.0,0);
+//        // rotate to portrait
+//        ofRotate(90,0,0, 1);
+//        // flip x
+//        ofRotate(180,1,0,0);
+//        //ofTranslate(-frameResolution.x/2.0,-frameResolution.y/2.0,0);
         float finalOverlap = paramOverlap*0.75;
         ofSetColor(255*paramOpacity);
-        // Left Frame
-        vFrame2.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/-(paramScale*frameResolution.y)+(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,paramScale*frameResolution.y);
-        // Right Frame
-        vFrame2.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/+(paramScale*frameResolution.y)-(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,paramScale*frameResolution.y);        
-        // Center Frame
-        vFrame.getTextureRef().draw(0,(ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0),paramScale*frameResolution.x,paramScale*frameResolution.y);
+
+        
+        if(b1 && !b2 && !b3)
+        {
+            // just draw v1 in 3 positions
+            // Left Frame
+            vFrame.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/-(paramScale*frameResolution.y)+(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][0]*paramScale*frameResolution.y);
+            // Center Frame
+            vFrame.getTextureRef().draw(0,(ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0),paramScale*frameResolution.x,flips[paramFlipMode][1]*paramScale*frameResolution.y);
+            // Right Frame
+            vFrame.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/+(paramScale*frameResolution.y)-(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][2]*paramScale*frameResolution.y);
+
+        }
+        else if(b1 && b2 && !b3)
+        {
+            // draw v1 in center and v2 in sides
+            // Left Frame
+            vFrame2.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/-(paramScale*frameResolution.y)+(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][0]*paramScale*frameResolution.y);
+            // Center Frame
+            vFrame.getTextureRef().draw(0,(ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0),paramScale*frameResolution.x,flips[paramFlipMode][1]*paramScale*frameResolution.y);
+            // Right Frame
+            vFrame2.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/+(paramScale*frameResolution.y)-(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][2]*paramScale*frameResolution.y);
+        }
+        else if(b1 && b2 && b3)
+        {
+            // draw v1 center, v2 left, v3 right
+            // draw v1 in center and v2 in sides
+            // Left Frame
+            vFrame2.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/-(paramScale*frameResolution.y)+(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][0]*paramScale*frameResolution.y);
+            // Center Frame
+            vFrame.getTextureRef().draw(0,(ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0),paramScale*frameResolution.x,flips[paramFlipMode][1]*paramScale*frameResolution.y);
+            // Right Frame
+            vFrame3.getTextureRef().draw(0,(/**/ofGetWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/+(paramScale*frameResolution.y)-(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][2]*paramScale*frameResolution.y);
+        }
 
         ofPopMatrix();
     }
-
     ofSetRectMode(OF_RECTMODE_CORNER);
-    
     // TO DO : needed ?
     glBlendEquationEXT(GL_ADD);
 
