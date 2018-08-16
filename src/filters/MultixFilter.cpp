@@ -265,7 +265,7 @@ void MultixFilter::newVideoFrame(VideoFrame & _frame)
 void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
 {
     // TO DO : needed ?
-    //ofEnableAlphaBlending();
+    ofEnableAlphaBlending();
 
     if(paramMinMaxBlend)
     {
@@ -279,7 +279,7 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
     float totalBufferSizeInMs = paramVideoBufferInput.get()->getMaxSize() * oneFrameMs;
 
     float opac = 1.0;
-	for(int i = paramNumHeaders; i>=0; i--)
+	for(int i = paramNumHeaders-1; i>=0; i--)
     {
         // if delay time of each videoRenderer is in the right range of Ms (0..TotalMs)
         switch(paramOpacityMode)
@@ -295,21 +295,24 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
                 break;
 
         }
-        //cout << "MultixFilter :: i : " << i << " Opac[0..1] : " << opac << endl;
 
         if((multixDelaysInMs[i]>=0)&&(multixDelaysInMs[i] < totalBufferSizeInMs))
         {
             headersInAction++;
-            ofSetColor((opac*255.0),255);
-            // or the opposite order size-i-1 ? or just "i"
-            //videoRenderer[i].draw(x,y,w,h);
+            ofSetColor((opac*255.0),255.0);
             videoHeader.setDelayMs(multixDelaysInMs[i]);
             VideoFrame vf = videoHeader.getNextVideoFrame();
-//            cout << "MultixFilter:: Copy : " << i << " Delayed : " << multixDelaysInMs[i] << " And Buffer is " << paramVideoBufferInput.get()->getSizeInFrames() << endl;
-            if(!vf.isNull()) vf.getTextureRef().draw(x,y,w,h);
+            
+            if(!vf.isNull())
+            {
+                vf.getTextureRef().draw(x,y,w,h);
+            }
+        }
+        else
+        {
+            cout << "MultixFilter:: Out of time in Ms range !! Copy : " << i << "Delay in Ms = " << multixDelaysInMs[i] << endl;
         }
 	}
-    //cout << "MultixFilter :: Headers in Action : " << headersInAction << endl;
     ofDisableAlphaBlending();
 
     
