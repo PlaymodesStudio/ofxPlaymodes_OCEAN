@@ -6,7 +6,7 @@ namespace ofxPm
 {
     VideoRendererWindowNodeBased::VideoRendererWindowNodeBased():ofxOceanodeNodeModelExternalWindow("Video Renderer Window")
     {
-        setup();
+        //setup();
     }
 
 

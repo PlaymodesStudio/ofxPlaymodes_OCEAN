@@ -6,7 +6,7 @@ namespace ofxPm
 {
     VideoRendererNodeBased::VideoRendererNodeBased():ofxOceanodeNodeModel("Video Renderer")
     {
-        setup();
+        //setup();
     }
 
 
