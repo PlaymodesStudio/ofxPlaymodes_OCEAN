@@ -13,8 +13,6 @@ namespace ofxPm
     //--------------------------------------------------------------
     VideoTrioRendererNodeBased::~VideoTrioRendererNodeBased()
     {
-        
-        //ofRemoveListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
     }
     
     
@@ -30,8 +28,8 @@ namespace ofxPm
         parameters->add(paramFrameIn2.set("Frame In 2", vFrame2));
         parameters->add(paramFrameIn3.set("Frame In 3", vFrame3));
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
-        parameters->add(paramScale.set("Scale",1.0,0.0,2.0));
-        parameters->add(paramOverlap.set("Overlap",0.0,-1.0,1.0));
+        parameters->add(paramScale.set("Scale",1.6076,0.0,2.0));
+        parameters->add(paramOverlap.set("Overlap",0.25,-1.0,1.0));
         parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
 
         ofParameter<char> pc("Edge Blend",' ');
@@ -42,6 +40,9 @@ namespace ofxPm
             ofAbstractParameter &absParam = p->get(i);
             parameters->add(absParam);
         }
+        
+        ofParameter<float> &fp = parameters->getFloat("Width");
+        fp.set(0.0214);
         
         parameters->add(createDropdownAbstractParameter("Flips", {">>>", "<>>", ">><", "<<<", "<<>", "><<"}, paramFlipMode));
         
@@ -68,9 +69,22 @@ namespace ofxPm
         flips.push_back(flips3);
         flips3 = {1,-1,-1};
         flips.push_back(flips3);
-
     }
 
+    
+    //--------------------------------------------------------------
+    void VideoTrioRendererNodeBased::showMyExternalWindow(bool b)
+    {
+        cout << "TrioRender showing window : " << b << endl;
+        //ofxOceanodeNodeModelExternalWindow::showExternalWindow(b);
+        showWindow = b;
+        cout << "ofGetScreenWidth() = " << ofGetScreenWidth() << endl;
+        cout << "ofGetScreenHeigth() = " << ofGetScreenHeight() << endl;
+        setExternalWindowPosition(ofGetScreenWidth(),0);
+        setExternalWindowShape(1920,1080);
+        //setExternalWindowFullScreen(true);
+    }
+    
     
     //--------------------------------------------------------------
     void VideoTrioRendererNodeBased::changedFlipMode(int &m)

@@ -25,7 +25,8 @@ namespace ofxPm{
         void newVideoFrame2(VideoFrame & frame);
         void newVideoFrame3(VideoFrame & frame);
 
-        ofTexture getLastFrameTexture();
+        ofTexture   getLastFrameTexture();
+        void        showMyExternalWindow(bool b);
         
         ofParameter<float>                  paramOpacity;
         ofParameter<float>                  paramScale;
