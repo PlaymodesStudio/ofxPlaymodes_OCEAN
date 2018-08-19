@@ -14,6 +14,8 @@ namespace ofxPm
     //------------------------------------------------------
     void VideoBufferNodeBased::setupNodeBased(int size, bool allocateOnSetup)
     {
+        color = ofColor::orange;
+
         maxSize = size;
         lastFrameTimeValEpochMs = 0;
         lastFrameTimeValEpochMsAtStop = 0;
@@ -89,7 +91,9 @@ namespace ofxPm
                 }
                 
                 //    if(size()==0)initTime=frame.getTimestamp();
+                
                 lastFrameTimeValEpochMs = lastFrameTimeValEpochMsAtStop + (frame.getTimestamp().epochMicroseconds() - startRecordingTs.epochMicroseconds());
+                
                 //cout << "Buff::NewVideoFrame:: with TS = " << tdiff << " Which comes from frameTS : " << frame.getTimestamp().raw() << " - initTime " << initTime.raw() << endl;
                 
                 //cout << "Frame : " << frame.getTimestamp().epochMicroseconds() << " __ startRec : " << startRecordingTs.epochMicroseconds() << " MINUS in EpochMS= " << frame.getTimestamp().epochMicroseconds() - startRecordingTs.epochMicroseconds() << endl;
@@ -98,7 +102,8 @@ namespace ofxPm
                 frame.setTimestamp(lastFrameTimeValEpochMs);
                 //timeMutex.lock();
                 frames.push_back(frame);
-                cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().raw() << " Frames vector size is :" << frames.size() << endl;
+                
+                //cout << "Buffer : newVideoFrame with TS : " << frame.getTimestamp().raw() << " Frames vector size is :" << frames.size() << endl;
 
                 
 //                Timestamp tis = frame.getTimestamp() - startRecordingTs.epochMicroseconds() ;
@@ -112,6 +117,10 @@ namespace ofxPm
                 }
                 //timeMutex.unlock();
                 paramFrameOut = frame;
+            }
+            else
+            {
+                cout << "Buffer :: Not Recording !" << endl;
             }
 
         }
