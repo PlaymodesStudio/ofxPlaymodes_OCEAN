@@ -17,6 +17,8 @@ namespace ofxPm{
     //------------------------------------------------------------------
     void GatorFilter::setupNodeBased()
     {
+        color = ofColor::darkMagenta;
+
         // create beatMultDiv
         beatMultDiv.push_back(1.0/64.0);
         beatMultDiv.push_back(1.0/32.0);
@@ -36,9 +38,10 @@ namespace ofxPm{
         
         // setup params
         parameters->add(paramFrameIn.set("Frame In", myFrame));
-        parameters->add(paramBlackOrWhite.set("Black or White", false));
+        parameters->add(paramBlackOrWhite.set("Black or White", true));
         parameters->add(paramDoRestart.set("Restart"));
         parameters->add(paramGateFreqBPM.set("Frequency BPM",6,0,numB-1));
+        parameters->add(paramBypass.set("Bypass",false));
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
 
         paramFrameIn.addListener(this, &GatorFilter::newVideoFrame);
@@ -83,28 +86,32 @@ namespace ofxPm{
     //--------------------------------------------------------
     void GatorFilter::newVideoFrame(VideoFrame & _frame)
     {
-
-        if(!doGate)
-            paramFrameOut = _frame;
-        else if(!_frame.isNull())
+        if(!_frame.isNull())
         {
-            // Let's gate it !!
-            
-            // check frame size = black & white frames !!
-            if((_frame.getWidth()!=frameResolution.x)&&(_frame.getHeight()!=frameResolution.y))
+            if((!doGate)||(paramBypass))
             {
-                setFrameResolution(_frame.getWidth(), _frame.getHeight());
-            }
-            
-            if(paramBlackOrWhite)
-            {
-                paramFrameOut = whiteFrame;
-                doGate=false;
+                paramFrameOut = _frame;
             }
             else
             {
-                paramFrameOut = blackFrame ;
-                doGate=false;
+                // Let's gate it !!
+                
+                // check frame size = black & white frames !!
+                if((_frame.getWidth()!=frameResolution.x)&&(_frame.getHeight()!=frameResolution.y))
+                {
+                    setFrameResolution(_frame.getWidth(), _frame.getHeight());
+                }
+                
+                if(paramBlackOrWhite)
+                {
+                    paramFrameOut = whiteFrame;
+                    doGate=false;
+                }
+                else
+                {
+                    paramFrameOut = blackFrame ;
+                    doGate=false;
+                }
             }
         }
     }

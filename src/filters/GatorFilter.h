@@ -6,7 +6,6 @@
 #include "VideoFilter.h"
 #include "VideoBufferNodeBased.h"
 #include "VideoHeaderNodeBased.h"
-#include "ofxOceanodeNodeModelLocalPreset.h"
 #include "basePhasor.h"
 
 #include "ofMain.h"
@@ -34,6 +33,7 @@ protected:
     ofParameter<bool>                   paramBlackOrWhite;
     ofParameter<int>                    paramGateFreqBPM;
     ofParameter<void>                   paramDoRestart;
+    ofParameter<bool>                   paramBypass;
 
     void                                freqChanged(int& _i);
     void                                restartChanged();
