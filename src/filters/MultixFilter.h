@@ -58,11 +58,14 @@ public:
     void                                    recalculate(int &_i);
     void                                    changedDistributionVector(vector<float> &_b);
     
+    // when global BPM changes, it will call this function so I can know the global bpm
+    void    setBpm(float _bpm) override{myBPM=_bpm;cout << "MULTIX BPM" << endl;};
+
 protected:
     
     ofxPm::VideoHeaderNodeBased         videoHeader;
     vector<float>                       multixDelaysInMs;
-    
+    float                               myBPM;
     //NodeBased
 
     ofParameter<int>                    paramNumHeaders;

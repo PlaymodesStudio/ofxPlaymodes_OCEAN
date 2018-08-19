@@ -21,6 +21,7 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererNodeBased::setup()
     {
+        color = ofColor::yellow;
 
         vFrame = ofxPm::VideoFrame();
         

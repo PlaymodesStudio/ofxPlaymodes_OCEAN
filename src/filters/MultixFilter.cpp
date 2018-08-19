@@ -18,6 +18,9 @@ namespace ofxPm{
     //------------------------------------------------------------------
     void MultixFilter::setupNodeBased()
     {
+        autoBPM=false;
+        color = ofColor::white;
+
         parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
         parameters->add(paramNumHeaders.set("Num Headers",1,1,480));
         parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
@@ -71,10 +74,7 @@ namespace ofxPm{
     
     //-----------------------------------------
     void ofxPm::MultixFilter::recalculate(int &_i)
-    {
-        
-//        float gBPM = parametersControl::getInstance().getGlobalBPM();
-        float gBPM = 120.0;
+    {        
         float BPMfactor;
         if(paramOffsetBeatDiv!=0)
         {
@@ -82,7 +82,7 @@ namespace ofxPm{
         }
         else  BPMfactor = 1.0;
 
-        float oneBeatMs = (60.0/gBPM)*1000;
+        float oneBeatMs = (60.0/myBPM)*1000;
         float oneCopyMs = oneBeatMs / BPMfactor;
     
         vector<float> vf;

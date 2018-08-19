@@ -18,6 +18,8 @@ namespace ofxPm{
     //------------------------------------------------------------
     void FrameInspector::setupNodeBased()
     {
+        color = ofColor::orange;
+
         lastFrameRendered = ofxPm::VideoFrame();
 
         parameters = new ofParameterGroup();

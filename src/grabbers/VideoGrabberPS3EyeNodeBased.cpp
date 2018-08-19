@@ -20,6 +20,8 @@ namespace ofxPm{
         paramHue.addListener(this, &VideoGrabberPS3EyeNodeBased::setHue);
         paramAutoWB.addListener(this,&VideoGrabberPS3EyeNodeBased::setAutoWhiteBalance);
 
+        color = ofColor::darkGreen;
+
     }
 
     //-----------------------------------------------------------------------------------

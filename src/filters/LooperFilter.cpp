@@ -17,6 +17,8 @@ namespace ofxPm{
     //------------------------------------------------------------------
     void LooperFilter::setupNodeBased()
     {
+        color = ofColor::darkMagenta;
+
         int i=1;
         loopTimeChanged(i);
         BPMfactor=1.0;

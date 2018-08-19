@@ -21,6 +21,8 @@ namespace ofxPm{
         
         paramConnect.addListener(this, &VideoGrabberNodeBased::connectToDevice);
         
+        color = ofColor::darkGreen;
+
     }
 
 

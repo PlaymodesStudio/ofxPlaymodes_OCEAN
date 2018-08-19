@@ -21,6 +21,7 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::setup()
     {
+        color = ofColor::yellow;
 
         vFrame = ofxPm::VideoFrame();
         
@@ -98,6 +99,7 @@ ofTexture VideoRendererWindowNodeBased::getLastFrameTexture()
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::drawInExternalWindow(ofEventArgs &e)
     {
+        
         draw(0,0,ofGetWidth(),ofGetHeight());
     }
     

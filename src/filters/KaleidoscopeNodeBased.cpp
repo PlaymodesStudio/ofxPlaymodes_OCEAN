@@ -18,6 +18,8 @@ namespace ofxPm{
     //--------------------------------------------------------------
     void kaleidoscopeNodeBased::setupNodeBased()
     {
+        color = ofColor::darkMagenta;
+
         lumaSmooth=0.25;
         lumaThreshold=0.025;
         source = NULL;
@@ -92,6 +94,7 @@ namespace ofxPm{
                     }
                     else
                     {
+                        ofSetColor(255);
                         _frame.getTextureRef().draw(0,0,w,h);
                     }
                 }

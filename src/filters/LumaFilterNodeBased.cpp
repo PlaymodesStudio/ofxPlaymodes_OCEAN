@@ -18,6 +18,8 @@ namespace ofxPm{
     //--------------------------------------------------------------
     void LumaFilterNodeBased::setupNodeBased()
     {
+        color = ofColor::darkMagenta;
+
         lumaSmooth=0.25;
         lumaThreshold=0.025;
         source = NULL;

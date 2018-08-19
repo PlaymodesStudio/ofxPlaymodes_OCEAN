@@ -18,6 +18,8 @@ namespace ofxPm{
     //--------------------------------------------------------------
     void VideoMixer2Ch::setupNodeBased()
     {
+        color = ofColor::yellow;
+
         source = NULL;
         fps = -1;
         

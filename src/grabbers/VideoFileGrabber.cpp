@@ -7,6 +7,8 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     VideoFileGrabber::VideoFileGrabber(): ofxOceanodeNodeModel("Video File")
     {
+        color = ofColor::darkGreen;
+
         ofVideoPlayer::load("test2.mov");
         ofVideoPlayer::play();
         ofVideoPlayer::setVolume(0.0);

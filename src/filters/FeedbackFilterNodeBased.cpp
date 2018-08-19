@@ -19,6 +19,8 @@ namespace ofxPm{
     //------------------------------------------------------------
     void FeedbackFilterNodeBased::setupNodeBased(){
         
+        color = ofColor::darkMagenta;
+
         fps = -1;
         
         //frame = VideoFrame();

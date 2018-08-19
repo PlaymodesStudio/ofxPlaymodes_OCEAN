@@ -18,6 +18,8 @@ namespace ofxPm{
     //--------------------------------------------------------------
     void VideoPsLayer::setupNodeBased()
     {
+        color = ofColor::yellow;
+
         source = NULL;
         fps = -1;
         
