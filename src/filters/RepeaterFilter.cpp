@@ -17,6 +17,8 @@ namespace ofxPm{
     //------------------------------------------------------------------
     void RepeaterFilter::setupNodeBased()
     {
+        color = ofColor::darkMagenta;
+
         int i=1;
         loopTimeChanged(i);
         loopStartedAtMs=0.0;
@@ -47,6 +49,12 @@ namespace ofxPm{
         
         ofAddListener(_phasor.phasorCycle, this, &RepeaterFilter::phasorCycleEvent);
         
+        buffer.setupNodeBased(120);
+        videoHeader.setup(&buffer);
+        cout << "Repeater : setting up buffer !! "<< buffer.getMaxSize() << " __ " << buffer.getSizeInFrames()  << endl;
+        buffer.resume();
+        
+    
         
     }
     //--------------------------------------------------------
@@ -58,20 +66,21 @@ namespace ofxPm{
     //--------------------------------------------------------
     void RepeaterFilter::newVideoFrame(VideoFrame & _frame)
     {
+        /*
         bool frameIsNull = _frame.isNull();
         int buffNumFrames = buffer.getSizeInFrames();
         ofxPm::VideoFrame vfAux;
         float phase=0.0;
         
-        //TODO : is this the best way to configure header and buffer ?
         if(buffNumFrames==0)
         {
             cout << "LooperFilter::Buffer is 0 frame long..." << endl;
         }
-        else
-        {
-            videoHeader.setup(&buffer);
-        }
+//        else
+//        {
+//            videoHeader.setup(&buffer);
+//            cout << "Repeater : setting up buffer !! " << endl;
+//        }
         
         if(!frameIsNull)
         {
@@ -122,13 +131,14 @@ namespace ofxPm{
             {
                 // we need to set to black, we're GATING !!
 //                ofxPm::VideoFrame vfBlack;
-                paramFrameOut = myFrame;
+                //paramFrameOut = myFrame;
             }
             else
             {
                 paramFrameOut = vfAux;
             }
         }
+         */
     }
 
     //-----------------------------------------
@@ -147,7 +157,7 @@ namespace ofxPm{
         
         float oneBeatMs = (60.0/myBPM)*1000;
         loopDurationMs = oneBeatMs / BPMfactor;
-        cout << "LooperFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms !! BPM : " <<  myBPM << endl;
+        //cout << "RepeaterFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms !! BPM : " <<  myBPM << endl;
     }
     //-----------------------------------------
     void RepeaterFilter::doLoopChanged(bool& _b)
@@ -159,7 +169,7 @@ namespace ofxPm{
             loopTimeChanged(i);
             loopDurationMsWhenTriggered = loopDurationMs;
             _phasor.resetPhasor();
-            cout << "LooperFilter::PRESSED LOOP !! " << endl;
+            //cout << "LooperFilter::PRESSED LOOP !! " << endl;
             loopStartedAtMs = ofGetElapsedTimeMillis();
 
         }
