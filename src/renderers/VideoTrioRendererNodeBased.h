@@ -41,6 +41,8 @@ namespace ofxPm{
 
         ofxPm::EdgeBlendNodeBased           edgeBlend;
         
+        ofImage                             backImage;
+        
     private:
         VideoFrame  vFrame;
         VideoFrame  vFrame2;

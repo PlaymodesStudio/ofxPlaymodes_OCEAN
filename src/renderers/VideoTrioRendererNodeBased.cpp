@@ -19,6 +19,8 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoTrioRendererNodeBased::setup()
     {
+        color = ofColor::yellow;
+        backImage.load("./imgs/1920x1080.png");
         
         vFrame = ofxPm::VideoFrame();
         vFrame2 = ofxPm::VideoFrame();
@@ -89,7 +91,7 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoTrioRendererNodeBased::changedFlipMode(int &m)
     {
-        cout << "flip mode : " << m << endl;
+//        cout << "flip mode : " << m << endl;
     }
 
     //--------------------------------------------------------------
@@ -146,6 +148,8 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoTrioRendererNodeBased::drawInExternalWindow(ofEventArgs &e)
     {
+        ofSetColor(255);
+        backImage.draw(0,0,ofGetWidth(),ofGetHeight());
         draw(0,0,ofGetWidth(),ofGetHeight());
     }
     
@@ -194,11 +198,11 @@ void VideoTrioRendererNodeBased::draw(int x,int y,int w,int h)
         }
         else if(b2)
         {
-            frameResolution = ofVec2f(vFrame2.getWidth(),vFrame.getHeight());
+            frameResolution = ofVec2f(vFrame2.getWidth(),vFrame2.getHeight());
         }
         else if(b3)
         {
-            frameResolution = ofVec2f(vFrame3.getWidth(),vFrame.getHeight());
+            frameResolution = ofVec2f(vFrame3.getWidth(),vFrame3.getHeight());
         }
 
         float frameAspectRatio = frameResolution.x / frameResolution.y;
