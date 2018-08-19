@@ -236,6 +236,7 @@ public:
 	}
 
 	int VideoFrame::getHeight(){
+        ofPixels pix = data->pixels;
 		return data->pixels.getHeight();
 	}
 
