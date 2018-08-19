@@ -23,6 +23,7 @@ namespace ofxPm{
         width = -11;
         height = -11;
         
+        autoBPM = false;
         
         setupNodeBased();
     }
@@ -48,6 +49,8 @@ namespace ofxPm{
     //------------------------------------------------------
     void VideoHeaderNodeBased::setupNodeBased()
     {
+        color = ofColor::orange;
+
 //        //newFrameEvent.init("Playmodes.VideoHeader.newFrame");
 //        this->buffer= &_buffer;
 //        fps         = _buffer.getFps();
@@ -61,7 +64,14 @@ namespace ofxPm{
         
         
         parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
-        parameters->add(paramDelayMs.set("Delay Ms",0.0,0.0,3000.0));
+        parameters->add(paramManualOrBPM.set("Timming Man/BPM", false));
+        ofParameter<char> pc("Manual",' ');
+        parameters->add(pc);
+        parameters->add(paramDelayMs.set("Delay Ms",0.0,0.0,10000.0));
+        ofParameter<char> pc2("BPM",' ');
+        parameters->add(pc2);
+        parameters->add(paramBeatDiv.set("Beats Div",1,1,32));
+        parameters->add(paramBeatMult.set("Beats Mult",1,1,32));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         
@@ -127,7 +137,28 @@ namespace ofxPm{
         outTS = nowTS - TimeDiff(outMs*1000);
         
         // calculate the ts of the needed frame
-        ts = nowTS - TimeDiff(paramDelayMs*1000);
+        if(!paramManualOrBPM)
+        {
+            // delay expressed manually in Ms
+            ts = nowTS - TimeDiff(paramDelayMs*1000);
+        }
+        else
+        {
+            // delay expressed by BPM,div and mult;
+            float BPMfactor;
+            if(paramBeatDiv!=0)
+            {
+                BPMfactor = (float(paramBeatMult)/float(paramBeatDiv));
+            }
+            else  BPMfactor = 1.0;
+            float oneBeatMs = (60.0/myBPM)*1000;
+            float oneBeatMsBPM = oneBeatMs / BPMfactor;
+
+            ts = nowTS - TimeDiff(oneBeatMsBPM*1000);
+            //cout << "VideoHeader : BPM " << myBPM << " _ OneBeatMs = " << oneBeatMs << " _ BPM Factor = " << BPMfactor << "oneBeatBPM = " << oneBeatMsBPM<<  endl;
+            
+            
+        }
 
         return ts;
     }

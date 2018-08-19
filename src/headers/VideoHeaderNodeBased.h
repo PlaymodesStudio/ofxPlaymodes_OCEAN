@@ -43,14 +43,21 @@ public:
 	
     double  getBufferSizeInMs(){return totalBufferSizeInMs;};
     
+    // when global BPM changes, it will call this function so I can know the global bpm
+    void    setBpm(float _bpm) override{myBPM=_bpm;};
+
+
+    
 protected:
-//    VideoBuffer		*buffer;			// pointer to the buffer of video frames
 	double			totalBufferSizeInMs;
     double			oneFrameMs;
     double			fps;				// framerate
     double 			inMs, outMs, lengthMs;	// expressed in ms from realtime ... in is bigger then out
 	int				offsetFrames;				// to adjust av sync in frames
+    float           myBPM;
+
     //bool            playing;
+    
     
     //---------- TS HEADER CONTROL VARS
 
@@ -63,6 +70,10 @@ protected:
     // NODE BASED STUFF
     ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferInput;
     ofParameter<float>                  paramDelayMs;
+    ofParameter<bool>                   paramManualOrBPM;
+    ofParameter<int>                    paramBeatDiv;
+    ofParameter<int>                    paramBeatMult;
+
     
     bool isNodeBased;
 
