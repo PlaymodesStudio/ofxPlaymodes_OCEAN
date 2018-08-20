@@ -3,7 +3,7 @@
 namespace ofxPm{
     
     //--------------------------------------------------------------
-    GammaFilter::GammaFilter():ofxOceanodeNodeModel("Gamma FX")
+    GammaFilter::GammaFilter():ofxOceanodeNodeModel("Gamma Levels FX")
     {
         setupNodeBased();
     }

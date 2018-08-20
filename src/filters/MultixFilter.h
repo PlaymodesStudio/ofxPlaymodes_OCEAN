@@ -59,7 +59,7 @@ public:
     void                                    changedDistributionVector(vector<float> &_b);
     
     // when global BPM changes, it will call this function so I can know the global bpm
-    void    setBpm(float _bpm) override{myBPM=_bpm;cout << "MULTIX BPM" << endl;};
+    void    setBpm(float _bpm) override{myBPM=_bpm;};
 
 protected:
     
