@@ -7,8 +7,8 @@ namespace ofxPm{
     VideoGrabberPS3EyeNodeBased::VideoGrabberPS3EyeNodeBased(): ofxOceanodeNodeModel("Video Grabber PS3 Eye")
     {
         parameters->add(paramConnect.set("Connect"));
-        parameters->add(paramExposure.set("Exposure",1,0,255));
-        parameters->add(paramHue.set("Hue",0,0,255));
+        parameters->add(paramExposure.set("Exposure",255,0,255));
+        parameters->add(paramHue.set("Hue",127,0,255));
         parameters->add(paramAutoGain.set("AutoGrain",false));
         parameters->add(paramAutoWB.set("AutoWB",false));
         parameters->add(paramFrameOut.set("Frame Output", frame));
@@ -87,8 +87,6 @@ namespace ofxPm{
     void VideoGrabberPS3EyeNodeBased::newFrame(ofPixels & pixels)
     {
         frame = VideoFrame::newVideoFrame(pixels);
-        //frame.getTextureRef();
-//        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = frame;
         paramFrameOut = frame;
     }
 
