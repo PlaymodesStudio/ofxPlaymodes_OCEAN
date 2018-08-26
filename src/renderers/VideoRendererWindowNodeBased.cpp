@@ -6,7 +6,7 @@ namespace ofxPm
 {
     VideoRendererWindowNodeBased::VideoRendererWindowNodeBased():ofxOceanodeNodeModelExternalWindow("Video Renderer Window")
     {
-        //setup();
+        setupNodeBased();
     }
 
 
@@ -19,7 +19,7 @@ namespace ofxPm
 
 
     //--------------------------------------------------------------
-    void VideoRendererWindowNodeBased::setup()
+    void VideoRendererWindowNodeBased::setupNodeBased()
     {
         color = ofColor::yellow;
 
@@ -38,6 +38,7 @@ namespace ofxPm
 
     void VideoRendererWindowNodeBased::newVideoFrame(VideoFrame & frame)
     {
+//        vFrame = VideoFrame(frame.getTextureRef());
         vFrame = frame;
     }
     
@@ -45,61 +46,41 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::draw(int x,int y,int w,int h)
     {
+        ofSetColor(255,255,0);
+        ofDrawRectangle(0,0,w-10,h-10);
+        if(!vFrame.isNull() && !vFrame.isNullPtr())
+        {
+            if(vFrame.getTextureRef().isAllocated())
+            {
+                ofSetColor(255.0*paramOpacity);
+                //ofSetColor(128,128,128,128);
+                vFrame.getTextureRef().draw(x,y,w,h);
+                ofDrawCircle(0,0,100);
+            }
+        }
+    }
+
+
+    //--------------------------------------------------------------
+    ofTexture VideoRendererWindowNodeBased::getLastFrameTexture()
+    {
         if(!vFrame.isNull())
         {
             if(vFrame.getTextureRef().isAllocated())
             {
-                ofSetColor(255*paramOpacity);
-                vFrame.getTextureRef().draw(x,y,w,h);
+                return vFrame.getTextureRef();
+            }
+            else
+            {
+                cout << "VideoRendererWindow :: getLastFrame texture not allocated !!" << endl;
             }
         }
+        return vFrame.getTextureRef();;
     }
-//    //--------------------------------------------------------------
-//    void VideoRendererWindowNodeBased::draw()
-//    {
-//        draw(paramPositionX,paramPositionY,paramResolutionX,paramResolutionY);
-//        ofSetColor(0,255,0);
-//        ofDrawRectangle(0,0,100,100);
-//    }
-//    //--------------------------------------------------------------
-//    void VideoRendererWindowNodeBased::draw(ofEventArgs &e)
-//    {
-//        draw();
-//    }
-//    //--------------------------------------------------------------
-//    void VideoRendererWindowNodeBased::draw(int _x,int _y)
-//    {
-//        if(!vFrame.isNull())
-//        {
-//            if(vFrame.getTextureRef().isAllocated())
-//            {
-//                vFrame.getTextureRef().draw(_x,_y,vFrame.getWidth(),vFrame.getHeight());
-//            }
-//        }
-//    }
-    
-
-//--------------------------------------------------------------
-ofTexture VideoRendererWindowNodeBased::getLastFrameTexture()
-{
-    if(!vFrame.isNull())
-    {
-        if(vFrame.getTextureRef().isAllocated())
-        {
-            return vFrame.getTextureRef();
-        }
-        else
-        {
-            cout << "VideoRendererWindow :: getLastFrame texture not allocated !!" << endl;
-        }
-    }
-    return vFrame.getTextureRef();;
-}
 
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::drawInExternalWindow(ofEventArgs &e)
     {
-        
         draw(0,0,ofGetWidth(),ofGetHeight());
     }
     

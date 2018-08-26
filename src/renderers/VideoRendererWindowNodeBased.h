@@ -14,7 +14,7 @@ public:
 	VideoRendererWindowNodeBased();
 	~VideoRendererWindowNodeBased();
 
-	void setup();
+	void setupNodeBased();
     void draw(int x,int y,int w,int h);
 //    void draw(int x,int y);
 //    void draw();
