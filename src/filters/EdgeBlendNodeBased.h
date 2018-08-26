@@ -16,7 +16,7 @@ public:
     void update(ofEventArgs &e) override;
 
     
-    VideoFrame getNextVideoFrame(){return paramFrameOut;};
+    VideoFrame getNextVideoFrame();
 	void newVideoFrame(VideoFrame & frame);
     float getFps(){return source->getFps();};
     void setGradientWidth(float &_f){paramGradientWidth=_f;};
@@ -30,11 +30,7 @@ private:
 	ofShader        shader;
 	bool            newFrame;
     ofPlanePrimitive plane;
-    glm::vec2       fboHasToBeAllocated;
-
     
-    float lumaThreshold;
-    float lumaSmooth;
     float fps;
     
     // FEATURE NODE

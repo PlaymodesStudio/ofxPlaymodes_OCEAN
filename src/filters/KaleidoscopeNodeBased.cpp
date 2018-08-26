@@ -19,28 +19,19 @@ namespace ofxPm{
     void kaleidoscopeNodeBased::setupNodeBased()
     {
         color = ofColor::darkMagenta;
-
-        lumaSmooth=0.25;
-        lumaThreshold=0.025;
-        source = NULL;
         fps = -1;
         
         string shaderName = "shaders/kaleidoscopy";
         shader.load(shaderName);
         cout << "kaleidoscopyNodeBased::Loading Shader : " << shaderName << endl;
-        // allocate fbo where to draw
-        if (fbo.isAllocated())
-        {
-            fbo.allocate(source->getWidth(),source->getHeight(),GL_RGBA);
-        }
-                
-        parameters->add(paramFrameIn.set("Frame Input", frame));
+        
+        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
 
         parameters->add(paramSides.set("Sides",2,0,24));
         parameters->add(paramAngle.set("Angle",0.0,-1.0,1.0));
         parameters->add(paramSlideX.set("Slide x",0.5,0.0,1.0));
         parameters->add(paramSlideY.set("Slide y",0.5,0.0,1.0));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         paramFrameIn.addListener(this, &kaleidoscopeNodeBased::newVideoFrame);
         
@@ -48,11 +39,6 @@ namespace ofxPm{
     //------------------------------------------------------------
     void kaleidoscopeNodeBased::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
     }
     
     //--------------------------------------------------------------
@@ -63,12 +49,14 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
+            int w = _frame.getWidth();
+            int h = _frame.getHeight();
+            
             if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(w, h);
             }
-
-            if(fbo.isAllocated())
+            
             {
                 fbo.begin();
                 {
@@ -100,9 +88,8 @@ namespace ofxPm{
                 }
                 fbo.end();
                 
-                frame = VideoFrame::newVideoFrame(fbo);
+                paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }
-        paramFrameOut = frame;
     }
 }

@@ -18,14 +18,12 @@ public:
     void update(ofEventArgs &e) override;
 
     
-    VideoFrame getNextVideoFrame(){return VideoFrame();};
+    VideoFrame getNextVideoFrame(){};
 	void newVideoFrame(VideoFrame & frame);
     float getFps(){return source->getFps();};
     
 
 private:
-    VideoFrame      frame;
-    VideoFrame      input2;
 
     ofFbo           fbo;
 	VideoSource     *source;
@@ -33,7 +31,6 @@ private:
 	bool            newFrame;
     ofPlanePrimitive plane;
 	//ofMutex swapBuffersMutex;
-    glm::vec2       fboHasToBeAllocated;
     
     float fps;
     

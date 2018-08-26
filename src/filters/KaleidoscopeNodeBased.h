@@ -18,20 +18,15 @@ public:
     
     VideoFrame getNextVideoFrame(){return paramFrameOut;};
 	void newVideoFrame(VideoFrame & frame);
-    float getFps(){return source->getFps();};
+    float getFps(){return fps;};
 
 
 private:
-	VideoFrame      frame;
     ofFbo           fbo;
-	VideoSource     *source;
 	ofShader        shader;
 	bool            newFrame;
     ofPlanePrimitive plane;
-    glm::vec2       fboHasToBeAllocated;
 
-    float lumaThreshold;
-    float lumaSmooth;
     float fps;
     
     // FEATURE NODE

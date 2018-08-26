@@ -22,26 +22,21 @@ public:
     void update(ofEventArgs &e) override;
 
     
-    VideoFrame getNextVideoFrame(){return VideoFrame();};
+    VideoFrame getNextVideoFrame();
 	void newVideoFrame(VideoFrame & frame);
-    float getFps(){return source->getFps();};
-    void setLumaThreshold(float &f){lumaThreshold=f;};
-    void setLumaSmooth(float &f){lumaSmooth=f;};
+    float getFps(){return fps;};
+    void setLumaThreshold(float &f){paramLumaThrshold=f;};
+    void setLumaSmooth(float &f){paramLumaSmooth=f;};
     
 
 private:
-	VideoFrame      frame;
     ofFbo           fbo;
-	VideoSource     *source;
 	ofShader        shader;
 	bool            newFrame;
     ofPlanePrimitive plane;
 	//ofMutex swapBuffersMutex;
     glm::vec2       fboHasToBeAllocated;
 
-    
-    float lumaThreshold;
-    float lumaSmooth;
     float fps;
     
     // FEATURE NODE

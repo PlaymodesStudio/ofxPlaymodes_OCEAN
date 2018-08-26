@@ -20,29 +20,20 @@ namespace ofxPm{
     void FeedbackFilterNodeBased::setupNodeBased(){
         
         color = ofColor::darkMagenta;
-
         fps = -1;
         
-        //frame = VideoFrame();
-        //ofFbo fboAux;
-        //fboAux.allocate(640,480);
-        //frame = VideoFrame::newVideoFrame(fboAux);
-        
-        shader.load("shaders/feedback");
-        
-        if (true)
-        {
-            lastFrameRendered = ofxPm::VideoFrame();
-        }
+        string shaderName = "shaders/feedback";
+        shader.load(shaderName);
+        cout << "FeedbackFilter::Loading Shader : " << shaderName << endl;
         
         parameters = new ofParameterGroup();
         parameters->setName("Feedback");
-        parameters->add(paramFrameIn.set("Frame Input", frame));
+        parameters->add(paramFrameIn.set("Frame Input", frameToSendOut));
         parameters->add(paramScale.set("Scale",0.98,-1.0,2.0));
         parameters->add(paramMixAmmount.set("Mix Ammount",0.1,0.0,1.0));
         parameters->add(paramOriginX.set("OriginX",0.5,-1.0,1.0));
         parameters->add(paramOriginY.set("OriginY",0.5,-1.0,1.0));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        parameters->add(paramFrameOut.set("Frame Output", frameToSendOut));
         
         paramFrameIn.addListener(this, &FeedbackFilterNodeBased::newVideoFrame);
     }
@@ -50,17 +41,17 @@ namespace ofxPm{
     //------------------------------------------------------------
     void FeedbackFilterNodeBased::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
+//        if(fboHasToBeAllocated != glm::vec2(-1, -1))
+//        {
+//            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
+//            fboHasToBeAllocated = glm::vec2(-1, -1);
+//        }
     }
 
     //------------------------------------------------------------
     VideoFrame FeedbackFilterNodeBased::getNextVideoFrame()
     {
-        return frame;
+        return frameToSendOut;
 
     }
 
@@ -73,18 +64,19 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
-            // this is for the start of the module ... we need to have something on "frame" as the lastframe.
-            if(frame.isNull())
+            // this is for the start of the fx process ... we need to have something on "frame" as the lastframe.
+            if(frameToSendOut.isNull())
             {
-                frame = _frame;
+                frameToSendOut = _frame;
             }
 
             // 
-            if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
+            if (!isAllocated || (_frame.getWidth() != fbo.getWidth()) || (_frame.getHeight() != fbo.getHeight()) )
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+//                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(_frame.getWidth(), _frame.getHeight());
             }
-            else
+
             {
                 fbo.begin();
                 {
@@ -92,7 +84,7 @@ namespace ofxPm{
                     shader.begin();
                     {
                         shader.setUniformTexture("tex0",_frame.getTextureRef(),0);
-                        shader.setUniformTexture("tex1",frame.getTextureRef(),1);
+                        shader.setUniformTexture("tex1",frameToSendOut.getTextureRef(),1);
                         shader.setUniform1f("u_scale",paramScale);
                         shader.setUniform1f("u_mixAmmount",paramMixAmmount);
                         shader.setUniform1f("u_originX",paramOriginX);
@@ -101,14 +93,15 @@ namespace ofxPm{
                         res[0]=_frame.getWidth();
                         res[1]=_frame.getHeight();
                         shader.setUniform2fv("u_resolution",res);
+                        
                         ofSetColor(255);
                         _frame.getTextureRef().draw(0,0,_frame.getWidth(),_frame.getHeight());
                     }
                     shader.end();
                 }
                 fbo.end();
-                frame = VideoFrame::newVideoFrame(fbo);
-                paramFrameOut = frame;
+                frameToSendOut = VideoFrame::newVideoFrame(fbo);
+                paramFrameOut = frameToSendOut;
             }
         }
     }

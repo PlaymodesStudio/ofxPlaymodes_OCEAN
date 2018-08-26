@@ -19,25 +19,16 @@ namespace ofxPm{
     void LumaFilterNodeBased::setupNodeBased()
     {
         color = ofColor::darkMagenta;
-
-        lumaSmooth=0.25;
-        lumaThreshold=0.025;
-        source = NULL;
         fps = -1;
         
         string shaderName = "shaders/lumakey";
         shader.load(shaderName);
         cout << "LumaFilter::Loading Shader : " << shaderName << endl;
-        // allocate fbo where to draw
-        if (fbo.isAllocated())
-        {
-            fbo.allocate(source->getWidth(),source->getHeight(),GL_RGBA);
-        }
-                
-        parameters->add(paramFrameIn.set("Frame Input", frame));
+        
+        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
         parameters->add(paramLumaThrshold.set("Threshold",0.25,0.0,1.0));
         parameters->add(paramLumaSmooth.set("Smooth",0.25,0.0,1.0));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         paramLumaThrshold.addListener(this, &LumaFilterNodeBased::setLumaThreshold);
         paramLumaSmooth.addListener(this, &LumaFilterNodeBased::setLumaSmooth);
@@ -48,25 +39,19 @@ namespace ofxPm{
     //------------------------------------------------------------
     void LumaFilterNodeBased::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
     }
     
 
     //--------------------------------------------------------------
-    //VideoFrame LumaFilterNodeBased::getNextVideoFrame()
-    //{
-    /*
-        if(source->getNextVideoFrame()!=NULL)
-        {
-            return source->getNextVideoFrame();
-        }
-        return frame;
-     */
-    //}
+    VideoFrame LumaFilterNodeBased::getNextVideoFrame()
+    {
+        cout << "@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@@@@@@@@@@@@@@@@@" << endl;
+        cout << "@@@@@@@@@@@@@@@@@" << endl;
+    }
 
     //--------------------------------------------------------------
     void LumaFilterNodeBased::newVideoFrame(VideoFrame & _frame)
@@ -76,12 +61,14 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
-            if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
+            int w = _frame.getWidth();
+            int h = _frame.getHeight();
+            
+            if (!isAllocated || w != fbo.getWidth() || h != fbo.getHeight())
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(w, h);
             }
 
-            if(fbo.isAllocated())
             {
                 fbo.begin();
                 {
@@ -89,22 +76,18 @@ namespace ofxPm{
                     shader.begin();
                     {
                         shader.setUniformTexture("tex0",_frame.getTextureRef(),11);
-                        shader.setUniform1f("u_smooth",lumaSmooth);
-                        shader.setUniform1f("u_max",lumaThreshold);
+                        shader.setUniform1f("u_smooth",paramLumaSmooth);
+                        shader.setUniform1f("u_max",paramLumaThrshold);
                         
                         ofSetColor(255);
-                        int w = _frame.getWidth();
-                        int h = _frame.getHeight();
-                        
                         _frame.getTextureRef().draw(0,0,w,h);
                     }
                     shader.end();
                 }
                 fbo.end();
                 
-                frame = VideoFrame::newVideoFrame(fbo);
+                paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }
-        paramFrameOut = frame;
     }
 }

@@ -18,25 +18,18 @@ namespace ofxPm{
     //--------------------------------------------------------------
     void ColorCorrectFilter::setupNodeBased()
     {
-        source = NULL;
+        color = ofColor::darkMagenta;
         fps = -1;
         
         string shaderName = "shaders/colorBalance";
         shader.load(shaderName);
         cout << "ColorCorrect::Loading Shader : " << shaderName << endl;
-        // allocate fbo where to draw
-        if (fbo.isAllocated())
-        {
-            fbo.allocate(source->getWidth(),source->getHeight(),GL_RGBA);
-        }
-                
-        parameters->add(paramFrameIn.set("Frame Input", frame));
+        
+        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
         parameters->add(paramRed.set("Red",1.0,0.0,10.0));
         parameters->add(paramGreen.set("Green",1.0,0.0,10.0));
         parameters->add(paramBlue.set("Blue",1.0,0.0,10.0));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
-        
-//        paramLumaThrshold.addListener(this, &ColorCorrectFilter::setLumaThreshold);
+        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         paramFrameIn.addListener(this, &ColorCorrectFilter::newVideoFrame);
         
@@ -44,26 +37,8 @@ namespace ofxPm{
     //------------------------------------------------------------
     void ColorCorrectFilter::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
     }
     
-
-    //--------------------------------------------------------------
-    //VideoFrame LumaFilterNodeBased::getNextVideoFrame()
-    //{
-    /*
-        if(source->getNextVideoFrame()!=NULL)
-        {
-            return source->getNextVideoFrame();
-        }
-        return frame;
-     */
-    //}
-
     //--------------------------------------------------------------
     void ColorCorrectFilter::newVideoFrame(VideoFrame & _frame)
     {
@@ -72,12 +47,14 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
-            if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
+            int w = _frame.getWidth();
+            int h = _frame.getHeight();
+            
+            if (!isAllocated || w != fbo.getWidth() || h != fbo.getHeight())
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(w, h);
             }
 
-            if(fbo.isAllocated())
             {
                 fbo.begin();
                 {
@@ -100,9 +77,8 @@ namespace ofxPm{
                 }
                 fbo.end();
                 
-                frame = VideoFrame::newVideoFrame(fbo);
+                paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }
-        paramFrameOut = frame;
     }
 }

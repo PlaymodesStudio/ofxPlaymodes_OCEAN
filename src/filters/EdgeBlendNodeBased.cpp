@@ -19,26 +19,16 @@ namespace ofxPm{
     void EdgeBlendNodeBased::setupNodeBased()
     {
         color = ofColor::darkMagenta;
-
-        lumaSmooth=0.25;
-        lumaThreshold=0.025;
-        source = NULL;
         fps = -1;
         
         string shaderName = "shaders/gradient";
         shader.load(shaderName);
         cout << "EdgeBlendNodeBased::Loading Shader : " << shaderName << endl;
-        // allocate fbo where to draw
-        if (fbo.isAllocated())
-        {
-            fbo.allocate(source->getWidth(),source->getHeight(),GL_RGBA);
-        }
-                
+        
         parameters->add(paramFrameIn.set("Frame Input", frame));
         parameters->add(paramGradientWidth.set("Width",0.25,0.0,1.0));
         parameters->add(paramGradientXorY.set("X or Y",1,0,1));
         parameters->add(paramFrameOut.set("Frame Output", frame));
-        
         
         paramGradientWidth.addListener(this, &EdgeBlendNodeBased::setGradientWidth);
         paramGradientXorY.addListener(this, &EdgeBlendNodeBased::setGradientXorY);
@@ -48,13 +38,19 @@ namespace ofxPm{
     //------------------------------------------------------------
     void EdgeBlendNodeBased::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
+//        if(fboHasToBeAllocated != glm::vec2(-1, -1))
+//        {
+//            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
+//            fboHasToBeAllocated = glm::vec2(-1, -1);
+//        }
     }
     
+    //------------------------------------------------------------
+    VideoFrame EdgeBlendNodeBased::getNextVideoFrame()
+    {
+        return frame;
+        
+    }
     //--------------------------------------------------------------
     void EdgeBlendNodeBased::newVideoFrame(VideoFrame & _frame)
     {
@@ -63,12 +59,14 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
+            int w = _frame.getWidth();
+            int h = _frame.getHeight();
+
             if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(w, h);
             }
 
-            if(fbo.isAllocated())
             {
                 fbo.begin();
                 {
@@ -80,18 +78,16 @@ namespace ofxPm{
                         shader.setUniform1i("u_xory",paramGradientXorY);
 
                         ofSetColor(255);
-                        int w = _frame.getWidth();
-                        int h = _frame.getHeight();
-                        
                         _frame.getTextureRef().draw(0,0,w,h);
                     }
                     shader.end();
                 }
                 fbo.end();
                 
-                frame = VideoFrame::newVideoFrame(fbo);
+                //frame = VideoFrame::newVideoFrame(fbo.getTexture());
+                paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }
-        paramFrameOut = frame;
+        
     }
 }

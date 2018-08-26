@@ -19,16 +19,8 @@ namespace ofxPm{
     void VideoPsLayer::setupNodeBased()
     {
         color = ofColor::yellow;
-
-        source = NULL;
         fps = -1;
         
-        // allocate fbo where to draw
-        if (!fbo.isAllocated())
-        {
-            fbo.allocate(640,480,GL_RGBA);
-        }
-                
         parameters->add(paramFrameIn.set("Frame Input 1", VideoFrame()));
         parameters->add(paramFrameIn2.set("Frame Input 2", VideoFrame()));
         parameters->add(paramOpacityBase.set("Opacity Base",1,0.0,1.0));
@@ -38,19 +30,10 @@ namespace ofxPm{
                 
         paramFrameIn2.addListener(this, &VideoPsLayer::newVideoFrame);
         
-        setFrameResolution(640, 480);
-
     }
     //------------------------------------------------------------
     void VideoPsLayer::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
-        
-//        if(paramFrameIn.get()!=nullptr && paramFrameIn2.get()!=NULL)
         VideoFrame vf1 = paramFrameIn.get();
         if(!vf1.isNullPtr())
         {
@@ -63,19 +46,6 @@ namespace ofxPm{
         }
     }
     
-
-    //--------------------------------------------------------------
-    //VideoFrame LumaFilterNodeBased::getNextVideoFrame()
-    //{
-    /*
-        if(source->getNextVideoFrame()!=NULL)
-        {
-            return source->getNextVideoFrame();
-        }
-        return frame;
-     */
-    //}
-
     //--------------------------------------------------------------
     void VideoPsLayer::newVideoFrame(VideoFrame & _frame)
     {
@@ -84,12 +54,14 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
+            int w = _frame.getWidth();
+            int h = _frame.getHeight();
+            
             if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(w, h);
             }
-
-            if(fbo.isAllocated())
+            
             {
                 fbo.begin();
                 {
@@ -111,10 +83,9 @@ namespace ofxPm{
                 }
                 fbo.end();
                 
-                frame = VideoFrame::newVideoFrame(fbo);
+                paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }
-        paramFrameOut = frame;
     }
     
     //--------------------------------------------------------

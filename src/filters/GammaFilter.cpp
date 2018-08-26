@@ -19,24 +19,17 @@ namespace ofxPm{
     void GammaFilter::setupNodeBased()
     {
         color = ofColor::darkMagenta;
-
-        source = NULL;
         fps = -1;
         
         string shaderName = "shaders/gamma";
         shader.load(shaderName);
         cout << "GammaFilter::Loading Shader : " << shaderName << endl;
-        // allocate fbo where to draw
-        if (fbo.isAllocated())
-        {
-            fbo.allocate(source->getWidth(),source->getHeight(),GL_RGBA);
-        }
-                
-        parameters->add(paramFrameIn.set("Frame Input", frame));
+        
+        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
         parameters->add(paramMin.set("Min",0,0.0,1.0));
         parameters->add(paramMax.set("Max",1.0,0.0,1.0));
         parameters->add(paramGamma.set("Gamma",1.0,0.0,4.0));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         paramMin.addListener(this, &GammaFilter::setMin);
         paramMax.addListener(this, &GammaFilter::setMax);
@@ -47,26 +40,9 @@ namespace ofxPm{
     //------------------------------------------------------------
     void GammaFilter::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
+
     }
     
-
-    //--------------------------------------------------------------
-    //VideoFrame LumaFilterNodeBased::getNextVideoFrame()
-    //{
-    /*
-        if(source->getNextVideoFrame()!=NULL)
-        {
-            return source->getNextVideoFrame();
-        }
-        return frame;
-     */
-    //}
-
     //--------------------------------------------------------------
     void GammaFilter::newVideoFrame(VideoFrame & _frame)
     {
@@ -75,12 +51,14 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
+            int w = _frame.getWidth();
+            int h = _frame.getHeight();
+            
             if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(w, h);
             }
-
-            if(fbo.isAllocated())
+            
             {
                 fbo.begin();
                 {
@@ -102,9 +80,8 @@ namespace ofxPm{
                 }
                 fbo.end();
                 
-                frame = VideoFrame::newVideoFrame(fbo);
+                paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }
-        paramFrameOut = frame;
     }
 }

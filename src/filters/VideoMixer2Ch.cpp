@@ -19,26 +19,18 @@ namespace ofxPm{
     void VideoMixer2Ch::setupNodeBased()
     {
         color = ofColor::yellow;
-
-        source = NULL;
         fps = -1;
         
         string shaderName = "shaders/mixer2ch";
         shader.load(shaderName);
         cout << "Mixer::Loading Shader : " << shaderName << endl;
-        // allocate fbo where to draw
-        if (fbo.isAllocated())
-        {
-            fbo.allocate(source->getWidth(),source->getHeight(),GL_RGBA);
-        }
 
-        parameters->add(paramFrameIn.set("Frame Input 1", frame));
-        parameters->add(paramFrameIn2.set("Frame Input 2", frame));
+        parameters->add(paramFrameIn.set("Frame Input 1", VideoFrame()));
+        parameters->add(paramFrameIn2.set("Frame Input 2", VideoFrame()));
         parameters->add(paramCrossfade.set("Crossfade",0.0,0.0,1.0));
         parameters->add(paramMixMode.set("Mix Mode",0,0,2));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
-//        paramLumaThrshold.addListener(this, &VideoMixer2Ch::setLumaThreshold);
         
         paramFrameIn.addListener(this, &VideoMixer2Ch::newVideoFrame);
         paramFrameIn2.addListener(this, &VideoMixer2Ch::newVideoFrame2);
@@ -49,24 +41,8 @@ namespace ofxPm{
     //------------------------------------------------------------
     void VideoMixer2Ch::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
     }
     
-    //--------------------------------------------------------------
-    //VideoFrame VideoMixer2Ch::getNextVideoFrame()
-    //{
-    /*
-        if(source->getNextVideoFrame()!=NULL)
-        {
-            return source->getNextVideoFrame();
-        }
-        return frame;
-     */
-    //}
     //--------------------------------------------------------------
     void VideoMixer2Ch::newVideoFrame2(VideoFrame & _frame)
     {
@@ -85,12 +61,14 @@ namespace ofxPm{
         
         if(!frameIsNull)
         {
+            int w = _frame.getWidth();
+            int h = _frame.getHeight();
+            
             if (!isAllocated || _frame.getWidth() != fbo.getWidth() || _frame.getHeight() != fbo.getHeight())
             {
-                fboHasToBeAllocated = glm::vec2(_frame.getWidth(), _frame.getHeight());
+                fbo.allocate(w, h);
             }
-
-            if(fbo.isAllocated())
+            
             {
                 fbo.begin();
                 {
@@ -111,10 +89,9 @@ namespace ofxPm{
                 }
                 fbo.end();
                 
-                frame = VideoFrame::newVideoFrame(fbo);
+                paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }
-        paramFrameOut = frame;
     }
 
 }

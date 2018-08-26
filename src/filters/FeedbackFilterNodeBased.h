@@ -29,14 +29,13 @@ public:
 
     
 private:
-	VideoFrame      frame;
+	VideoFrame      frameToSendOut;
     ofFbo           fbo;
 	ofShader        shader;
 	bool            newFrame;
     ofPlanePrimitive plane;
 	//ofMutex swapBuffersMutex;
     float fps;
-    VideoFrame      lastFrameRendered;
     glm::vec2       fboHasToBeAllocated;
 
     

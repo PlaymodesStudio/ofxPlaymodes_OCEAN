@@ -22,16 +22,14 @@ public:
     void update(ofEventArgs &e) override;
 
     
-    VideoFrame getNextVideoFrame(){return VideoFrame();};
+    VideoFrame getNextVideoFrame(){};
 	void newVideoFrame(VideoFrame & frame);
     void newVideoFrame2(VideoFrame & frame);
-    float getFps(){return source->getFps();};
+    float getFps(){return fps;};
     
 private:
     
-	VideoFrame      frame;
     ofFbo           fbo;
-	VideoSource     *source;
 	ofShader        shader;
 	bool            newFrame;
     ofPlanePrimitive plane;

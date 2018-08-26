@@ -50,7 +50,7 @@ namespace ofxPm{
 
         ofAddListener(_phasor.phasorCycle, this, &GatorFilter::phasorCycleEvent);
         
-        setFrameResolution(1280, 720);
+        //setFrameResolution(1280, 720);
 
 
     }
