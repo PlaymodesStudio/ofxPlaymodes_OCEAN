@@ -12,8 +12,8 @@ namespace ofxPm
 {
 int VideoFrame::total_num_frames=0;
 map<VideoFormat,vector<ofPtr<VideoFrame::Obj> > > VideoFrame::pool;
-//ofMutex VideoFrame::poolMutex;
-std::mutex VideoFrame::poolMutex;
+ofMutex VideoFrame::poolMutex;
+//std::mutex VideoFrame::poolMutex;
     
 class VideoFrame::Obj{
 public:
@@ -29,26 +29,34 @@ public:
 	,pixelsChanged(true)
 	,createdTexPixels(true)
 	{
+    
+        //cout << "TNF :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		total_num_frames++;
+        //cout <<"______ Total : "<< total_num_frames << endl;
 	}
 	Obj(ofTexture & videoFrame)
 	:pixelsChanged(false)
 	,createdTexPixels(false)
 	{
-    pixels.allocate(videoFrame.getWidth(),videoFrame.getHeight(),ofGetImageTypeFromGLType(videoFrame.texData.glInternalFormat));
+         //cout << "VFT :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
+        pixels.allocate(videoFrame.getWidth(),videoFrame.getHeight(),ofGetImageTypeFromGLType(videoFrame.texData.glInternalFormat));
 		updateTexture(videoFrame);
 		total_num_frames++;
+        //cout <<"______"<< total_num_frames << endl;
 	}
 	Obj(ofFbo & videoFrame)
 	:pixelsChanged(false)
 	,createdTexPixels(false)
 	{
+        //cout << "VFF :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		pixels.allocate(videoFrame.getWidth(),videoFrame.getHeight(),ofGetImageTypeFromGLType(videoFrame.getTextureReference().texData.glInternalFormat));
 		updateTexture(videoFrame);
 		total_num_frames++;
+        //cout <<"______"<< total_num_frames << endl;
 	}
 
 	void updateTexture(ofTexture & videoFrame){
+        //cout << "UTX :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		if(!fbo.isAllocated()){
 			fbo.allocate(videoFrame.getWidth(),videoFrame.getHeight(),videoFrame.texData.glInternalFormat);
 		}
@@ -81,6 +89,7 @@ public:
 
 
 	void updateTexture(ofFbo & videoFrame){
+        //cout << "UPD :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		if(!fbo.isAllocated()){
 			fbo.allocate(videoFrame.getWidth(),videoFrame.getHeight(),videoFrame.getTextureReference().texData.glInternalFormat);
 		}
@@ -122,8 +131,11 @@ public:
 	}
 
 	VideoFrame VideoFrame::newVideoFrame(const ofPixels & videoFrame){
+        //cout << "PIX :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		VideoFormat format(videoFrame);
+        
 		poolMutex.lock();
+        
 		if(!pool[format].empty()){
 			VideoFrame frame;
 			//cout << "returning frame from pool" << endl;
@@ -144,6 +156,7 @@ public:
 	}
 
 	VideoFrame VideoFrame::newVideoFrame(ofTexture & tex){
+        //cout << "TEX :" <<ofGetWindowPtr()->getNSGLContext() << endl;
 		VideoFormat format(tex);
 		poolMutex.lock();
 		if(!pool[format].empty()){
@@ -166,9 +179,14 @@ public:
 	}
 
 	VideoFrame VideoFrame::newVideoFrame(ofFbo & videoFrame){
+        //cout << "FRM :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		VideoFormat format(videoFrame);
-		poolMutex.lock();
-		if(!pool[format].empty()){
+		
+        poolMutex.lock();
+        
+        if(!pool[format].empty()){
+            //cout << "/////////////////////////////// " << format.width << " h : " << format.height << " Ch. : " << format.numChannels << endl;
+
 			VideoFrame frame;
 			//cout << "returning frame from pool" << endl;
 			frame.data = pool[format].back();
@@ -182,7 +200,9 @@ public:
 			frame.data->createdTexPixels = false;
 			return frame;
 		}else{
-			poolMutex.unlock();
+            //cout << "XXXXXXXXXXXXXX __ LEAKING ? __ XXXXXXXXXXXXXXXXXX  " << format.width << " h : " << format.height << " Ch. : " << format.numChannels << endl;
+
+            poolMutex.unlock();
 			return VideoFrame(videoFrame);
 		}
 	}
@@ -197,18 +217,23 @@ public:
 
 	void VideoFrame::poolDeleter(VideoFrame::Obj * obj)
     {
-//        poolMutex.lock();
-//        pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
-//        poolMutex.unlock();
+        poolMutex.lock();
+        pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
+        poolMutex.unlock();
+
+        /*
         try
         {
-            std::unique_lock<std::mutex> lock(poolMutex);
+            //std::unique_lock<std::mutex> lock(poolMutex);
+            poolMutex.lock();
             pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
         }
         catch(const std::exception& e)
         {
-            /* When program terminates, acquiring lock is impossible. */
+      
         }
+        */
+        
 	}
 
 	ofPixels & VideoFrame::getPixelsRef(){
@@ -241,20 +266,19 @@ public:
 	}
 
 	int VideoFrame::getPoolSize(const VideoFormat & format){
-//        ScopedLock<ofMutex> lock(poolMutex);
-//        return pool[format].size();
-        std::unique_lock<std::mutex> lock(poolMutex);
-        return pool[format].size();
+
+        //std::unique_lock<std::mutex> lock(poolMutex);
+        poolMutex.lock();
+        int res =pool[format].size();
+        poolMutex.unlock();
+
+        return res;
 	}
 
 
 	int VideoFrame::getTotalNumFrames(){
 		return total_num_frames;
 	}
-
-//	VideoFrame::operator void*(){
-//		return data.get();
-//	}
 
 	void VideoFrame::setTextureOnly(bool texOnly){
 		data->createdTexPixels=!texOnly;
