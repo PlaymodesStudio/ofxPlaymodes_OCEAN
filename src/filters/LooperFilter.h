@@ -28,12 +28,10 @@ protected:
     
     float                               fps;
     ofParameter<bool>                   paramDoLoop;
-    ofParameter<bool>                   paramDoRec;
     ofParameter<int>                    paramCapturedTimeBeatDiv;
     ofParameter<int>                    paramCapturedTimeBeatMult;
     ofParameter<float>                  paramGatePct;
     ofParameter<void>                   paramRestart;
-    ofParameter<int>                    paramRefreshLoopAt;
     ofParameter<float>                  paramSpeedBoost;
     ofParameter<float>                  paramOffsetMs;
     
