@@ -19,7 +19,8 @@ public:
 	VideoBufferNodeBased();
 	virtual ~VideoBufferNodeBased();
 
-    void setupNodeBased(int size, bool allocateOnSetup=false);
+    void setup()override{setupNodeBased();};
+    void setupNodeBased();
 
     // of working in threaded mode,
     // call buffer->lock() buffer->unlock()
@@ -43,10 +44,11 @@ public:
 	virtual void newVideoFrame(VideoFrame &frame);  // for notification of new frame event
 
     unsigned int getSizeInFrames();
-	unsigned int getMaxSize();                         // max size of the buffer
+    void         setMaxSize(int i){maxSize=i;};
+	unsigned int getMaxSize(); // max size of the buffer
 
 	float getFps();                                   // fps of the video source
-
+    int getBufferSize(){return this->frames.size();};
     Timestamp getLastTimestamp();                 // timestamp for the last frame
 //    TimeDiff getTotalTime();                      // total time of the buffer in microseconds
 //    Timestamp getInitTime();                      // time of the first frame in the recording
