@@ -7,7 +7,7 @@ namespace ofxPm
     //------------------------------------------------------
     VideoBufferNodeBased::VideoBufferNodeBased(): ofxOceanodeNodeModel("Video Buffer")
     {
-        setupNodeBased();
+        
     }
 
 
