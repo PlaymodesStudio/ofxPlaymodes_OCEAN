@@ -16,14 +16,10 @@ namespace ofxPm{
         VideoTrioRendererNodeBased();
         ~VideoTrioRendererNodeBased();
         
-        void setup();
+        void setup ();
         void draw(int x,int y,int w,int h);
-        //    void draw(int x,int y);
-        //    void draw();
-        //    void draw(ofEventArgs &e);
         void newVideoFrame(VideoFrame & frame);
         void newVideoFrame2(VideoFrame & frame);
-        void newVideoFrame3(VideoFrame & frame);
 
         ofTexture   getLastFrameTexture();
         void        showMyExternalWindow(bool b);
@@ -33,29 +29,35 @@ namespace ofxPm{
         ofParameter<float>                  paramOverlap;
         ofParameter<bool>                   paramMinMaxBlend;
         ofParameter<ofxPm::VideoFrame>      paramFrameIn2;
-        ofParameter<ofxPm::VideoFrame>      paramFrameIn3;
         ofParameter<float>                  paramGradientWidth;
         ofParameter<int>                    paramGradientXorY;
         
         ofParameter<int>                    paramFlipMode;
+        ofParameter<int>                    paramLayout;
 
-        ofxPm::EdgeBlendNodeBased           edgeBlend;
-        
+        VideoFrame* frameRefCentre;
+        VideoFrame* frameRefDreta;
+        VideoFrame* frameRefEsquerra;
+
         ofImage                             backImage;
+        
+        void presetHasLoaded() override {
+            parameters->getBool("Show Window") = true;
+        }
         
     private:
         VideoFrame  vFrame;
         VideoFrame  vFrame2;
-        VideoFrame  vFrame3;
 
         vector<vector<int>> flips;
+        vector<vector<int>> layouts;
+        
         void changedFlipMode(int &m);
         
-
         void drawInExternalWindow(ofEventArgs &e) override;
         void keyPressed(ofKeyEventArgs &a) override;
         void mousePressed(ofMouseEventArgs &a) override;
-        
+
     };
 }
 
