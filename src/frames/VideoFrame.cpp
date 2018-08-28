@@ -55,13 +55,13 @@ public:
         //cout <<"______"<< total_num_frames << endl;
 	}
 
-	void updateTexture(ofTexture & videoFrame){
+	void updateTexture(ofTexture & _tex){
         //cout << "UTX :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		if(!fbo.isAllocated()){
-			fbo.allocate(videoFrame.getWidth(),videoFrame.getHeight(),videoFrame.texData.glInternalFormat);
+			fbo.allocate(_tex.getWidth(),_tex.getHeight(),_tex.texData.glInternalFormat);
 		}
 		fbo.begin();
-		videoFrame.bind();
+		_tex.bind();
 		ofMesh mesh;
 		mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 		mesh.addTexCoord(ofVec2f(0,0));
@@ -69,9 +69,9 @@ public:
 		mesh.addTexCoord(ofVec2f(1.0,1.0));
 		mesh.addTexCoord(ofVec2f(0,1.0));
 		mesh.addVertex(ofVec3f(0,0));
-		mesh.addVertex(ofVec3f(videoFrame.getWidth(),0));
-		mesh.addVertex(ofVec3f(videoFrame.getWidth(),videoFrame.getHeight()));
-		mesh.addVertex(ofVec3f(0,videoFrame.getHeight()));
+		mesh.addVertex(ofVec3f(_tex.getWidth(),0));
+		mesh.addVertex(ofVec3f(_tex.getWidth(),_tex.getHeight()));
+		mesh.addVertex(ofVec3f(0,_tex.getHeight()));
 
 //        mesh.addTexCoord(ofVec2f(0,0));
 //        mesh.addTexCoord(ofVec2f(videoFrame.getWidth(),0));
@@ -83,21 +83,21 @@ public:
 //        mesh.addVertex(ofVec3f(0,videoFrame.getHeight()));
 
         mesh.draw();
-		videoFrame.unbind();
+		_tex.unbind();
 		fbo.end();
 	}
 
 
-	void updateTexture(ofFbo & videoFrame){
+	void updateTexture(ofFbo & _fbo){
         //cout << "UPD :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		if(!fbo.isAllocated()){
-			fbo.allocate(videoFrame.getWidth(),videoFrame.getHeight(),videoFrame.getTextureReference().texData.glInternalFormat);
+			fbo.allocate(_fbo.getWidth(),_fbo.getHeight(),_fbo.getTextureReference().texData.glInternalFormat);
 		}
-		videoFrame.bind();
+		_fbo.bind();
 		glReadBuffer(GL_COLOR_ATTACHMENT0);
 		glBindTexture(fbo.getTextureReference().texData.textureTarget, (GLuint)fbo.getTextureReference().texData.textureID);
 		glCopyTexImage2D(fbo.getTextureReference().texData.textureTarget,0,fbo.getTextureReference().texData.glInternalFormat,0,0,fbo.getWidth(),fbo.getHeight(),0);
-		videoFrame.unbind();
+		_fbo.unbind();
 		glReadBuffer(GL_BACK);
 	}
 
@@ -126,13 +126,19 @@ public:
 
 	}
 
-	VideoFrame::~VideoFrame(){
-        
+	VideoFrame::~VideoFrame()
+    {
+        //cout << "Destroying VideoFrame!!" << endl;
+        if(data != nullptr)
+        {
+            //cout << "Pixels : Alloc : " << data->pixels.isAllocated() << " Size : " << data->pixels.size() << endl;
+            
+        }
 	}
 
-	VideoFrame VideoFrame::newVideoFrame(const ofPixels & videoFrame){
+	VideoFrame VideoFrame::newVideoFrame(const ofPixels & _pix){
         //cout << "PIX :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
-		VideoFormat format(videoFrame);
+		VideoFormat format(_pix);
         
 		poolMutex.lock();
         
@@ -144,20 +150,23 @@ public:
 			poolMutex.unlock();
 
 			frame.refreshTimestamp();
-			frame.data->pixels = videoFrame;
+			frame.data->pixels = _pix;
 			frame.data->pixelsChanged = true;
 			frame.data->createdTexPixels = true;
 			return frame;
 		}else{
+            //cout << "XXXXXXXXXXXXXX __ LEAKING PIXELS __ XXXXXXXXXXXXXXXXXX  " << format.width << " h : " << format.height << " Ch. : " << format.numChannels << endl;
+            
+
 			poolMutex.unlock();
-			return VideoFrame(videoFrame);
+			return VideoFrame(_pix);
 		}
         
 	}
 
-	VideoFrame VideoFrame::newVideoFrame(ofTexture & tex){
+	VideoFrame VideoFrame::newVideoFrame(ofTexture & _tex){
         //cout << "TEX :" <<ofGetWindowPtr()->getNSGLContext() << endl;
-		VideoFormat format(tex);
+		VideoFormat format(_tex);
 		poolMutex.lock();
 		if(!pool[format].empty()){
 			VideoFrame frame;
@@ -168,21 +177,26 @@ public:
 
 			frame.refreshTimestamp();
 			frame.getFboRef();
-			frame.data->updateTexture(tex);
+			frame.data->updateTexture(_tex);
 			frame.data->pixelsChanged = false;
 			frame.data->createdTexPixels = false;
 			return frame;
 		}else{
+            //cout << "XXXXXXXXXXXXXX __ LEAKING TEXTURE __ XXXXXXXXXXXXXXXXXX  " << format.width << " h : " << format.height << " Ch. : " << format.numChannels << endl;
+
 			poolMutex.unlock();
-			return VideoFrame(tex);
+			return VideoFrame(_tex);
 		}
 	}
 
-	VideoFrame VideoFrame::newVideoFrame(ofFbo & videoFrame){
+	VideoFrame VideoFrame::newVideoFrame(ofFbo & videoFrame)
+    {
         //cout << "FRM :" <<  ofGetWindowPtr()->getNSGLContext() << endl;
 		VideoFormat format(videoFrame);
 		
         poolMutex.lock();
+        
+        
         
         if(!pool[format].empty()){
             //cout << "/////////////////////////////// " << format.width << " h : " << format.height << " Ch. : " << format.numChannels << endl;
@@ -200,7 +214,7 @@ public:
 			frame.data->createdTexPixels = false;
 			return frame;
 		}else{
-            //cout << "XXXXXXXXXXXXXX __ LEAKING ? __ XXXXXXXXXXXXXXXXXX  " << format.width << " h : " << format.height << " Ch. : " << format.numChannels << endl;
+            //cout << "XXXXXXXXXXXXXX __ LEAKING FBO __ XXXXXXXXXXXXXXXXXX  " << format.width << " h : " << format.height << " Ch. : " << format.numChannels << endl;
 
             poolMutex.unlock();
 			return VideoFrame(videoFrame);
@@ -219,13 +233,22 @@ public:
     {
         poolMutex.lock();
         pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
+        
+        int size =pool[VideoFormat(obj->pixels)].size();
+        if(size>1)
+        {
+//            cout << "___Pool Size :: " << size;
+        }
+//        cout << "___VideoFormat num ch :  " << VideoFormat(obj->pixels).numChannels << endl;
+        //delete obj;
         poolMutex.unlock();
-
+        //cout << "  @@@@@@@ Pool deleter !! " << endl;
+        
         /*
         try
         {
-            //std::unique_lock<std::mutex> lock(poolMutex);
-            poolMutex.lock();
+            std::unique_lock<std::mutex> lock(poolMutex);
+            //poolMutex.lock();
             pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
         }
         catch(const std::exception& e)

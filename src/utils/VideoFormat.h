@@ -18,17 +18,41 @@ public:
 	VideoFormat(const ofPixels & pixels)
 	:width(pixels.getWidth())
 	,height(pixels.getHeight())
-	,numChannels(pixels.getNumChannels()){}
+//    ,numChannels(3){}
+    ,numChannels(pixels.getNumChannels()){}
 
 	VideoFormat(ofTexture & tex)
 	:width(tex.getWidth())
 	,height(tex.getHeight())
-	,numChannels(3){}
-
-	VideoFormat(ofFbo & fbo)
+	,numChannels(0)
+    {
+        switch (tex.getTextureData().glInternalFormat)
+        {
+            case GL_RGB :
+                numChannels = 3;
+                break;
+            case GL_RGBA :
+                numChannels = 4;
+                break;
+        }
+    }
+    
+    VideoFormat(ofFbo & fbo)
 	:width(fbo.getWidth())
 	,height(fbo.getHeight())
-	,numChannels(3){}
+    ,numChannels(0)
+    {
+        switch (fbo.getTexture().getTextureData().glInternalFormat)
+        {
+            case GL_RGB :
+                numChannels = 3;
+                break;
+            case GL_RGBA :
+                numChannels = 4;
+                break;
+        }
+    }
+
 
 	int width, height, numChannels;
 
