@@ -67,7 +67,7 @@ namespace ofxPm{
         parameters->add(paramManualOrBPM.set("Timming Man/BPM", false));
         ofParameter<char> pc("Manual",' ');
         parameters->add(pc);
-        parameters->add(paramDelayMs.set("Delay Ms",0.0,0.0,10000.0));
+        parameters->add(paramDelayMs.set("Delay Ms",0.0,0.0,4000));
         ofParameter<char> pc2("BPM",' ');
         parameters->add(pc2);
         parameters->add(paramBeatDiv.set("Beats Div",1,1,32));

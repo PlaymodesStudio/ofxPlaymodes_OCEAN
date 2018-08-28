@@ -68,12 +68,13 @@ namespace ofxPm{
         {
             pix[i] = 0;
         }
-        blackFrame = VideoFrame(pix);
+
+        blackFrame = VideoFrame::newVideoFrame(pix);
         for(int i=0;i<frameResolution.x*frameResolution.y*3;i++)
         {
             pix[i] = 255;
         }
-        whiteFrame = VideoFrame(pix);
+        whiteFrame = VideoFrame::newVideoFrame(pix);
 
     }
 

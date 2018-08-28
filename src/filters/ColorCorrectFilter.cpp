@@ -62,7 +62,6 @@ namespace ofxPm{
                     shader.begin();
                     {
                         shader.setUniformTexture("tex0",_frame.getTextureRef(),11);
-                        
                         shader.setUniform1f("u_red",paramRed);
                         shader.setUniform1f("u_green",paramGreen);
                         shader.setUniform1f("u_blue",paramBlue);
@@ -72,12 +71,14 @@ namespace ofxPm{
                         int h = _frame.getHeight();
                         
                         _frame.getTextureRef().draw(0,0,w,h);
+                        //_frame.getTextureRef().unbind();
                     }
                     shader.end();
                 }
                 fbo.end();
                 
                 paramFrameOut = VideoFrame::newVideoFrame(fbo);
+                //paramFrameOut = VideoFrame(fbo);
             }
         }
     }
