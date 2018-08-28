@@ -31,6 +31,8 @@ namespace ofxPm{
         parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
         parameters->add(paramLinearDistribution.set("Linear Distribution",true));
         parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
+        parameters->add(paramOversize.set("Oversize",0,0,1));
+        
         parameters->add(paramFrameOut.set("Frame Output", frame));
 
         paramOffsetBeatDiv.addListener(this, &MultixFilter::recalculate);
@@ -243,6 +245,13 @@ VideoFrame MultixFilter::getNextVideoFrame()
 //--------------------------------------------------------
 void MultixFilter::newVideoFrame(VideoFrame & _frame)
 {
+    //set buffer size ?
+    int desiredBufferSize = 900;
+    if(paramVideoBufferInput.get()->getMaxSize()!=desiredBufferSize)
+    {
+        paramVideoBufferInput.get()->setMaxSize(desiredBufferSize);
+    }
+
     if(paramNumHeaders>0)
     {
         fbo.begin();
@@ -279,6 +288,7 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
     float totalBufferSizeInMs = paramVideoBufferInput.get()->getMaxSize() * oneFrameMs;
 
     float opac = 1.0;
+    bool anyOversize=false;
 	for(int i = paramNumHeaders-1; i>=0; i--)
     {
         // if delay time of each videoRenderer is in the right range of Ms (0..TotalMs)
@@ -307,12 +317,17 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
             {
                 vf.getTextureRef().draw(x,y,w,h);
             }
+            paramOversize =0;
         }
         else
         {
-            cout << "MultixFilter:: Out of time in Ms range !! Copy : " << i << "Delay in Ms = " << multixDelaysInMs[i] << endl;
+            //cout << "MultixFilter:: Out of time in Ms range !! Copy : " << i << "Delay in Ms = " << multixDelaysInMs[i] << " Max Buffer Size : " << paramVideoBufferInput.get()->getMaxSize() << endl;
+            anyOversize=true;
+            
         }
 	}
+    if(anyOversize) paramOversize = 1;
+    else paramOversize = 0;
     ofDisableAlphaBlending();
 
     
@@ -358,6 +373,7 @@ bool MultixFilter::isMinmaxBlend() const
                 // setup Headers
                 videoHeader.setup(paramVideoBufferInput.get());
                 videoHeader.setDelayMs(0.0);
+                
             }
         
             ofxPm::VideoFrame vf;
