@@ -187,7 +187,7 @@ void VideoTrioRendererNodeBased::draw(int x,int y,int w,int h)
         b3=true;
     }
 
-    if(b1 || b2 || b3)
+    if(b1 || b2 || b3)
     {
         
         // start drawing
