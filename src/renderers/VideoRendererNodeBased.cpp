@@ -23,11 +23,9 @@ namespace ofxPm
     {
         color = ofColor::yellow;
 
-        vFrame = ofxPm::VideoFrame();
-        
-        parameters->add(paramFrameIn.set("Frame In", vFrame));
-        parameters->add(paramResolutionX.set("Resolution X",640,0,1920));
-        parameters->add(paramResolutionY.set("Resolution Y",480,0,1080));
+        parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
+        parameters->add(paramResolutionX.set("Resolution X",320,0,1920));
+        parameters->add(paramResolutionY.set("Resolution Y",240,0,1080));
         parameters->add(paramPositionX.set("Position X",0,0,1920));
         parameters->add(paramPositionY.set("Position Y",0,0,1080));
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));

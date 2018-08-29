@@ -22,10 +22,8 @@ namespace ofxPm
     void VideoRendererWindowNodeBased::setupNodeBased()
     {
         color = ofColor::yellow;
-
-        vFrame = ofxPm::VideoFrame();
         
-        parameters->add(paramFrameIn.set("Frame In", vFrame));
+        parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
 
                         
@@ -55,7 +53,6 @@ namespace ofxPm
                 ofSetColor(255.0*paramOpacity);
                 //ofSetColor(128,128,128,128);
                 vFrame.getTextureRef().draw(x,y,w,h);
-                ofDrawCircle(0,0,100);
             }
         }
     }

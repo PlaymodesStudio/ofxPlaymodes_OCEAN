@@ -6,6 +6,8 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     VideoGrabberPS3EyeNodeBased::VideoGrabberPS3EyeNodeBased(): ofxOceanodeNodeModel("Video Grabber PS3 Eye")
     {
+        color = ofColor::darkGreen;
+
         parameters->add(paramConnect.set("Connect"));
         parameters->add(paramExposure.set("Exposure",255,0,255));
         parameters->add(paramHue.set("Hue",127,0,255));
@@ -19,8 +21,6 @@ namespace ofxPm{
         paramAutoGain.addListener(this, &VideoGrabberPS3EyeNodeBased::setAutoGain);
         paramHue.addListener(this, &VideoGrabberPS3EyeNodeBased::setHue);
         paramAutoWB.addListener(this,&VideoGrabberPS3EyeNodeBased::setAutoWhiteBalance);
-
-        color = ofColor::darkGreen;
 
     }
 
@@ -54,6 +54,12 @@ namespace ofxPm{
             //        videoTexture.allocate(eye->getWidth(), eye->getHeight(), GL_BGR_EXT);
             videoTexture.allocate(eye->getWidth(), eye->getHeight(), GL_RGB);
         }
+        
+        int expo = paramExposure.get();
+        setExposure(expo);
+        int wb = paramHue.get();
+        setHue(wb);
+
         return true;
     }
 

@@ -84,7 +84,6 @@ namespace ofxPm{
                 }
                 fbo.end();
                 
-                //frame = VideoFrame::newVideoFrame(fbo.getTexture());
                 paramFrameOut = VideoFrame::newVideoFrame(fbo);
             }
         }

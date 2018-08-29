@@ -78,6 +78,7 @@ protected:
     ofParameter<int>                    paramOffsetBeatMult;
     ofParameter<ofxPm::VideoBufferNodeBased*>    paramVideoBufferInput;
     ofParameter<vector<float>>          paramDistributionVector;
+    ofParameter<int>                    paramOversize;
 
     
 private:

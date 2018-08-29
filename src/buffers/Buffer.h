@@ -16,9 +16,6 @@ class Buffer {
 public:
 	Buffer();
 	virtual ~Buffer();
-
-	unsigned int getSize();
-
     void lock();
     void unlock();
 

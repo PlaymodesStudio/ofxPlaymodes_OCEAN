@@ -49,7 +49,7 @@ namespace ofxPm{
         
         ofAddListener(_phasor.phasorCycle, this, &RepeaterFilter::phasorCycleEvent);
         
-        buffer.setupNodeBased(120);
+        //buffer.setupNodeBased();
         videoHeader.setup(&buffer);
         cout << "Repeater : setting up buffer !! "<< buffer.getMaxSize() << " __ " << buffer.getSizeInFrames()  << endl;
         buffer.resume();

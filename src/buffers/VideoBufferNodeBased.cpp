@@ -7,40 +7,40 @@ namespace ofxPm
     //------------------------------------------------------
     VideoBufferNodeBased::VideoBufferNodeBased(): ofxOceanodeNodeModel("Video Buffer")
     {
-        setupNodeBased(240,false);
+        
     }
 
 
     //------------------------------------------------------
-    void VideoBufferNodeBased::setupNodeBased(int size, bool allocateOnSetup)
+    void VideoBufferNodeBased::setupNodeBased()
     {
         color = ofColor::orange;
 
-        maxSize = size;
+        maxSize = 240;
         lastFrameTimeValEpochMs = 0;
         lastFrameTimeValEpochMsAtStop = 0;
         
         VideoSource::width = -1;
         VideoSource::height = -1;
         
-        if(allocateOnSetup && VideoSource::width!=-1)
-        {
-            printf("VideoBufferNodeBased:: allocating on setup %d %d : ",VideoSource::getWidth(),VideoSource::getHeight());
-            for(int i=0;i<size;i++)
-            {
-                VideoFrame videoFrame = VideoFrame();
-                newVideoFrame(videoFrame);
-                printf("%d-",i);
-            }
-            printf("//\n");
-        }
-        else cout << "VideoBufferNodeBased:: Buffer was not allocated on setup." << endl;
+//        if(allocateOnSetup && VideoSource::width!=-1)
+//        {
+//            printf("VideoBufferNodeBased:: allocating on setup %d %d : ",VideoSource::getWidth(),VideoSource::getHeight());
+//            for(int i=0;i<size;i++)
+//            {
+//                VideoFrame videoFrame = VideoFrame();
+//                newVideoFrame(videoFrame);
+//                printf("%d-",i);
+//            }
+//            printf("//\n");
+//        }
+//        else cout << "VideoBufferNodeBased:: Buffer was not allocated on setup." << endl;
         
         microsOneSec=-1;
         
         // parametersGroup
         parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        parameters->add(paramIsRecording.set("Is recording",false));
+        parameters->add(paramIsRecording.set("Is recording",true));
         parameters->add(paramFPS.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         parameters->add(paramVideoBufferOut.set("Buffer Output",nullptr));
@@ -48,6 +48,8 @@ namespace ofxPm
         paramIsRecording.addListener(this,&VideoBufferNodeBased::changedIsRecording);
         // do this the last to avoid sending nullptr frame
 //        resume();
+        bool rec = true;
+        changedIsRecording(rec);
     }
 
 
