@@ -87,17 +87,11 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoTrioRendererNodeBased::showMyExternalWindow(bool b)
     {
-        cout << "TrioRender showing window : " << b << endl;
         //ofxOceanodeNodeModelExternalWindow::showExternalWindow(b);
         showWindow = b;
-        cout << "ofGetScreenWidth() = " << ofGetScreenWidth() << endl;
-        cout << "ofGetScreenHeigth() = " << ofGetScreenHeight() << endl;
         setExternalWindowPosition(ofGetScreenWidth(),0);
         setExternalWindowShape(1920,1080);
         //setExternalWindowFullScreen(true);
-        
-        cout << "_TRIO SHW:" <<  ofGetWindowPtr()->getNSGLContext() << endl;
-
     }
     
     
