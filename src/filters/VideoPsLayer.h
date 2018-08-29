@@ -18,7 +18,7 @@ public:
     void update(ofEventArgs &e) override;
 
     
-    VideoFrame getNextVideoFrame(){};
+    VideoFrame getNextVideoFrame(){ return VideoFrame(); };
 	void newVideoFrame(VideoFrame & frame);
     float getFps(){return source->getFps();};
     

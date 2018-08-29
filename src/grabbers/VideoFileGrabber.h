@@ -17,7 +17,7 @@ namespace ofxPm{
         
         void                            update(ofEventArgs &e);
         VideoFrame                      getNextVideoFrame();
-        float                           getFps(){getFps();};             // ugly! need to be able to override the fps of the grabber. ofVideoGrabber doesn't have a getFps !!
+        float                           getFps(){return getFps();};             // ugly! need to be able to override the fps of the grabber. ofVideoGrabber doesn't have a getFps !!
         void                            setFps(float fps);
 
     private:
