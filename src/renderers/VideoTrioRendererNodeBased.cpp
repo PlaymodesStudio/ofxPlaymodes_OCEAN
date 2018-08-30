@@ -141,12 +141,10 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoTrioRendererNodeBased::drawInExternalWindow(ofEventArgs &e)
     {
-//        cout << "_TRIO DRX:" <<  ofGetWindowPtr()->getNSGLContext() << endl;
-
+        ofSetColor(0);
+        ofDrawRectangle(0,0,ofGetWidth(),ofGetHeight());
         ofSetColor(255);
-        backImage.draw(0,0,ofGetWidth(),ofGetHeight());
         draw(0,0,ofGetWidth(),ofGetHeight());
-        
     }
     
     //--------------------------------------------------------------
