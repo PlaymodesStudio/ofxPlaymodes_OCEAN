@@ -7,7 +7,7 @@ namespace ofxPm
     //------------------------------------------------------
     VideoBufferNodeBased::VideoBufferNodeBased(): ofxOceanodeNodeModel("Video Buffer")
     {
-        
+    
     }
 
 
@@ -16,40 +16,27 @@ namespace ofxPm
     {
         color = ofColor::orange;
 
-        maxSize = 240;
         lastFrameTimeValEpochMs = 0;
         lastFrameTimeValEpochMsAtStop = 0;
-        
-        VideoSource::width = -1;
-        VideoSource::height = -1;
-        
-//        if(allocateOnSetup && VideoSource::width!=-1)
-//        {
-//            printf("VideoBufferNodeBased:: allocating on setup %d %d : ",VideoSource::getWidth(),VideoSource::getHeight());
-//            for(int i=0;i<size;i++)
-//            {
-//                VideoFrame videoFrame = VideoFrame();
-//                newVideoFrame(videoFrame);
-//                printf("%d-",i);
-//            }
-//            printf("//\n");
-//        }
-//        else cout << "VideoBufferNodeBased:: Buffer was not allocated on setup." << endl;
-        
+
         microsOneSec=-1;
         
         // parametersGroup
         parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        parameters->add(paramIsRecording.set("Is recording",true));
+        addParameterToGroupAndInfo(paramBufferSize.set("Buffer Size",240,1,2000));
+        //addParameterToGroupAndInfo(paramIsRecording.set("Is recording",true));
+        addParameterToGroupAndInfo(paramIsRecording.set("Is recording",true)).isSavePreset = false;
+
+        
         parameters->add(paramFPS.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         parameters->add(paramVideoBufferOut.set("Buffer Output",nullptr));
         
         paramIsRecording.addListener(this,&VideoBufferNodeBased::changedIsRecording);
         // do this the last to avoid sending nullptr frame
-//        resume();
-        bool rec = true;
-        changedIsRecording(rec);
+        resume();
+//      bool rec = true;
+//      changedIsRecording(rec);
     }
 
 
@@ -71,6 +58,7 @@ namespace ofxPm
     //-------------------------------------------------------------------
     void VideoBufferNodeBased::newVideoFrame(VideoFrame & frame)
     {
+        //cout << "New Video Frame into Buffer ..." << endl;
         
         if(!frame.isNull())
         {
@@ -114,7 +102,7 @@ namespace ofxPm
 //                cout << " ......... " << endl;
                 
                 
-                while(getSizeInFrames()>maxSize){
+                while(getSizeInFrames()>paramBufferSize){
                     frames.erase(frames.begin());
                 }
                 //timeMutex.unlock();
@@ -122,7 +110,7 @@ namespace ofxPm
             }
             else
             {
-                cout << "Buffer :: Not Recording !" << endl;
+                //if(isStopped()) cout << "Buffer :: Not Recording . it's Stopped !" << endl;
             }
 
         }
@@ -139,24 +127,15 @@ namespace ofxPm
             return Timestamp();
     }
 
-//    //-------------------------------------------------------------------
-//    TimeDiff VideoBufferNodeBased::getTotalTime()
-//    {
-//        return -1;
-    
-//        //getLastTimestamp()-getInitTime(); as we've moved to a relative timestamp of frames in buffer
-//        //maybe it makes non sense to getTotalTime() ?
-//
-//    }
-
-//    //-------------------------------------------------------------------
-//    Timestamp VideoBufferNodeBased::getInitTime(){
-//        return initTime;
-//    }
+    //----------------------------------------------
+    void VideoBufferNodeBased::setBufferSize(int s)
+    {
+        paramBufferSize = s;
+    }
 
     //----------------------------------------------
-    unsigned int VideoBufferNodeBased::getMaxSize(){
-        return maxSize;
+    int VideoBufferNodeBased::getBufferSize(){
+        return paramBufferSize;
     }
     
     //----------------------------------------------
@@ -226,7 +205,8 @@ namespace ofxPm
     //----------------------------------------------
     VideoFrame VideoBufferNodeBased::getVideoFrame(float pct)
     {
-        return getVideoFrame(getMaxSize()*pct);
+        int i = int(pct * float(paramBufferSize));
+        return getVideoFrame(i);
     }
 
     //----------------------------------------------
@@ -259,9 +239,9 @@ namespace ofxPm
         stopped = true;
         
         stopRecordingTs.update();
-        cout << "[] [STOP] [] Buffer STOP recording at Ts Epoch MicroS : " << stopRecordingTs.epochMicroseconds() << endl;
+        //cout << "[] [STOP] [] Buffer STOP recording at Ts Epoch MicroS : " << stopRecordingTs.epochMicroseconds() << " Size of Buffer " << frames.size() << " MAX is " << maxSize << endl;
         Timestamp di = stopRecordingTs - startRecordingTs;
-        cout << "Difference between start and stop in Epoch MicroS = " << di.epochMicroseconds() << endl;
+        //cout << "Difference between start and stop in Epoch MicroS = " << di.epochMicroseconds() << endl;
         
         // when STOP we get the last frame timeValEpocMs(the timestamps of the last frame captured before stop)
         // to be able to keep the timestamping relative to recording time instead of captur absolut time
@@ -275,10 +255,10 @@ namespace ofxPm
         
         stopped = false;
         
-        startRecordingTs.update();
+       
 
-        cout << "[] [RECORDING INTO BUFFER] []" << endl;
-        cout << "Buffer started recording at Ts Epoch MicroS : " << startRecordingTs.epochMicroseconds() << endl;
+        //cout << "[] [RECORDING INTO BUFFER] []" << endl;
+        //cout << "Buffer started recording at Ts Epoch MicroS : " << startRecordingTs.epochMicroseconds() << " Size of Buffer " << frames.size() << " MAX is " << maxSize << endl;
         
     }
     
@@ -301,12 +281,13 @@ namespace ofxPm
     {
         if(_b)
         {
-            cout << "Buffer : START REC !!" << endl;
+            cout << "Buffer : START REC !! Size of Buffer " << frames.size() << endl;
             resume();
+            startRecordingTs.update();
         }
         else
         {
-            cout << "Buffer : STOPING REC !!" << endl;
+            cout << "Buffer : STOPING REC !! Size of Buffer " << frames.size() << endl;
             stop();
         }
     }

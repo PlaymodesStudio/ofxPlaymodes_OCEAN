@@ -24,13 +24,12 @@ public:
 
     // of working in threaded mode,
     // call buffer->lock() buffer->unlock()
-    // to call this methods thread sage
+    // to call this methods thread safe
 	VideoFrame getVideoFrame(int position);     // frame number in the buffer
 	VideoFrame getVideoFrame(TimeDiff time);    // frame at n microseconds from the end of the buffer
 	VideoFrame getVideoFrame(float pct);        // % of the buffer
 
 	VideoFrame getNextVideoFrame();               // the last video frame in the buffer
-
 
     // TS
     VideoFrame  getVideoFrame(Timestamp ts);     // get closer frame to given TimeStamp
@@ -40,21 +39,13 @@ public:
     Timestamp   getLastFrameTimestamp(){return frames[0].getTimestamp();};
     // TSx
 
-
 	virtual void newVideoFrame(VideoFrame &frame);  // for notification of new frame event
-
     unsigned int getSizeInFrames();
-    void         setMaxSize(int i){maxSize=i;};
-	unsigned int getMaxSize(); // max size of the buffer
 
-	float getFps();                                   // fps of the video source
-    int getBufferSize(){return this->frames.size();};
-    Timestamp getLastTimestamp();                 // timestamp for the last frame
-//    TimeDiff getTotalTime();                      // total time of the buffer in microseconds
-//    Timestamp getInitTime();                      // time of the first frame in the recording
-
-	//double getRealFPS();                             // aprox fps from source
-	//int currentPos;                                 // currentPos in the buffer
+	float       getFps();
+    int         getBufferSize();
+    void        setBufferSize(int s);
+    Timestamp   getLastTimestamp();
 
     void stop();                                    // stop receiving new frames
     void resume();                                  // continue receiving new frames
@@ -83,6 +74,7 @@ protected:
     ofParameter<ofxPm::VideoBufferNodeBased*>   paramVideoBufferOut;
     ofParameter<bool>                           paramIsRecording;
     ofParameter<float>                          paramFPS;
+    ofParameter<int>                            paramBufferSize;
     
     
 };
