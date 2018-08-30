@@ -247,9 +247,9 @@ void MultixFilter::newVideoFrame(VideoFrame & _frame)
 {
     //set buffer size ?
     int desiredBufferSize = 900;
-    if(paramVideoBufferInput.get()->getMaxSize()!=desiredBufferSize)
+    if(paramVideoBufferInput.get()->getBufferSize()!=desiredBufferSize)
     {
-        paramVideoBufferInput.get()->setMaxSize(desiredBufferSize);
+        paramVideoBufferInput.get()->setBufferSize(desiredBufferSize);
     }
 
     if(paramNumHeaders>0)
@@ -285,7 +285,7 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
 
     int headersInAction = 0;
     float oneFrameMs	= 1000.0 / paramVideoBufferInput.get()->getFps();
-    float totalBufferSizeInMs = paramVideoBufferInput.get()->getMaxSize() * oneFrameMs;
+    float totalBufferSizeInMs = paramVideoBufferInput.get()->getBufferSize() * oneFrameMs;
 
     float opac = 1.0;
     bool anyOversize=false;
