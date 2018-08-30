@@ -24,6 +24,7 @@ namespace ofxPm{
         height = -11;
         
         autoBPM = false;
+        oldBufferSize = 0;
         
         setupNodeBased();
     }
@@ -76,12 +77,6 @@ namespace ofxPm{
         
         
         paramVideoBufferInput.addListener(this, &VideoHeaderNodeBased::changedVideoBuffer);
-        
-        
-//        VideoSource::width = _buffer.getWidth();
-//        VideoSource::height = _buffer.getHeight();
-//        
-//        printf("VideoHeader::setup %d %d @ FPS %f\n",_buffer.getWidth(),_buffer.getHeight(),fps);
     }
 
     //------------------------------------------------------
@@ -226,11 +221,25 @@ namespace ofxPm{
         if(_videoBuffer!=NULL)
         {
             vf = getNextVideoFrame();
+            
+            //
+            int bs = paramVideoBufferInput.get()->getBufferSize();
+            float fp = paramVideoBufferInput.get()->getFps();
+            float oneFrame = 1.0 / fp;
+            
+            if(paramVideoBufferInput.get()->getBufferSize()!=oldBufferSize)
+            {
+                paramDelayMs.setMax(oneFrame * bs * 1000);
+                paramDelayMs = ofClamp(paramDelayMs,paramDelayMs.getMin(),paramDelayMs.getMax());
+                string name = paramDelayMs.getName();
+                ofNotifyEvent(parameterChangedMinMax, name);
+                oldBufferSize = paramVideoBufferInput.get()->getBufferSize();
+            }
+
         }
         paramFrameOut = vf;
-//        parameters->get("Frame Output").cast<ofxPm::VideoFrame>() = vf;
-    }
 
+    }
     
 }
 

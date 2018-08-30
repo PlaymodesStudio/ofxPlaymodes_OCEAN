@@ -74,10 +74,7 @@ protected:
     ofParameter<int>                    paramBeatDiv;
     ofParameter<int>                    paramBeatMult;
 
-    
-    bool isNodeBased;
-
-    
+    int oldBufferSize;
 
     
 
