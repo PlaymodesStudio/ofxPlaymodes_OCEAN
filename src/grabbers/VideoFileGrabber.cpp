@@ -44,7 +44,7 @@ namespace ofxPm{
     {
         
         //if(ofVideoPlayer::isInitialized())
-        if(ofVideoPlayer::isPlaying() || ofVideoPlayer::isPaused())
+        if(ofVideoPlayer::isPlaying() || ofVideoPlayer::isPaused())
         {
             ofVideoPlayer::update();
             if(ofVideoPlayer::isFrameNew())
