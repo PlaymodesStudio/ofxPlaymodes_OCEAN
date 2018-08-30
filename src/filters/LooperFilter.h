@@ -28,14 +28,18 @@ protected:
     
     float                               fps;
     ofParameter<bool>                   paramDoLoop;
+    ofParameter<bool>                   paramDoRec;
     ofParameter<int>                    paramCapturedTimeBeatDiv;
     ofParameter<int>                    paramCapturedTimeBeatMult;
     ofParameter<float>                  paramGatePct;
     ofParameter<void>                   paramRestart;
     ofParameter<float>                  paramSpeedBoost;
     ofParameter<float>                  paramOffsetMs;
+    ofParameter<int>                    paramBufferSize;
+    ofParameter<bool>                   paramShowOnRec;
+    ofParameter<int>                    paramRefreshLoopAt;
+    ofParameter<bool>                   paramDoPlay;
     
-
     ofxPm::VideoBufferNodeBased                 buffer;
     ofxPm::VideoHeaderNodeBased                 videoHeader;
     bool                                        restart;
@@ -44,6 +48,10 @@ protected:
     void                                doLoopChanged(bool& _b);
     void                                doRecChanged(bool& _b);
     void                                doRestart();
+    void                                bufferSizeChanged(int &i);
+    void                                refreshAtChanged(int &i);
+    void                                playChanged(bool &b);
+    
     // when global BPM changes, it will call this function so I can know the global bpm
     void                                setBpm(float _bpm) override{myBPM=_bpm;int i;loopTimeChanged(i);};
 
@@ -60,7 +68,6 @@ private:
     
     void                                phasorCycleEvent();
     int                                 phasorNumCycles;
-    
     
 };
 }
