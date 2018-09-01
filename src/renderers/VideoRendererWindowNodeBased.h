@@ -33,7 +33,8 @@ public:
 
 private:
     VideoFrame  vFrame;
-    
+    ofImage     backImage;
+
     void drawInExternalWindow(ofEventArgs &e) override;
     void keyPressed(ofKeyEventArgs &a) override;
     void mousePressed(ofMouseEventArgs &a) override;

@@ -19,7 +19,8 @@ namespace ofxPm
     void VideoRendererWindowNodeBased::setup()
     {
         color = ofColor::yellow;
-        
+        backImage.load("./imgs/1920x1080.png");
+
         parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
 
@@ -41,8 +42,7 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::draw(int x,int y,int w,int h)
     {
-        ofSetColor(255,255,0);
-        ofDrawRectangle(0,0,w-10,h-10);
+        backImage.draw(0,0,w,h);
         if(!vFrame.isNull() && !vFrame.isNullPtr())
         {
             if(vFrame.getTextureRef().isAllocated())
