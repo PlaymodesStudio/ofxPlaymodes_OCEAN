@@ -143,7 +143,7 @@ namespace ofxPm{
             _phasor.beatsMult_Param=1;
         }
         
-        cout << _i << "   ::  DIV : " << _phasor.beatsDiv_Param << " --- MULT : " << _phasor.beatsMult_Param << endl;
+        //cout << _i << "   ::  DIV : " << _phasor.beatsDiv_Param << " --- MULT : " << _phasor.beatsMult_Param << endl;
     }
 
 //    //-----------------------------------------

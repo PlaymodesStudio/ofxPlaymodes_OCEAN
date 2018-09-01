@@ -54,6 +54,7 @@ public:
     void clear();
     
     void changedIsRecording(bool& _b);
+    bool getIsRecording(){return paramIsRecording;};
 
 protected:
     deque<VideoFrame> frames;

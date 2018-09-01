@@ -13,6 +13,7 @@ namespace ofxPm{
     //------------------------------------------------------------------
     LooperFilter::~LooperFilter()
     {
+        buffer.clear();
     }
     //------------------------------------------------------------------
     void LooperFilter::setupNodeBased()
@@ -29,30 +30,37 @@ namespace ofxPm{
         parameters->add(paramFrameIn.set("Frame In", myFrame));
         parameters->add(paramBufferSize.set("Buffer Size",240,1,2000));
         addParameterToGroupAndInfo(paramDoPlay.set("PLAY", false));//.isSavePreset = false;
-        parameters->add(paramRefreshLoopAt.set("Refresh Loop At",0,0,32));
+        addParameterToGroupAndInfo(paramShowOnRec.set("Show On Rec", true));//.isSavePreset = false;
+        addParameterToGroupAndInfo(paramDoRefresh.set("Refresh", false));//.isSavePreset = false;
+        parameters->add(paramRefreshLoopAt.set("Refresh Loop At",4,2,32));
         parameters->add(paramRestart.set("Restart"));
         parameters->add(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
         parameters->add(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
-//        parameters->add(paramGatePct.set("Gate",0.0,0.0,1.0));
-        addParameterToGroupAndInfo(paramGatePct.set("Gate",0.0,0.0,1.0)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramGatePct.set("Gate",0.0,0.0,1.0));
         parameters->add(paramSpeedBoost.set("Speed Boost",1.0,-4.0,4.0));
         parameters->add(paramOffsetMs.set("Offset",0.0,0.0,4000.0));
         addParameterToGroupAndInfo(paramDoLoop.set("Loop", false));//.isSavePreset = false;
         addParameterToGroupAndInfo(paramDoRec.set("Rec", true));//.isSavePreset = false;
-        addParameterToGroupAndInfo(paramShowOnRec.set("Show On Rec", true));//.isSavePreset = false;
-
+        addParameterToGroupAndInfo(paramPhasorOut.set("Phasor Out",0.0,0.0,1.0));//.isSavePreset = false;
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
-
 
         paramRestart.addListener(this,&LooperFilter::doRestart);
         paramDoLoop.addListener(this, &LooperFilter::doLoopChanged);
+        paramDoRec.addListener(this, &LooperFilter::doRecChanged);
         paramCapturedTimeBeatMult.addListener(this, &LooperFilter::loopTimeChanged);
         paramCapturedTimeBeatDiv.addListener(this, &LooperFilter::loopTimeChanged);
         paramFrameIn.addListener(this, &LooperFilter::newVideoFrame);
         paramBufferSize.addListener(this, &LooperFilter::bufferSizeChanged);
         paramDoPlay.addListener(this,&LooperFilter::playChanged);
+        paramRefreshLoopAt.addListener(this,&LooperFilter::refreshAtChanged);
+        paramDoRefresh.addListener(this,&LooperFilter::doRefreshChanged);
+        
+        
         ofAddListener(_phasor.phasorCycle, this, &LooperFilter::phasorCycleEvent);
         
+        
+        int k=0;
+        loopTimeChanged(k);
         buffer.setupNodeBased();
         buffer.setBufferSize(paramBufferSize);
         
@@ -61,6 +69,11 @@ namespace ofxPm{
     VideoFrame LooperFilter::getNextVideoFrame()
     {
         return myFrame;
+    }
+    //--------------------------------------------------------
+    void LooperFilter::update(ofEventArgs &e)
+    {
+        paramPhasorOut = _phasor.getPhasor();
     }
 
     //--------------------------------------------------------
@@ -92,20 +105,28 @@ namespace ofxPm{
                 // RECORDING !!
                 // feeding the buffer with the incoming frame.
                 buffer.newVideoFrame(_frame);
-                //cout << "LooperFilter : Doing REC new frame !! Size of buffer is : " << buffer.getSizeInFrames() << endl;
+                
+                if(!paramShowOnRec)
+                {
+                    // send to output a new frame (blank)
+                    vfAux = VideoFrame();
+                }
             }
-            
-            if(paramDoLoop)
+            else if(paramDoLoop)
             {
                 // PLAYING LOOP
                 // Loop already captured, relooping
                 
                 phase = 1.0-fmod(_phasor.getPhasor()*paramSpeedBoost,1.0);
-                float loopDelayMs = phase * loopDurationMs;
+                // added - 1 frame to avoid flickr on Refresh !
+                float fps=60.0;
+                float loopDelayMs = phase * (loopDurationMs - ((2.0/fps)*1000.0));
                 float offsetInMs = (paramOffsetMs);//: * loopDurationMs);
                 
-                videoHeader.setDelayMs(loopDelayMs + offsetInMs);
                 
+                videoHeader.setDelayMs(loopDelayMs + offsetInMs);// - ((2.0/fps)*1000.0));
+                //cout << "Looper: Looping at phase : " << phase << " --> " <<  loopDelayMs + offsetInMs << endl;
+
                 float loopEnd = videoHeader.getDelayMs() + loopDurationMs;
                 float loopStart = loopEnd+loopDurationMs;
                 float whichPctOfLoopDone = ofMap(loopDelayMs,loopStart,loopEnd,0.0,1.0);
@@ -114,37 +135,20 @@ namespace ofxPm{
 
             }
 
-            else {
-                // REC ?
-                if(paramDoRec)
-                {
-                    if(!paramShowOnRec && !paramDoLoop)
-                    {
-                        // send to output a new frame (blank)
-                        vfAux = VideoFrame();
-                    }
-                }
-                else if(!paramDoLoop)
-                {
-                    // NOT RECORDING NOT LOOPING ... so blank !
-                    // send to output a new frame (blank)
-                    vfAux = VideoFrame();
-                }
-            }
             
             // Gate management
-            //if(whichPctOfLoopDone > (1.0 - paramGatePct))
             float ph = _phasor.getPhasor();
             if(paramDoLoop && ((ph)> (1.0 - paramGatePct)))
             {
                 // we need to set to black, we're GATING !!
-//                ofxPm::VideoFrame vfBlack;
-                paramFrameOut = myFrame;
+                paramFrameOut = VideoFrame();
             }
             else
             {
+                // send the vfAux that we've been cooking ...
                 paramFrameOut = vfAux;
             }
+            
         }
     }
     //-----------------------------------------
@@ -155,9 +159,6 @@ namespace ofxPm{
     //-----------------------------------------
     void LooperFilter::loopTimeChanged(int &_i)
     {
-
-        //        float gBPM = parametersControl::getInstance().getGlobalBPM();
-        float gBPM = 120.0;
         _phasor.beatsDiv_Param = paramCapturedTimeBeatDiv;
         _phasor.beatsMult_Param = paramCapturedTimeBeatMult;
         
@@ -169,6 +170,7 @@ namespace ofxPm{
         
         float oneBeatMs = (60.0/myBPM)*1000;
         loopDurationMs = oneBeatMs / BPMfactor;
+        
         //cout << "LooperFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms ! BPM :  "<< myBPM <<  endl;
     }
     //-----------------------------------------
@@ -176,97 +178,87 @@ namespace ofxPm{
     {
         int i=0;
         loopTimeChanged(i);
-        _phasor.resetPhasor();
-        // if we are looping, set buffer to do not record...
-        bool b = !_b;
-        //buffer.changedIsRecording(b);
+        //_phasor.resetPhasor();
     }
     //-----------------------------------------
     void LooperFilter::doRecChanged(bool& _b)
     {
-// NEED THIS ?
-//         _phasor.resetPhasor();
-        
+        buffer.changedIsRecording(_b);
+        //cout << "Looper: Changing buffer to record to : " << _b << endl;
     }
     //-----------------------------------------
     void LooperFilter::doRestart()
     {
-        cout << "LooperFilter::Restarting!!" << endl;
         restart = true;
         _phasor.resetPhasor();
     }
     //-----------------------------------------
-    void LooperFilter::phasorCycleEvent()
+    void LooperFilter::doRefreshChanged(bool& _b)
     {
-        if(paramRefreshLoopAt>0)
+        if(!_b)
         {
-            // we need to refresh !
-            if(phasorNumCycles==0)
-            {
-                // first cycle, record !
-                paramDoRec = true;
-                paramDoLoop = false;
-                phasorNumCycles = 1;
-            }
-            else if (phasorNumCycles<paramRefreshLoopAt)
-            {
-                // cycling
-                paramDoRec=false;
-                paramDoLoop=true;
-                phasorNumCycles = phasorNumCycles +1;
-            }
-            else if(phasorNumCycles>=paramRefreshLoopAt)
-            {
-                phasorNumCycles=0;
-            }
-            
+            phasorNumCycles=0;
+            paramDoPlay = false;
+            paramDoLoop = false;
+            paramDoRec = true;
+
         }
         else
         {
-            // this should be refreshAt == 0
-            if(!paramDoPlay)
-            {
-                paramDoRec = true;
-                paramDoLoop = false;
-            }
-            //paramDoPlay = false;
-
+            paramDoPlay = true;
         }
-        
-        
-        
-////        if(paramDoLoop) phasorNumCycles = phasorNumCycles +1;
-////        else phasorNumCycles = 0;
-//
-//        phasorNumCycles = phasorNumCycles +1;
-//
-//        cout << "Phasor Cycle ! : "  << phasorNumCycles << endl;
-//
-//        if(phasorNumCycles==1)
-//        {
-//            paramDoRec = true;
-//            paramDoLoop = false;
-//            cout << "First Cycle!!" << endl;
-//        }
-//        if((phasorNumCycles>=paramRefreshLoopAt)&&(paramRefreshLoopAt>0))
-//        {
-//            cout << "Looping cycles" << endl;
-//            paramDoRec = true;
-//            paramDoLoop = true;
-//            bool b = true;
-//            doLoopChanged(b);
-//            phasorNumCycles = 0;
-//        }
+
     }
+
+    //-----------------------------------------
+    void LooperFilter::phasorCycleEvent()
+    {
+        if(paramDoPlay&&paramDoRefresh)
+        {
+            if(paramRefreshLoopAt>0)
+            {
+                if(phasorNumCycles==0)
+                {
+                    // first cycle, record !
+                    paramDoLoop = false;
+                    paramDoRec = true;
+                    //phasorNumCycles=1;
+                }
+                else if (phasorNumCycles==1)
+                {
+                    // set To Play the recorded loop
+                    paramDoRec = false;
+                    paramDoLoop = true;
+                    //phasorNumCycles++;
+
+                }
+                
+                if(phasorNumCycles>=paramRefreshLoopAt-1)
+                {
+                    phasorNumCycles=0;
+                }
+                else
+                {
+                    phasorNumCycles++;
+                }
+
+                
+            }
+        }
+        else phasorNumCycles = 0;
+//        cout << ">>><<<<<<<<<<<<<<<<<> Reset phasor  <<<<<<<<<< Cycles :" << phasorNumCycles << endl;
+    }
+
     
     //-----------------------------------------
     void LooperFilter::playChanged(bool &b)
     {
-        if(paramRefreshLoopAt==0)
+        if(!paramDoRefresh)
         {
             if(b)
             {
                 // if PLAY
+                _phasor.resetPhasor();
                 paramDoRec=false;
                 paramDoLoop=true;
             }
@@ -279,6 +271,24 @@ namespace ofxPm{
         }
 
     }
+    
+    //-----------------------------------------
+    void LooperFilter::refreshAtChanged(int &i)
+    {
+        //if(i!=0) _phasor.resetPhasor();
+        if(i==0)
+        {
+            _phasor.resetPhasor();
+            paramDoRec=true;
+            paramDoLoop=false;
+            phasorNumCycles = 0;
+        }
+        else
+        {
+            phasorNumCycles = 0;
+        }
+    }
+
     
 }
 

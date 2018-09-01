@@ -51,7 +51,7 @@ namespace ofxPm{
         
         //buffer.setupNodeBased();
         videoHeader.setup(&buffer);
-        cout << "Repeater : setting up buffer !! "<< buffer.getMaxSize() << " __ " << buffer.getSizeInFrames()  << endl;
+        //cout << "Repeater : setting up buffer !! "<< buffer.getMaxSize() << " __ " << buffer.getSizeInFrames()  << endl;
         buffer.resume();
         
     
@@ -155,7 +155,7 @@ namespace ofxPm{
         }
         else  BPMfactor = 1.0;
         
-        float oneBeatMs = (60.0/myBPM)*1000;
+        float oneBeatMs = (60.0/myBPM)*1000.0;
         loopDurationMs = oneBeatMs / BPMfactor;
         //cout << "RepeaterFilter:: Changed Loop Time Duration = " << loopDurationMs << " Ms !! BPM : " <<  myBPM << endl;
     }

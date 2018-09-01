@@ -23,7 +23,8 @@ public:
     VideoFrame  getNextVideoFrame();
     void        newVideoFrame(VideoFrame & _frame);
     float       getFps(){return fps;};
-    
+    void        update(ofEventArgs &e) override;
+
 protected:
     
     float                               fps;
@@ -39,6 +40,8 @@ protected:
     ofParameter<bool>                   paramShowOnRec;
     ofParameter<int>                    paramRefreshLoopAt;
     ofParameter<bool>                   paramDoPlay;
+    ofParameter<bool>                   paramDoRefresh;
+    ofParameter<float>                  paramPhasorOut;
     
     ofxPm::VideoBufferNodeBased                 buffer;
     ofxPm::VideoHeaderNodeBased                 videoHeader;
@@ -50,6 +53,7 @@ protected:
     void                                doRestart();
     void                                bufferSizeChanged(int &i);
     void                                refreshAtChanged(int &i);
+    void                                doRefreshChanged(bool &b);
     void                                playChanged(bool &b);
     
     // when global BPM changes, it will call this function so I can know the global bpm
