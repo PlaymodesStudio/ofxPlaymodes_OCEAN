@@ -38,6 +38,7 @@ namespace ofxPm{
         paramOffsetBeatDiv.addListener(this, &MultixFilter::recalculate);
         paramOffsetBeatMult.addListener(this, &MultixFilter::recalculate);
         paramNumHeaders.addListener(this,&MultixFilter::recalculate);
+        paramManualOffsetMs.addListener(this,&MultixFilter::changedManualOffsetMs);
         paramVideoBufferInput.addListener(this, &MultixFilter::changedVideoBuffer);
         paramDistributionVector.addListener(this,&MultixFilter::changedDistributionVector);
         
@@ -62,6 +63,14 @@ namespace ofxPm{
         int i = 0;
         if(paramVideoBufferInput.get()!=nullptr) recalculate(i);
     }
+    
+    //------------------------------------------------------------------
+    void MultixFilter::changedManualOffsetMs(float &f)
+    {
+        int i=0;
+        recalculate(i);
+    }
+    
     //------------------------------------------------------------------
 
     void MultixFilter::setNumHeaders(int _numHeaders){
@@ -76,18 +85,27 @@ namespace ofxPm{
     
     //-----------------------------------------
     void ofxPm::MultixFilter::recalculate(int &_i)
-    {        
-        float BPMfactor;
-        if(paramOffsetBeatDiv!=0)
-        {
-            BPMfactor = (float(paramOffsetBeatMult)/float(paramOffsetBeatDiv));
-        }
-        else  BPMfactor = 1.0;
-
-        float oneBeatMs = (60.0/myBPM)*1000;
-        float oneCopyMs = oneBeatMs / BPMfactor;
-    
+    {
         vector<float> vf;
+        float oneCopyMs;
+        if(paramUseBPM)
+        {
+            float BPMfactor;
+            if(paramOffsetBeatDiv!=0)
+            {
+                BPMfactor = (float(paramOffsetBeatMult)/float(paramOffsetBeatDiv));
+            }
+            else  BPMfactor = 1.0;
+
+            float oneBeatMs = (60.0/myBPM)*1000;
+            oneCopyMs = oneBeatMs / BPMfactor;
+            if(oneCopyMs!=paramManualOffsetMs) paramManualOffsetMs = oneCopyMs;
+        }
+        
+        else if(!paramUseBPM)
+        {
+            oneCopyMs = paramManualOffsetMs;
+        }
         //this->setNumHeaders(paramNumHeaders);
     
         for(int i=0;i<paramNumHeaders;i++)

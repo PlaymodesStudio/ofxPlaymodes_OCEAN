@@ -57,9 +57,10 @@ public:
 
     void                                    recalculate(int &_i);
     void                                    changedDistributionVector(vector<float> &_b);
+    void                                    changedManualOffsetMs(float &f);
     
     // when global BPM changes, it will call this function so I can know the global bpm
-    void    setBpm(float _bpm) override{myBPM=_bpm;};
+    void    setBpm(float _bpm) override{myBPM=_bpm;int i=0;recalculate(i);};
 
 protected:
     
