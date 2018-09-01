@@ -6,20 +6,17 @@ namespace ofxPm
 {
     VideoRendererWindowNodeBased::VideoRendererWindowNodeBased():ofxOceanodeNodeModelExternalWindow("Video Renderer Window")
     {
-        setupNodeBased();
     }
 
 
     //--------------------------------------------------------------
     VideoRendererWindowNodeBased::~VideoRendererWindowNodeBased()
     {
-        
-        //ofRemoveListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
     }
 
 
     //--------------------------------------------------------------
-    void VideoRendererWindowNodeBased::setupNodeBased()
+    void VideoRendererWindowNodeBased::setup()
     {
         color = ofColor::yellow;
         
@@ -80,7 +77,16 @@ namespace ofxPm
     {
         draw(0,0,ofGetWidth(),ofGetHeight());
     }
-    
+    //--------------------------------------------------------------
+    void VideoRendererWindowNodeBased::showMyExternalWindow(bool b)
+    {
+        //ofxOceanodeNodeModelExternalWindow::showExternalWindow(b);
+        showWindow = b;
+        setExternalWindowPosition(ofGetScreenWidth(),0);
+        setExternalWindowShape(1920,1080);
+        //setExternalWindowFullScreen(true);
+    }
+
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::keyPressed(ofKeyEventArgs &a)
     {
