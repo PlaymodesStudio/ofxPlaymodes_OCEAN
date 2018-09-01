@@ -99,7 +99,7 @@ namespace ofxPm{
 
             float oneBeatMs = (60.0/myBPM)*1000;
             oneCopyMs = oneBeatMs / BPMfactor;
-            if(oneCopyMs!=paramManualOffsetMs) paramManualOffsetMs = oneCopyMs;
+            if(oneCopyMs!=paramManualOffsetMs)paramManualOffsetMs = oneCopyMs;
         }
         
         else if(!paramUseBPM)

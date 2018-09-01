@@ -6,7 +6,6 @@ namespace ofxPm
 {
     VideoTrioRendererNodeBased::VideoTrioRendererNodeBased():ofxOceanodeNodeModelExternalWindow("Video Trio Window")
     {
-        //setup();
     }
     
     
