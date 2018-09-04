@@ -49,11 +49,6 @@ namespace ofxPm{
     //------------------------------------------------------------
     void MultixFilter::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
     }
 
 
@@ -385,7 +380,7 @@ bool MultixFilter::isMinmaxBlend() const
                 // setup FBO
                 int resX = paramVideoBufferInput.get()->getWidth();
                 int resY = paramVideoBufferInput.get()->getHeight();
-                fbo.allocate(resX,resY,GL_RGBA);
+                fbo.allocate(resX,resY,GL_RGB);
                 
                 
                 // setup Headers

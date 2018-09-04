@@ -83,6 +83,13 @@ protected:
     ofParameter<int>                    paramOversize;
     ofParameter<float>                  paramScale;
     ofParameter<vector<float>>          paramCopiesPositionX;
+    ofParameter<vector<float>>          paramCopiesPositionY;
+    ofParameter<vector<float>>          paramCopiesPositionZ;
+    ofParameter<vector<float>>          paramCopiesRotationX;
+    ofParameter<vector<float>>          paramCopiesRotationY;
+    ofParameter<vector<float>>          paramCopiesRotationZ;
+    ofParameter<vector<float>>          paramCopiesScale;
+
     ofParameter<vector<float>>          paramCopiesOpacity;
 
     

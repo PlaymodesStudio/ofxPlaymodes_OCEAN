@@ -31,6 +31,13 @@ namespace ofxPm{
         parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
         parameters->add(paramScale.set("Scale",1.6076,0.0,2.0));
         parameters->add(paramCopiesPositionX.set("Copies Position X",{0},{0},{0}));
+        parameters->add(paramCopiesPositionY.set("Copies Position Y",{0},{0},{0}));
+        parameters->add(paramCopiesPositionZ.set("Copies Position Z",{0},{0},{0}));
+        parameters->add(paramCopiesScale.set("Copies Scale",{0},{0},{0}));
+        parameters->add(paramCopiesRotationX.set("Copies Rotation X",{0},{0},{0}));
+        parameters->add(paramCopiesRotationY.set("Copies Rotation Y",{0},{0},{0}));
+        parameters->add(paramCopiesRotationZ.set("Copies Rotation Z",{0},{0},{0}));
+
         parameters->add(paramCopiesOpacity.set("Copies Opacity",{1.0},{1.0},{1.0}));
         parameters->add(paramLinearDistribution.set("Linear Distribution",true));
         parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
@@ -44,12 +51,11 @@ namespace ofxPm{
         paramManualOffsetMs.addListener(this,&Multix3DFilter::changedManualOffsetMs);
         paramVideoBufferInput.addListener(this, &Multix3DFilter::changedVideoBuffer);
         paramDistributionVector.addListener(this,&Multix3DFilter::changedDistributionVector);
-        paramCopiesPositionX.addListener(this,&::ofxPm::Multix3DFilter::changedCopiesPositionX);
+//        paramCopiesPositionX.addListener(this,&::ofxPm::Multix3DFilter::changedCopiesPositionX);
 
         int i=0;
         recalculate(i);
         
-        fbo.allocate(1920,1080);
 
     }
     //------------------------------------------------------------
@@ -208,6 +214,7 @@ void Multix3DFilter::newVideoFrame(VideoFrame & _frame)
             
             ofSetColor(255);
             drawIntoFbo(0,0,fbo.getWidth(),fbo.getHeight());
+            //ofDrawCircle(0,0,200);
         }
         fbo.end();
         
@@ -238,6 +245,16 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
     float opacFromVec = 1.0;
     bool anyOversize=false;
     float movingOnX=0.0;
+    float movingOnY=0.0;
+    float movingOnZ=0.0;
+    float rotatingOnX=0.0;
+    float rotatingOnY=0.0;
+    float rotatingOnZ=0.0;
+    float scaling=0.0;
+
+    ofVec2f frameResolution;
+    ofVec2f screenResolution = ofVec2f(1920,1080);
+
 	for(int i = paramNumHeaders-1; i>=0; i--)
     {
         // if delay time of each videoRenderer is in the right range of Ms (0..TotalMs)
@@ -261,12 +278,12 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             headersInAction++;
             videoHeader.setDelayMs(multixDelaysInMs[i]);
             VideoFrame vf = videoHeader.getNextVideoFrame();
-            
-            ofVec2f frameResolution = ofVec2f(vf.getWidth(),vf.getHeight());
-            ofVec2f screenResoltion = ofVec2f(1920,1080);
+            frameResolution=ofVec2f(vf.getWidth(),vf.getHeight());
             
             // TRANSFORM VEC
             /////////////////
+            // T X
+            //////
             if(i < paramCopiesPositionX.get().size())
             {
                 movingOnX = paramCopiesPositionX.get().at(i);
@@ -275,6 +292,69 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             {
                 movingOnX = 0;
             }
+            // T Y
+            //////
+            if(i < paramCopiesPositionY.get().size())
+            {
+                movingOnY = paramCopiesPositionY.get().at(i);
+            }
+            else
+            {
+                movingOnY = 0;
+            }
+            // T Z
+            //////
+            if(i < paramCopiesPositionZ.get().size())
+            {
+                movingOnZ = paramCopiesPositionZ.get().at(i);
+            }
+            else
+            {
+                movingOnZ = 0;
+            }
+            // ROTATE VEC
+            /////////////////
+            // R X
+            //////
+            if(i < paramCopiesRotationX.get().size())
+            {
+                rotatingOnX = paramCopiesRotationX.get().at(i);
+            }
+            else
+            {
+                rotatingOnX = 0;
+            }
+            // R Y
+            //////
+            if(i < paramCopiesRotationY.get().size())
+            {
+                rotatingOnY = paramCopiesRotationY.get().at(i);
+            }
+            else
+            {
+                rotatingOnY = 0;
+            }
+            // R Z
+            //////
+            if(i < paramCopiesRotationZ.get().size())
+            {
+                rotatingOnZ = paramCopiesRotationZ.get().at(i);
+            }
+            else
+            {
+                rotatingOnZ = 0;
+            }
+            // SCALE
+            //////////
+            if(i < paramCopiesScale.get().size())
+            {
+                scaling = paramCopiesScale.get().at(i);
+            }
+            else
+            {
+                scaling = 1.0;
+            }
+
             // OPACITY VEC
             ////////////////
             if(i < paramCopiesOpacity.get().size())
@@ -290,12 +370,20 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             ofPushMatrix();
             
             //ofTranslate(0,-(paramScale*screenResoltion.y/2.0) + (frameResolution.y/2.0),0);
-            ofTranslate(movingOnX,0);
-            ofTranslate(screenResoltion.x/2.0,screenResoltion.y/2.0,0);
+            ofTranslate(movingOnX,movingOnY,movingOnZ);
+            ofTranslate(screenResolution.x/2.0,screenResolution.y/2.0,0);
+            // scale
+            ofScale(scaling);
+            // rotate to user defined
+            ofRotate(rotatingOnX,1,0, 0);
+            ofRotate(rotatingOnY,0,1, 0);
+            ofRotate(rotatingOnZ,0,0, 1);
+
             // rotate to portrait
             ofRotate(90,0,0, 1);
             // flip x
             ofRotate(180,1,0,0);
+            //ofScale(scaling);
             ofTranslate((-frameResolution.x*paramScale)/2.0,(-frameResolution.y*paramScale)/2.0,0);
 
             
@@ -344,19 +432,44 @@ bool Multix3DFilter::isMinmaxBlend() const
     return paramMinMaxBlend;
 }
  
-    //-----------------------------------------
+//    //-----------------------------------------
+//    void Multix3DFilter::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
+//    {
+//        if(_videoBuffer!=NULL)
+//        {
+//            // setup Headers
+//            videoHeader.setup(paramVideoBufferInput.get());
+//            videoHeader.setDelayMs(0.0);
+//
+//            ofxPm::VideoFrame vf;
+//            newVideoFrame(vf);
+//        }
+//    }
+    
     void Multix3DFilter::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
     {
         if(_videoBuffer!=NULL)
         {
-            // setup Headers
-            videoHeader.setup(paramVideoBufferInput.get());
-            videoHeader.setDelayMs(0.0);
-
+            // allocate fbo where to draw
+            if (fbo.getWidth()<=0)
+            {
+                // setup FBO
+                int resX = paramVideoBufferInput.get()->getWidth();
+                int resY = paramVideoBufferInput.get()->getHeight();
+                fbo.allocate(1920,1080,GL_RGB);
+                
+                
+                // setup Headers
+                videoHeader.setup(paramVideoBufferInput.get());
+                videoHeader.setDelayMs(0.0);
+                
+            }
+            
             ofxPm::VideoFrame vf;
             newVideoFrame(vf);
         }
     }
+
 
     
 }
