@@ -33,7 +33,7 @@ namespace ofxPm{
         parameters->add(paramCopiesPositionX.set("Copies Position X",{0},{0},{0}));
         parameters->add(paramCopiesPositionY.set("Copies Position Y",{0},{0},{0}));
         parameters->add(paramCopiesPositionZ.set("Copies Position Z",{0},{0},{0}));
-        parameters->add(paramCopiesScale.set("Copies Scale",{0},{0},{0}));
+        parameters->add(paramCopiesScale.set("Copies Scale",{1},{1},{1}));
         parameters->add(paramCopiesRotationX.set("Copies Rotation X",{0},{0},{0}));
         parameters->add(paramCopiesRotationY.set("Copies Rotation Y",{0},{0},{0}));
         parameters->add(paramCopiesRotationZ.set("Copies Rotation Z",{0},{0},{0}));
@@ -255,8 +255,10 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
     ofVec2f frameResolution;
     ofVec2f screenResolution = ofVec2f(1920,1080);
 
+    cout << " ------------------------- " << endl;
 	for(int i = paramNumHeaders-1; i>=0; i--)
     {
+        cout << "Multix3D_" << i << " " << endl;
         // if delay time of each videoRenderer is in the right range of Ms (0..TotalMs)
         switch(paramOpacityMode)
         {
@@ -346,7 +348,7 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             }
             // SCALE
             //////////
-            if(i < paramCopiesScale.get().size())
+            if((i < paramCopiesScale.get().size())&&(paramCopiesScale.get().size()!=1))
             {
                 scaling = paramCopiesScale.get().at(i);
             }
@@ -391,6 +393,8 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             {
                 ofSetColor((opac*opacFromVec*255.0),255.0);
                 vf.getTextureRef().draw(x,y,frameResolution.x * paramScale,frameResolution.y * paramScale);
+//                cout << "Multix3D : i : " << i << " DRAWING at delay Ms  " << multixDelaysInMs[i] << " at Position " << movingOnX <<" ," << movingOnY << " , " << movingOnZ << " Scale : " << scaling << endl;
+
             }
             paramOversize =0;
             ofPopMatrix();
