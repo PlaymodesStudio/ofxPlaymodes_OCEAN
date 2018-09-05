@@ -20,10 +20,19 @@ namespace ofxPm
     {
         color = ofColor::yellow;
      
-        VideoFrame vA;
-        VideoFrame vB;
-        parameters->add(paramFrameIn.set("Frame In 1", vA));
-        parameters->add(paramFrameIn2.set("Frame In 2", vB));
+//        VideoFrame vA;
+//        VideoFrame vB;
+        
+        // setup black frame
+        ofPixels pix;
+        pix.allocate(1, 1,3);
+        for(int i=0;i<1*1*3;i++)
+        {
+            pix[i] = 0;
+        }
+        //blackFrame = VideoFrame::newVideoFrame(pix);
+        parameters->add(paramFrameIn.set("Frame In 1", VideoFrame::newVideoFrame(pix)));
+        parameters->add(paramFrameIn2.set("Frame In 2", VideoFrame::newVideoFrame(pix)));
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
         parameters->add(paramScale.set("Scale",1.6076,0.0,2.0));
         parameters->add(paramOverlap.set("Overlap",0.25,-1.0,1.0));
@@ -127,8 +136,10 @@ namespace ofxPm
                 fbo.allocate(w, h);
             }
             vFrame2 = _frame2;
-            //drawIntoFbo(0,0,0,0);
-
+            if(vFrame.isNullPtr() || vFrame.getFboRef().getWidth()==1)
+            {
+               drawIntoFbo(0,0,0,0);
+            }
         }
         
     }
@@ -162,10 +173,9 @@ void VideoTrioRendererNodeBased::drawIntoFbo(int x,int y,int w,int h)
     frameRefDreta = NULL;
     frameRefEsquerra = NULL;
     
-    
     ofVec2f frameResolution,frameResolution1,frameResolution2;
-    bool frame1OK = (!vFrame.isNull() && !vFrame.isNullPtr());
-    bool frame2OK = (!vFrame2.isNull() && !vFrame2.isNullPtr());
+    bool frame1OK = (!vFrame.isNull() && !vFrame.isNullPtr() && vFrame.getFboRef().getWidth()!=1);
+    bool frame2OK = (!vFrame2.isNull() && !vFrame2.isNullPtr() && vFrame2.getFboRef().getWidth()!=1);
     
     switch(paramLayout.get())
     {
