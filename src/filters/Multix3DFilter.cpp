@@ -255,10 +255,8 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
     ofVec2f frameResolution;
     ofVec2f screenResolution = ofVec2f(1920,1080);
 
-    cout << " ------------------------- " << endl;
 	for(int i = paramNumHeaders-1; i>=0; i--)
     {
-        cout << "Multix3D_" << i << " " << endl;
         // if delay time of each videoRenderer is in the right range of Ms (0..TotalMs)
         switch(paramOpacityMode)
         {
@@ -396,7 +394,6 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
 //                cout << "Multix3D : i : " << i << " DRAWING at delay Ms  " << multixDelaysInMs[i] << " at Position " << movingOnX <<" ," << movingOnY << " , " << movingOnZ << " Scale : " << scaling << endl;
 
             }
-            paramOversize =0;
             ofPopMatrix();
         }
         else
