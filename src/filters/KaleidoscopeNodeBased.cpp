@@ -28,7 +28,7 @@ namespace ofxPm{
         parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
 
         parameters->add(paramSides.set("Sides",2,0,24));
-        parameters->add(paramAngle.set("Angle",0.0,-1.0,1.0));
+        parameters->add(paramAngle.set("Angle",0.0,0.0,1.0));
         parameters->add(paramSlideX.set("Slide x",0.5,0.0,1.0));
         parameters->add(paramSlideY.set("Slide y",0.5,0.0,1.0));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
@@ -71,8 +71,8 @@ namespace ofxPm{
                             shader.setUniformTexture("tex0",_frame.getTextureRef(),11);
                             shader.setUniform1f("sides",paramSides);
                             shader.setUniform1f("angle",paramAngle);
-                            shader.setUniform1f("slidex",paramSlideX);
-                            shader.setUniform1f("slidey",paramSlideY);
+                            shader.setUniform1f("slidex",fmod(paramSlideX+0.5,1.0));
+                            shader.setUniform1f("slidey",fmod(paramSlideY+0.5,1.0));
 
                             ofSetColor(255);
                             
