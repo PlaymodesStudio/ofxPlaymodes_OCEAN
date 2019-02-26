@@ -158,8 +158,8 @@ namespace ofxPm{
 
         //        float gBPM = parametersControl::getInstance().getGlobalBPM();
         float gBPM = 120.0;
-        _phasor.beatsDiv_Param = paramCapturedTimeBeatDiv;
-        _phasor.beatsMult_Param = paramCapturedTimeBeatMult;
+        _phasor.beatsDiv_Param = vector<float>(1,paramCapturedTimeBeatDiv);
+        _phasor.beatsMult_Param = vector<float>(1,paramCapturedTimeBeatMult);
         
         if(paramCapturedTimeBeatDiv!=0)
         {

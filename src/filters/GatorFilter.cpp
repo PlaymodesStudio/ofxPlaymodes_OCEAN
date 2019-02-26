@@ -133,17 +133,17 @@ namespace ofxPm{
         if(_i>=half)
         {
             int m =pow(2,_i-6);
-            _phasor.beatsDiv_Param=1;
-            _phasor.beatsMult_Param=m;
+            _phasor.beatsDiv_Param = {1};
+            _phasor.beatsMult_Param = vector<float>(1, m);
         }
         else if(_i<half)
         {
             int d =pow(2,6-_i);
-            _phasor.beatsDiv_Param=d;
-            _phasor.beatsMult_Param=1;
+            _phasor.beatsDiv_Param=vector<float>(1, d);
+            _phasor.beatsMult_Param={1};
         }
         
-        cout << _i << "   ::  DIV : " << _phasor.beatsDiv_Param << " --- MULT : " << _phasor.beatsMult_Param << endl;
+        cout << _i << "   ::  DIV : " << _phasor.beatsDiv_Param[0] << " --- MULT : " << _phasor.beatsMult_Param[0] << endl;
     }
 
 //    //-----------------------------------------

@@ -51,7 +51,7 @@ namespace ofxPm{
         
         //buffer.setupNodeBased();
         videoHeader.setup(&buffer);
-        cout << "Repeater : setting up buffer !! "<< buffer.getMaxSize() << " __ " << buffer.getSizeInFrames()  << endl;
+        //cout << "Repeater : setting up buffer !! "<< buffer.getMaxSize() << " __ " << buffer.getSizeInFrames()  << endl;
         buffer.resume();
         
     
@@ -145,8 +145,8 @@ namespace ofxPm{
     void RepeaterFilter::loopTimeChanged(int &_i)
     {
 
-        _phasor.beatsDiv_Param = paramCapturedTimeBeatDiv;
-        _phasor.beatsMult_Param = paramCapturedTimeBeatMult;
+        _phasor.beatsDiv_Param = vector<float>(1,paramCapturedTimeBeatDiv);
+        _phasor.beatsMult_Param = vector<float>(1,paramCapturedTimeBeatMult);
         
         cout << paramCapturedTimeBeatDiv << endl;
         if(paramCapturedTimeBeatDiv!=0)
