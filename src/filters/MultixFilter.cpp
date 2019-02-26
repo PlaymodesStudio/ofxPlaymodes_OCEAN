@@ -20,17 +20,20 @@ namespace ofxPm{
     {
         autoBPM=false;
         color = ofColor::white;
-
+        oldBufferSize=0;
+        desiredBufferSize=900;
+        
         parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
-        parameters->add(paramNumHeaders.set("Num Headers",1,1,480));
-        parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
+        parameters->add(paramNumHeaders.set("Num Headers",1,1,900));
+        //parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
         parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
-        parameters->add(paramUseBPM.set("Use BPM",true));
+        parameters->add(paramUseBPM.set("Use BPM",false));
         parameters->add(paramOffsetBeatDiv.set("Beats Div",1,1,32));
         parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
-        parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
-        parameters->add(paramLinearDistribution.set("Linear Distribution",true));
-        parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
+        parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,7500));
+        parameters->add(paramOpacityVector.set("Opacity Vector",{1},{0},{1}));
+        //parameters->add(paramLinearDistribution.set("Linear Distribution",true));
+        //parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
         parameters->add(paramOversize.set("Oversize",0,0,1));
         
         parameters->add(paramFrameOut.set("Frame Output", frame));
@@ -38,8 +41,9 @@ namespace ofxPm{
         paramOffsetBeatDiv.addListener(this, &MultixFilter::recalculate);
         paramOffsetBeatMult.addListener(this, &MultixFilter::recalculate);
         paramNumHeaders.addListener(this,&MultixFilter::recalculate);
+        paramManualOffsetMs.addListener(this,&MultixFilter::changedManualOffsetMs);
         paramVideoBufferInput.addListener(this, &MultixFilter::changedVideoBuffer);
-        paramDistributionVector.addListener(this,&MultixFilter::changedDistributionVector);
+        //paramDistributionVector.addListener(this,&MultixFilter::changedDistributionVector);
         
         int i=0;
         recalculate(i);
@@ -48,73 +52,51 @@ namespace ofxPm{
     //------------------------------------------------------------
     void MultixFilter::update(ofEventArgs &e)
     {
-        if(fboHasToBeAllocated != glm::vec2(-1, -1))
-        {
-            fbo.allocate(fboHasToBeAllocated.x, fboHasToBeAllocated.y);
-            fboHasToBeAllocated = glm::vec2(-1, -1);
-        }
     }
 
-
     //------------------------------------------------------------------
-    void MultixFilter::changedDistributionVector(vector<float> &_v)
+    void MultixFilter::changedManualOffsetMs(float &f)
     {
-        int i = 0;
-        if(paramVideoBufferInput.get()!=nullptr) recalculate(i);
+        int i=0;
+        recalculate(i);
     }
-    //------------------------------------------------------------------
-
-    void MultixFilter::setNumHeaders(int _numHeaders){
-        paramNumHeaders=_numHeaders;
-    }
-
-    //------------------------------------------------------------------
-    int MultixFilter::getNumHeaders(){
-        return paramNumHeaders;
-    }
-
     
     //-----------------------------------------
     void ofxPm::MultixFilter::recalculate(int &_i)
-    {        
-        float BPMfactor;
-        if(paramOffsetBeatDiv!=0)
-        {
-            BPMfactor = (float(paramOffsetBeatMult)/float(paramOffsetBeatDiv));
-        }
-        else  BPMfactor = 1.0;
-
-        float oneBeatMs = (60.0/myBPM)*1000;
-        float oneCopyMs = oneBeatMs / BPMfactor;
-    
+    {
         vector<float> vf;
+        float oneCopyMs;
+        if(paramUseBPM)
+        {
+            float BPMfactor;
+            if(paramOffsetBeatDiv!=0)
+            {
+                BPMfactor = (float(paramOffsetBeatMult)/float(paramOffsetBeatDiv));
+            }
+            else  BPMfactor = 1.0;
+
+            float oneBeatMs = (60.0/myBPM)*1000;
+            oneCopyMs = oneBeatMs / BPMfactor;
+            if(oneCopyMs!=paramManualOffsetMs) paramManualOffsetMs = oneCopyMs;
+        }
+        
+        else if(!paramUseBPM)
+        {
+            oneCopyMs = paramManualOffsetMs;
+        }
         //this->setNumHeaders(paramNumHeaders);
     
         for(int i=0;i<paramNumHeaders;i++)
         {
-            if(paramLinearDistribution)
+            if(true) // not playing with distribution now ...
             {
                 // in linear distribution, the copies are spaced equally a time/distance defined by BPM and beatMult/Div
                 vf.push_back(i*oneCopyMs);
+                //cout << "Multix :: Recalculating i : " << i << "Delay :  " << i*oneCopyMs  << endl;
             }
             else
             {
-                
-                
-                //            int oscillatorReIndex = int(ofMap(i,0,float(guiNumCopies),0,float(numOscillatorBanks)));
-                //            mutex.lock();
-                //            {
-                //                vf.push_back(ofMap(guiMultixValues.get()[oscillatorReIndex],0.0,1.0, 0.0, oneCopyMs));
-                //            }
-                //            mutex.unlock();
-
-                
-                // non-linear distribution, the copies are distributed from 0 to the time expressed by BPM/Mult/Div.
-                // And inside this period the copies are distributed by Generator
-                // TO DO
-//                float outMin,outMax;
-                
-//                int oscillatorReIndex = int(ofMap(i,0,float(paramNumHeaders),0,float(paramVideoBufferInput.get()->getSizeInFrames())));
+                /*
                 float headerPct = float(i) / float(paramNumHeaders);
                 
                 int oscillatorReIndex = int(headerPct * paramDistributionVector.get().size());
@@ -134,6 +116,7 @@ namespace ofxPm{
                 }
                 mutex.unlock();
                //cout << i << " ::  OscillatorReindex: " << oscillatorReIndex << " // m : " << m << " :: maxSize : " << paramVideoBufferInput.get()->getMaxSize()<< endl;
+                 */
             }
         }
             this->updateValuesMs(vf);
@@ -170,66 +153,10 @@ namespace ofxPm{
             }
             if(multixDelaysInMs.size()>0) multixDelaysInMs[0] = 0.0;
 
-//            // CLEAN headers and renderers and resize the to new
-//            //setNumHeaders(_vf.size());
-//            int currNumHeaders = videoHeader.size();
-//            if(currNumHeaders!=paramNumHeaders){
-//                videoHeader.resize(paramNumHeaders);
-//                videoRenderer.resize(paramNumHeaders);
-//                for(int i=0;i<paramNumHeaders;i++)
-//                {
-//                    videoHeader[i].setup(paramVideoBufferInput.get());
-//                    //videoRenderer[i].setup(videoHeader[i]);
-//                }
-//                cout << "Multix::Renderer::Update Ms WARNING : currNumHeaders!=numHeaders" << endl;
-//            }
-//            
-//            // update the delayMs for each
-//            for(int i=_vf.size()-1; i>=0; i--)
-//            {
-//                videoHeader[i].setDelayMs(_vf[i]);
-//            }
-//            videoHeader[0].setDelayMs(0);
-
         }
 
     }
     
-//--------------------------------------------------------
-void MultixFilter::updateValuesPct(vector<float> _vf)
-{
-//    int currNumHeaders = videoHeader.size();
-//    if(currNumHeaders!=numHeaders){
-//        videoHeader.resize(numHeaders);
-//        videoRenderer.resize(numHeaders);
-//        for(int i=0;i<numHeaders;i++){
-//            videoHeader[i].setup(*videoBuffer);
-//            videoRenderer[i].setup(videoHeader[i]);
-//        }
-//        cout << "Multix::Renderer::Update Pct WARNING : currNumHeaders!=numHeaders" << endl;
-//    }
-//    
-//    for(int i=videoRenderer.size()-1; i>=0; i--)
-//    {
-//        //videoHeader[i].setDelayMs(delayOffset*1000*i);
-//        
-//        float oneFrameMs = (1.0 / 60.0) * 1000.0;
-//        float totalLengthInMs = videoBuffer->getMaxSize() * oneFrameMs;
-//        
-//        float myDelayMs = ofMap(_vf[i],0.0,1.0,0.0,delayOffset*100*videoBuffer->getMaxSize());
-//        //float myDelayMs = delayOffset*100*i;
-//        
-//        
-//        videoHeader[i].setDelayMs(myDelayMs);
-//        
-//        // cout << "Updating Values VF [" << i << "]" << " : " << _vf[i] << " VALUE : " << myDelayMs << " Total Length in Ms :" << totalLengthInMs << endl;
-//        
-//        
-//        //cout << i << " : " << myDelayMs << ",";
-//        //        videoRenderer[i].setTint(tint);
-//        //        videoRenderer[i].setMinmaxBlend(minmaxBlend);
-//    }
-}
     
 //--------------------------------------------------------
 VideoFrame MultixFilter::getNextVideoFrame()
@@ -246,7 +173,7 @@ VideoFrame MultixFilter::getNextVideoFrame()
 void MultixFilter::newVideoFrame(VideoFrame & _frame)
 {
     //set buffer size ?
-    int desiredBufferSize = 900;
+    desiredBufferSize = 900;
     if(paramVideoBufferInput.get()->getBufferSize()!=desiredBufferSize)
     {
         paramVideoBufferInput.get()->setBufferSize(desiredBufferSize);
@@ -292,6 +219,7 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
 	for(int i = paramNumHeaders-1; i>=0; i--)
     {
         // if delay time of each videoRenderer is in the right range of Ms (0..TotalMs)
+        /*
         switch(paramOpacityMode)
         {
             case 0 :
@@ -305,7 +233,21 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
                 break;
 
         }
+         */
+        
+        // OPACITY
+        if((i < paramOpacityVector.get().size()) && (paramOpacityVector.get().size()>1) )
+        {
+            opac = paramOpacityVector.get().at(i);
+        }
+        else
+        {
+            opac = 1.0;
+        }
 
+        //cout << "Multix  : i : " << i << " Opac = " << opac << " Size of VecOpac = " << paramOpacityVector.get().size() << endl;
+        
+        
         if((multixDelaysInMs[i]>=0)&&(multixDelaysInMs[i] < totalBufferSizeInMs))
         {
             headersInAction++;
@@ -316,12 +258,17 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
             if(!vf.isNull())
             {
                 vf.getTextureRef().draw(x,y,w,h);
+                //cout << "Multix : Drawing Texture !!" << endl;
             }
-            paramOversize =0;
+            else
+            {
+                cout << "Multix :: VF is null!! " << endl;
+            }
+            //paramOversize =0;
         }
         else
         {
-            //cout << "MultixFilter:: Out of time in Ms range !! Copy : " << i << "Delay in Ms = " << multixDelaysInMs[i] << " Max Buffer Size : " << paramVideoBufferInput.get()->getMaxSize() << endl;
+            //cout << "MultixFilter:: Out of time in Ms range !! Copy : " << i << "Delay in Ms = " << multixDelaysInMs[i] << " Max Buffer Size : " << paramVideoBufferInput.get()->getBufferSize() << endl;
             anyOversize=true;
             
         }
@@ -348,13 +295,9 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
     
     // TO DO : needed ?
     glBlendEquationEXT(GL_ADD);
+    
 }
 
-
-bool MultixFilter::isMinmaxBlend() const
-{
-    return paramMinMaxBlend;
-}
  
     //-----------------------------------------
     void MultixFilter::changedVideoBuffer(ofxPm::VideoBufferNodeBased* &_videoBuffer)
@@ -367,8 +310,7 @@ bool MultixFilter::isMinmaxBlend() const
                 // setup FBO
                 int resX = paramVideoBufferInput.get()->getWidth();
                 int resY = paramVideoBufferInput.get()->getHeight();
-                fbo.allocate(resX,resY,GL_RGBA);
-                
+                fbo.allocate(resX,resY,GL_RGB);
                 
                 // setup Headers
                 videoHeader.setup(paramVideoBufferInput.get());

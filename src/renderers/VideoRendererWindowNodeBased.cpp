@@ -6,23 +6,21 @@ namespace ofxPm
 {
     VideoRendererWindowNodeBased::VideoRendererWindowNodeBased():ofxOceanodeNodeModelExternalWindow("Video Renderer Window")
     {
-        setupNodeBased();
     }
 
 
     //--------------------------------------------------------------
     VideoRendererWindowNodeBased::~VideoRendererWindowNodeBased()
     {
-        
-        //ofRemoveListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
     }
 
 
     //--------------------------------------------------------------
-    void VideoRendererWindowNodeBased::setupNodeBased()
+    void VideoRendererWindowNodeBased::setup()
     {
         color = ofColor::yellow;
-        
+        backImage.load("./imgs/1920x1080.png");
+
         parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
 
@@ -44,8 +42,7 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::draw(int x,int y,int w,int h)
     {
-        ofSetColor(255,255,0);
-        ofDrawRectangle(0,0,w-10,h-10);
+        backImage.draw(0,0,w,h);
         if(!vFrame.isNull() && !vFrame.isNullPtr())
         {
             if(vFrame.getTextureRef().isAllocated())
@@ -80,7 +77,16 @@ namespace ofxPm
     {
         draw(0,0,ofGetWidth(),ofGetHeight());
     }
-    
+    //--------------------------------------------------------------
+    void VideoRendererWindowNodeBased::showMyExternalWindow(bool b)
+    {
+        //ofxOceanodeNodeModelExternalWindow::showExternalWindow(b);
+        showWindow = b;
+        setExternalWindowPosition(ofGetScreenWidth(),0);
+        setExternalWindowShape(1920,1080);
+        //setExternalWindowFullScreen(true);
+    }
+
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::keyPressed(ofKeyEventArgs &a)
     {

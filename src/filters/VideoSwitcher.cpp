@@ -4,7 +4,7 @@
 namespace ofxPm{
     
     //--------------------------------------------------------------
-    VideoSwitcher::VideoSwitcher():ofxOceanodeNodeModel("Switcher x2")
+    VideoSwitcher::VideoSwitcher():ofxOceanodeNodeModel("Switcher")
     {
         setupNodeBased();
     }

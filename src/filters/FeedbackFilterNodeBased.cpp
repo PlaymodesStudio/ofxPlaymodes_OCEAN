@@ -23,8 +23,8 @@ namespace ofxPm{
         fps = -1;
         
         string shaderName = "shaders/feedback";
-        shader.load(shaderName);
         cout << "FeedbackFilter::Loading Shader : " << shaderName << endl;
+        shader.load(shaderName);
         
         parameters = new ofParameterGroup();
         parameters->setName("Feedback");
