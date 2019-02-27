@@ -25,7 +25,7 @@ namespace ofxPm{
 
         parameters->add(createDropdownAbstractParameter("Beats", {"1/32","1/16","1/8", "1/4", "1/2", "1","2","4","8","16","32"}, paramBeatsDropDown));
 
-        paramBeatsDropDown.addListener(this, &BeatControl::changedBeats);
+        listener = paramBeatsDropDown.newListener(this, &BeatControl::changedBeats);
         
     }
     //------------------------------------------------------------

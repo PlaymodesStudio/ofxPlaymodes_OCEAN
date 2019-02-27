@@ -81,9 +81,9 @@ namespace ofxPm
         parameters->add(createDropdownAbstractParameter("Layout", {"1-1-1", "2-1-2", "1-2-1", "2-2-2"}, paramLayout));
         parameters->add(paramFrameOut.set("Frame Out", VideoFrame()));
         
-        paramFrameIn.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame);
-        paramFrameIn2.addListener(this, &VideoTrioRendererNodeBased::newVideoFrame2);
-        paramFlipMode.addListener(this, &VideoTrioRendererNodeBased::changedFlipMode);
+        listeners.push(paramFrameIn.newListener(this, &VideoTrioRendererNodeBased::newVideoFrame));
+        listeners.push(paramFrameIn2.newListener(this, &VideoTrioRendererNodeBased::newVideoFrame2));
+        listeners.push(paramFlipMode.newListener(this, &VideoTrioRendererNodeBased::changedFlipMode));
      
         frameRefCentre = new VideoFrame();
         frameRefDreta = new VideoFrame();;

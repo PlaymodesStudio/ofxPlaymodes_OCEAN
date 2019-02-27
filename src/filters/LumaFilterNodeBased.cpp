@@ -30,10 +30,10 @@ namespace ofxPm{
         parameters->add(paramLumaSmooth.set("Smooth",0.25,0.0,1.0));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
-        paramLumaThrshold.addListener(this, &LumaFilterNodeBased::setLumaThreshold);
-        paramLumaSmooth.addListener(this, &LumaFilterNodeBased::setLumaSmooth);
+        listeners.push(paramLumaThrshold.newListener(this, &LumaFilterNodeBased::setLumaThreshold));
+        listeners.push(paramLumaSmooth.newListener(this, &LumaFilterNodeBased::setLumaSmooth));
         
-        paramFrameIn.addListener(this, &LumaFilterNodeBased::newVideoFrame);
+        listeners.push(paramFrameIn.newListener(this, &LumaFilterNodeBased::newVideoFrame));
         
     }
     //------------------------------------------------------------

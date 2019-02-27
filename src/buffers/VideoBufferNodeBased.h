@@ -77,7 +77,7 @@ protected:
     ofParameter<float>                          paramFPS;
     ofParameter<int>                            paramBufferSize;
     
-    
+    ofEventListeners listeners;
 };
 }
 #endif /* VIDEOBUFFERNODEBASED_H_ */

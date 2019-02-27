@@ -76,6 +76,8 @@ private:
     ofFbo           fbo;
     int             oldBufferSize;
     int             desiredBufferSize;
+    
+    ofEventListeners listeners;
 
 };
 }

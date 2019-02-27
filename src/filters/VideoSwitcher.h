@@ -33,6 +33,8 @@ namespace ofxPm{
         float fps;
         ofParameter<ofxPm::VideoFrame>      paramFrameIn2;
         ofParameter<int>                    paramSwitchTo;
+        
+        ofEventListeners listeners;
     };
 }
 

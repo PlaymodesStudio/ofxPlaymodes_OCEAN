@@ -31,6 +31,7 @@ private:
     float fps;
     ofParameter<ofxPm::VideoFrame>      paramFrameOut2;
 
+    ofEventListener listener;
 };
 }
 

@@ -77,7 +77,7 @@ protected:
     int oldBufferSize;
 
     
-
+    ofEventListener listener;
 };
 }
 #endif // VIDEOHEADERNODEBASED_H_INCLUDED

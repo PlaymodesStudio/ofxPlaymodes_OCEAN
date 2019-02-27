@@ -31,7 +31,7 @@ namespace ofxPm{
         parameters->add(paramBlue.set("Blue",1.0,0.0,10.0));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
-        paramFrameIn.addListener(this, &ColorCorrectFilter::newVideoFrame);
+        listener = paramFrameIn.newListener(this, &ColorCorrectFilter::newVideoFrame);
         
     }
     //------------------------------------------------------------

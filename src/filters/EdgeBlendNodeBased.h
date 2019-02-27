@@ -36,6 +36,8 @@ private:
     // FEATURE NODE
     ofParameter<float>                  paramGradientWidth;
     ofParameter<int>                    paramGradientXorY;
+    
+    ofEventListeners listeners;
 };
 }
 

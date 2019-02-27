@@ -38,12 +38,12 @@ namespace ofxPm{
         
         parameters->add(paramFrameOut.set("Frame Output", frame));
 
-        paramOffsetBeatDiv.addListener(this, &MultixFilter::recalculate);
-        paramOffsetBeatMult.addListener(this, &MultixFilter::recalculate);
-        paramNumHeaders.addListener(this,&MultixFilter::recalculate);
-        paramManualOffsetMs.addListener(this,&MultixFilter::changedManualOffsetMs);
-        paramVideoBufferInput.addListener(this, &MultixFilter::changedVideoBuffer);
-        //paramDistributionVector.addListener(this,&MultixFilter::changedDistributionVector);
+        listeners.push(paramOffsetBeatDiv.newListener(this, &MultixFilter::recalculate));
+        listeners.push(paramOffsetBeatMult.newListener(this, &MultixFilter::recalculate));
+        listeners.push(paramNumHeaders.newListener(this,&MultixFilter::recalculate));
+        listeners.push(paramManualOffsetMs.newListener(this,&MultixFilter::changedManualOffsetMs));
+        listeners.push(paramVideoBufferInput.newListener(this, &MultixFilter::changedVideoBuffer));
+        //listeners.push(paramDistributionVector.newListener(this,&MultixFilter::changedDistributionVector));
         
         int i=0;
         recalculate(i);

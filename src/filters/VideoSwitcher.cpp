@@ -25,8 +25,8 @@ namespace ofxPm{
         parameters->add(paramSwitchTo.set("Switch",0,0,1));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
-        paramFrameIn.addListener(this, &VideoSwitcher::newVideoFrame);
-        paramFrameIn2.addListener(this, &VideoSwitcher::newVideoFrame2);
+        listeners.push(paramFrameIn.newListener(this, &VideoSwitcher::newVideoFrame));
+        listeners.push(paramFrameIn2.newListener(this, &VideoSwitcher::newVideoFrame2));
 
     }
     //------------------------------------------------------------

@@ -32,7 +32,7 @@ namespace ofxPm{
         parameters->add(paramBlur.set("Blur",1.0,0.0,10.0));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
-        paramFrameIn.addListener(this, &HalfToneFilter::newVideoFrame);
+        listener = paramFrameIn.newListener(this, &HalfToneFilter::newVideoFrame);
         
     }
     //------------------------------------------------------------

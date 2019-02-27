@@ -42,11 +42,11 @@ namespace ofxPm{
 
         parameters->add(paramFrameOut.set("Frame Output", frame));
                 
-        paramLumaThrshold.addListener(this, &inputProcessingFilter::setLumaThreshold);
-        paramLumaSmooth.addListener(this, &inputProcessingFilter::setLumaSmooth);
-        paramGradientWidth.addListener(this, &inputProcessingFilter::setGradientWidth);
-        paramGradientXorY.addListener(this, &inputProcessingFilter::setGradientXorY);
-        paramFrameIn.addListener(this, &inputProcessingFilter::newVideoFrame);
+        listeners.push(paramLumaThrshold.newListener(this, &inputProcessingFilter::setLumaThreshold));
+        listeners.push(paramLumaSmooth.newListener(this, &inputProcessingFilter::setLumaSmooth));
+        listeners.push(paramGradientWidth.newListener(this, &inputProcessingFilter::setGradientWidth));
+        listeners.push(paramGradientXorY.newListener(this, &inputProcessingFilter::setGradientXorY));
+        listeners.push(paramFrameIn.newListener(this, &inputProcessingFilter::newVideoFrame));
         
     }
     //------------------------------------------------------------

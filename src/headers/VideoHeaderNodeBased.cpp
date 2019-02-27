@@ -76,7 +76,7 @@ namespace ofxPm{
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         
-        paramVideoBufferInput.addListener(this, &VideoHeaderNodeBased::changedVideoBuffer);
+        listener = paramVideoBufferInput.newListener(this, &VideoHeaderNodeBased::changedVideoBuffer);
     }
 
     //------------------------------------------------------

@@ -32,7 +32,7 @@ namespace ofxPm
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         parameters->add(paramVideoBufferOut.set("Buffer Output",nullptr));
         
-        paramIsRecording.addListener(this,&VideoBufferNodeBased::changedIsRecording);
+        listeners.push(paramIsRecording.newListener(this,&VideoBufferNodeBased::changedIsRecording));
         // do this the last to avoid sending nullptr frame
         resume();
 //      bool rec = true;
@@ -251,7 +251,7 @@ namespace ofxPm
     //----------------------------------------------
     void VideoBufferNodeBased::resume()
     {
-        paramFrameIn.addListener(this, &VideoBufferNodeBased::newVideoFrame);
+        listeners.push(paramFrameIn.newListener(this, &VideoBufferNodeBased::newVideoFrame));
         
         stopped = false;
         

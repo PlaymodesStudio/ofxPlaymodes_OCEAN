@@ -23,7 +23,7 @@ namespace ofxPm{
         parameters->add(paramFrameOut.set("Frame Output 1", VideoFrame()));
         parameters->add(paramFrameOut2.set("Frame Output 2", VideoFrame()));
 
-        paramFrameIn.addListener(this, &VideoSpliter::newVideoFrame);
+        listener = paramFrameIn.newListener(this, &VideoSpliter::newVideoFrame);
 
     }
     //------------------------------------------------------------

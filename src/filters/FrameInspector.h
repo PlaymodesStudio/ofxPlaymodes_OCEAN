@@ -36,6 +36,7 @@ namespace ofxPm{
         float                               getVectorMean();
         int                                 recordedTimes;
 
+        ofEventListener listener;
 };
 }
 

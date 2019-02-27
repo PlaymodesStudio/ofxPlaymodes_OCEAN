@@ -41,13 +41,13 @@ namespace ofxPm{
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
 
 
-        paramRestart.addListener(this,&RepeaterFilter::doRestart);
-        paramDoLoop.addListener(this, &RepeaterFilter::doLoopChanged);
-        paramCapturedTimeBeatMult.addListener(this, &RepeaterFilter::loopTimeChanged);
-        paramCapturedTimeBeatDiv.addListener(this, &RepeaterFilter::loopTimeChanged);
-        paramFrameIn.addListener(this, &RepeaterFilter::newVideoFrame);
+        listeners.push(paramRestart.newListener(this,&RepeaterFilter::doRestart));
+        listeners.push(paramDoLoop.newListener(this, &RepeaterFilter::doLoopChanged));
+        listeners.push(paramCapturedTimeBeatMult.newListener(this, &RepeaterFilter::loopTimeChanged));
+        listeners.push(paramCapturedTimeBeatDiv.newListener(this, &RepeaterFilter::loopTimeChanged));
+        listeners.push(paramFrameIn.newListener(this, &RepeaterFilter::newVideoFrame));
         
-        ofAddListener(_phasor.phasorCycle, this, &RepeaterFilter::phasorCycleEvent);
+        listeners.push(_phasor.phasorCycle.newListener(this, &RepeaterFilter::phasorCycleEvent));
         
         //buffer.setupNodeBased();
         videoHeader.setup(&buffer);

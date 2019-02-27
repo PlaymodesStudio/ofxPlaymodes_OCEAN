@@ -44,6 +44,7 @@ private:
     ofParameter<float>                  paramOriginX;
     ofParameter<float>                  paramOriginY;
 
+    ofEventListener listener;
 };
 }
 

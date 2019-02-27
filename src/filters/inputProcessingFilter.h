@@ -45,7 +45,7 @@ private:
     ofParameter<float>                  paramMax;
     ofParameter<float>                  paramGamma;
 
-
+    ofEventListeners listeners;
 };
 }
 

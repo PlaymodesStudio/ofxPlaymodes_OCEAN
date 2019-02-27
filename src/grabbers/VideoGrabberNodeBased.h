@@ -37,6 +37,7 @@ namespace ofxPm{
         void                                setGrabberSettings(bool & _b);
         void                                connectToDevice();
 
+        ofEventListener listener;
     };
 }
 

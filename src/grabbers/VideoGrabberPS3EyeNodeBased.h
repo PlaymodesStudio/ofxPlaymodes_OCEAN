@@ -53,7 +53,7 @@ private:
     
     void                                connectToDevice();
     
-    
+    ofEventListeners listeners;
     
 };
 }

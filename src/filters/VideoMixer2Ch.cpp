@@ -32,8 +32,8 @@ namespace ofxPm{
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
         
-        paramFrameIn.addListener(this, &VideoMixer2Ch::newVideoFrame);
-        paramFrameIn2.addListener(this, &VideoMixer2Ch::newVideoFrame2);
+        listeners.push(paramFrameIn.newListener(this, &VideoMixer2Ch::newVideoFrame));
+        listeners.push(paramFrameIn2.newListener(this, &VideoMixer2Ch::newVideoFrame2));
         
         textureIn2.allocate(640,480,GL_RGB);
 

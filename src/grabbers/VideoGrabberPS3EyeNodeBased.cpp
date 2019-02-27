@@ -15,12 +15,12 @@ namespace ofxPm{
         parameters->add(paramAutoWB.set("AutoWB",false));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        paramConnect.addListener(this, &VideoGrabberPS3EyeNodeBased::connectToDevice);
+        listeners.push(paramConnect.newListener(this, &VideoGrabberPS3EyeNodeBased::connectToDevice));
 
-        paramExposure.addListener(this, &VideoGrabberPS3EyeNodeBased::setExposure);
-        paramAutoGain.addListener(this, &VideoGrabberPS3EyeNodeBased::setAutoGain);
-        paramHue.addListener(this, &VideoGrabberPS3EyeNodeBased::setHue);
-        paramAutoWB.addListener(this,&VideoGrabberPS3EyeNodeBased::setAutoWhiteBalance);
+        listeners.push(paramExposure.newListener(this, &VideoGrabberPS3EyeNodeBased::setExposure));
+        listeners.push(paramAutoGain.newListener(this, &VideoGrabberPS3EyeNodeBased::setAutoGain));
+        listeners.push(paramHue.newListener(this, &VideoGrabberPS3EyeNodeBased::setHue));
+        listeners.push(paramAutoWB.newListener(this,&VideoGrabberPS3EyeNodeBased::setAutoWhiteBalance));
 
     }
 

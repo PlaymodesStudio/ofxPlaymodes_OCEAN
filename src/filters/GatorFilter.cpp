@@ -44,11 +44,11 @@ namespace ofxPm{
         parameters->add(paramBypass.set("Bypass",false));
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
 
-        paramFrameIn.addListener(this, &GatorFilter::newVideoFrame);
-        paramGateFreqBPM.addListener(this, &GatorFilter::freqChanged);
-        paramDoRestart.addListener(this, &GatorFilter::restartChanged);
+        listeners.push(paramFrameIn.newListener(this, &GatorFilter::newVideoFrame));
+        listeners.push(paramGateFreqBPM.newListener(this, &GatorFilter::freqChanged));
+        listeners.push(paramDoRestart.newListener(this, &GatorFilter::restartChanged));
 
-        ofAddListener(_phasor.phasorCycle, this, &GatorFilter::phasorCycleEvent);
+        listeners.push(_phasor.phasorCycle.newListener(this, &GatorFilter::phasorCycleEvent));
         
         //setFrameResolution(1280, 720);
 
