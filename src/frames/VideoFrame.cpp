@@ -12,8 +12,8 @@ namespace ofxPm
 {
 int VideoFrame::total_num_frames=0;
 map<VideoFormat,vector<ofPtr<VideoFrame::Obj> > > VideoFrame::pool;
-ofMutex VideoFrame::poolMutex;
-//std::mutex VideoFrame::poolMutex;
+//ofMutex VideoFrame::poolMutex;
+std::mutex VideoFrame::poolMutex;
     
 class VideoFrame::Obj{
 public:
@@ -231,32 +231,13 @@ public:
 
 	void VideoFrame::poolDeleter(VideoFrame::Obj * obj)
     {
-        poolMutex.lock();
-        pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
-        
-        int size =pool[VideoFormat(obj->pixels)].size();
-        if(size>1)
-        {
-//            cout << "___Pool Size :: " << size;
-        }
-//        cout << "___VideoFormat num ch :  " << VideoFormat(obj->pixels).numChannels << endl;
-        //delete obj;
-        poolMutex.unlock();
-        //cout << "  @@@@@@@ Pool deleter !! " << endl;
-        
-        /*
-        try
-        {
+        try {
             std::unique_lock<std::mutex> lock(poolMutex);
-            //poolMutex.lock();
             pool[VideoFormat(obj->pixels)].push_back(ofPtr<Obj>(obj,&VideoFrame::poolDeleter));
         }
-        catch(const std::exception& e)
-        {
-      
+        catch(const std::exception& e) {
+            /* When program terminates, acquiring lock is impossible. */
         }
-        */
-        
 	}
 
 	ofPixels & VideoFrame::getPixelsRef(){
@@ -290,8 +271,8 @@ public:
 
 	int VideoFrame::getPoolSize(const VideoFormat & format){
 
-        //std::unique_lock<std::mutex> lock(poolMutex);
-        poolMutex.lock();
+        std::unique_lock<std::mutex> lock(poolMutex);
+        //poolMutex.lock();
         int res =pool[format].size();
         poolMutex.unlock();
 
