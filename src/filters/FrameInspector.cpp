@@ -30,7 +30,7 @@ namespace ofxPm{
         parameters->add(paramFrameHeight.set("Frame Height",0,0,2048));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        paramFrameIn.addListener(this, &FrameInspector::newVideoFrame);
+        listener = paramFrameIn.newListener(this, &FrameInspector::newVideoFrame);
         
         lastTimeMillis = ofGetElapsedTimeMillis();
         recordedTimes++;

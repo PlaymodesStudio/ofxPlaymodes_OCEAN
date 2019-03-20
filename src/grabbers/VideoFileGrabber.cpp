@@ -18,9 +18,9 @@ namespace ofxPm{
         parameters->add(paramHeader.set("Header",0.0,0.0,1.0));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        paramScratch.addListener(this, &VideoFileGrabber::scratchChanged);
-        paramHeader.addListener(this, &VideoFileGrabber::headerChanged);
-        paramPlay.addListener(this, &VideoFileGrabber::playChanged);
+        listeners.push(paramScratch.newListener(this, &VideoFileGrabber::scratchChanged));
+        listeners.push(paramHeader.newListener(this, &VideoFileGrabber::headerChanged));
+        listeners.push(paramPlay.newListener(this, &VideoFileGrabber::playChanged));
 
         
     }

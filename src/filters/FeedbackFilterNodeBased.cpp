@@ -35,7 +35,7 @@ namespace ofxPm{
         parameters->add(paramOriginY.set("OriginY",0.5,-1.0,1.0));
         parameters->add(paramFrameOut.set("Frame Output", frameToSendOut));
         
-        paramFrameIn.addListener(this, &FeedbackFilterNodeBased::newVideoFrame);
+        listener = paramFrameIn.newListener(this, &FeedbackFilterNodeBased::newVideoFrame);
     }
 
     //------------------------------------------------------------

@@ -35,7 +35,7 @@ namespace ofxPm{
         void                                headerChanged(float & _f);
 
         
-
+        ofEventListeners listeners;
     };
 }
 

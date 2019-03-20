@@ -30,9 +30,9 @@ namespace ofxPm{
         parameters->add(paramGradientXorY.set("X or Y",1,0,1));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        paramGradientWidth.addListener(this, &EdgeBlendNodeBased::setGradientWidth);
-        paramGradientXorY.addListener(this, &EdgeBlendNodeBased::setGradientXorY);
-        paramFrameIn.addListener(this, &EdgeBlendNodeBased::newVideoFrame);
+        listeners.push(paramGradientWidth.newListener(this, &EdgeBlendNodeBased::setGradientWidth));
+        listeners.push(paramGradientXorY.newListener(this, &EdgeBlendNodeBased::setGradientXorY));
+        listeners.push(paramFrameIn.newListener(this, &EdgeBlendNodeBased::newVideoFrame));
         
     }
     //------------------------------------------------------------

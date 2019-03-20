@@ -44,19 +44,19 @@ namespace ofxPm{
         addParameterToGroupAndInfo(paramPhasorOut.set("Phasor Out",0.0,0.0,1.0));//.isSavePreset = false;
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
 
-        paramRestart.addListener(this,&LooperFilter::doRestart);
-        paramDoLoop.addListener(this, &LooperFilter::doLoopChanged);
-        paramDoRec.addListener(this, &LooperFilter::doRecChanged);
-        paramCapturedTimeBeatMult.addListener(this, &LooperFilter::loopTimeChanged);
-        paramCapturedTimeBeatDiv.addListener(this, &LooperFilter::loopTimeChanged);
-        paramFrameIn.addListener(this, &LooperFilter::newVideoFrame);
-        paramBufferSize.addListener(this, &LooperFilter::bufferSizeChanged);
-        paramDoPlay.addListener(this,&LooperFilter::playChanged);
-        paramRefreshLoopAt.addListener(this,&LooperFilter::refreshAtChanged);
-        paramDoRefresh.addListener(this,&LooperFilter::doRefreshChanged);
+        listeners.push(paramRestart.newListener(this,&LooperFilter::doRestart));
+        listeners.push(paramDoLoop.newListener(this, &LooperFilter::doLoopChanged));
+        listeners.push(paramDoRec.newListener(this, &LooperFilter::doRecChanged));
+        listeners.push(paramCapturedTimeBeatMult.newListener(this, &LooperFilter::loopTimeChanged));
+        listeners.push(paramCapturedTimeBeatDiv.newListener(this, &LooperFilter::loopTimeChanged));
+        listeners.push(paramFrameIn.newListener(this, &LooperFilter::newVideoFrame));
+        listeners.push(paramBufferSize.newListener(this, &LooperFilter::bufferSizeChanged));
+        listeners.push(paramDoPlay.newListener(this,&LooperFilter::playChanged));
+        listeners.push(paramRefreshLoopAt.newListener(this,&LooperFilter::refreshAtChanged));
+        listeners.push(paramDoRefresh.newListener(this,&LooperFilter::doRefreshChanged));
         
         
-        ofAddListener(_phasor.phasorCycle, this, &LooperFilter::phasorCycleEvent);
+       listeners.push(_phasor.phasorCycle.newListener(this, &LooperFilter::phasorCycleEvent));
         
         
         int k=0;

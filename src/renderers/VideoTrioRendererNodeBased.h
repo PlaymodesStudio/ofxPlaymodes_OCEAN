@@ -53,6 +53,7 @@ namespace ofxPm{
 
         void changedFlipMode(int &m);
 
+        ofEventListeners listeners;
     };
 }
 

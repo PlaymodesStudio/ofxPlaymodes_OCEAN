@@ -45,13 +45,13 @@ namespace ofxPm{
         
         parameters->add(paramFrameOut.set("Frame Output", frame));
 
-        paramOffsetBeatDiv.addListener(this, &Multix3DFilter::recalculate);
-        paramOffsetBeatMult.addListener(this, &Multix3DFilter::recalculate);
-        paramNumHeaders.addListener(this,&Multix3DFilter::recalculate);
-        paramManualOffsetMs.addListener(this,&Multix3DFilter::changedManualOffsetMs);
-        paramVideoBufferInput.addListener(this, &Multix3DFilter::changedVideoBuffer);
-        paramDistributionVector.addListener(this,&Multix3DFilter::changedDistributionVector);
-//        paramCopiesPositionX.addListener(this,&::ofxPm::Multix3DFilter::changedCopiesPositionX);
+        listeners.push(paramOffsetBeatDiv.newListener(this, &Multix3DFilter::recalculate));
+        listeners.push(paramOffsetBeatMult.newListener(this, &Multix3DFilter::recalculate));
+        listeners.push(paramNumHeaders.newListener(this,&Multix3DFilter::recalculate));
+        listeners.push(paramManualOffsetMs.newListener(this,&Multix3DFilter::changedManualOffsetMs));
+        listeners.push(paramVideoBufferInput.newListener(this, &Multix3DFilter::changedVideoBuffer));
+        listeners.push(paramDistributionVector.newListener(this,&Multix3DFilter::changedDistributionVector));
+//        listeners.push(paramCopiesPositionX.newListener(this,&::ofxPm::Multix3DFilter::changedCopiesPositionX));
 
         int i=0;
         recalculate(i);

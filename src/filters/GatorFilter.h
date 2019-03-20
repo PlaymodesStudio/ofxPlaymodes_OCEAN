@@ -57,6 +57,7 @@ private:
     bool                                doGate;
     glm::vec2                           frameResolution;
     
+    ofEventListeners listeners;
 };
 }
 

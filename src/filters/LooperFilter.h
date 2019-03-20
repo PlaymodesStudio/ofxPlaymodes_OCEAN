@@ -73,6 +73,7 @@ private:
     void                                phasorCycleEvent();
     int                                 phasorNumCycles;
     
+    ofEventListeners listeners;
 };
 }
 

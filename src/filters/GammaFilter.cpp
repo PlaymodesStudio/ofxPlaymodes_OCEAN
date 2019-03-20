@@ -31,10 +31,10 @@ namespace ofxPm{
         parameters->add(paramGamma.set("Gamma",1.0,0.0,4.0));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
         
-        paramMin.addListener(this, &GammaFilter::setMin);
-        paramMax.addListener(this, &GammaFilter::setMax);
+        listeners.push(paramMin.newListener(this, &GammaFilter::setMin));
+        listeners.push(paramMax.newListener(this, &GammaFilter::setMax));
         
-        paramFrameIn.addListener(this, &GammaFilter::newVideoFrame);
+        listeners.push(paramFrameIn.newListener(this, &GammaFilter::newVideoFrame));
         
     }
     //------------------------------------------------------------

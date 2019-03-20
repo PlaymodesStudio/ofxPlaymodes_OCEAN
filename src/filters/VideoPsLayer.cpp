@@ -28,7 +28,7 @@ namespace ofxPm{
         parameters->add(paramBlendMode.set("Blend Mode",0,0,25.0));
         parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
                 
-        paramFrameIn2.addListener(this, &VideoPsLayer::newVideoFrame);
+        listener = paramFrameIn2.newListener(this, &VideoPsLayer::newVideoFrame);
         
     }
     //------------------------------------------------------------

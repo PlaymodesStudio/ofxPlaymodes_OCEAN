@@ -42,6 +42,7 @@ private:
     ofParameter<float>                  paramGreen;
     ofParameter<float>                  paramBlue;
 
+    ofEventListener listener;
 };
 }
 

@@ -35,6 +35,7 @@ private:
     ofParameter<float>                  paramTimeFactor;
     ofParameter<float>                  paramBlur;
 
+    ofEventListener listener;
 };
 }
 

@@ -104,6 +104,7 @@ private:
     bool            minmaxBlend;
     int             opacityMode;
 
+    ofEventListeners listeners;
 };
 }
 

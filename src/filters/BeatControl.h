@@ -24,6 +24,8 @@ namespace ofxPm{
         vector<vector<int>>                 beats;
 
         void changedBeats(int &i);
+        
+        ofEventListener listener;
 };
 }
 

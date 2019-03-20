@@ -34,6 +34,8 @@ private:
     ofParameter<float>                  paramAngle;
     ofParameter<float>                  paramSlideX;
     ofParameter<float>                  paramSlideY;
+    
+    ofEventListener listener;
 };
 }
 

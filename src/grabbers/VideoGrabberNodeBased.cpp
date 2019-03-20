@@ -19,7 +19,7 @@ namespace ofxPm{
         parameters->add(paramFps.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        paramConnect.addListener(this, &VideoGrabberNodeBased::connectToDevice);
+        listener = paramConnect.newListener(this, &VideoGrabberNodeBased::connectToDevice);
         
         color = ofColor::darkGreen;
 

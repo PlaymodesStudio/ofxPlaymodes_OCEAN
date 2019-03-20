@@ -43,6 +43,7 @@ private:
     ofParameter<float>                  paramOpacityTarget;
     ofParameter<int>                    paramBlendMode;
     
+    ofEventListener listener;
 };
 }
 

@@ -39,6 +39,7 @@ private:
     void keyPressed(ofKeyEventArgs &a) override;
     void mousePressed(ofMouseEventArgs &a) override;
 
+    ofEventListener listener;
 };
 }
 

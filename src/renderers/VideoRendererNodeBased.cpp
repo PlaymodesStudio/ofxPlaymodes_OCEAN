@@ -31,9 +31,9 @@ namespace ofxPm
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
 
                         
-        paramFrameIn.addListener(this, &VideoRendererNodeBased::newVideoFrame);
+        frameInListener = paramFrameIn.newListener(this, &VideoRendererNodeBased::newVideoFrame);
         
-        //ofAddListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
+        //ofnewListener(ofEvents().draw, this, &VideoRendererNodeBased::draw);
     }
 
 

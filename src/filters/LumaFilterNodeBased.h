@@ -45,6 +45,7 @@ private:
 //    ofParameter<ofxPm::VideoFrame>      paramFrameIn;
 //    ofParameter<ofxPm::VideoFrame>      paramFrameOut;
 
+    ofEventListeners listeners;
 };
 }
 
