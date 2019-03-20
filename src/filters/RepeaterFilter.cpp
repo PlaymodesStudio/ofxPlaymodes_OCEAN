@@ -145,8 +145,8 @@ namespace ofxPm{
     void RepeaterFilter::loopTimeChanged(int &_i)
     {
 
-        _phasor.beatsDiv_Param = vector<float>(1,paramCapturedTimeBeatDiv);
-        _phasor.beatsMult_Param = vector<float>(1,paramCapturedTimeBeatMult);
+        _phasor.setBeatsDiv(paramCapturedTimeBeatDiv);
+        _phasor.setBeatsMult(paramCapturedTimeBeatMult);
         
         cout << paramCapturedTimeBeatDiv << endl;
         if(paramCapturedTimeBeatDiv!=0)

@@ -133,14 +133,14 @@ namespace ofxPm{
         if(_i>=half)
         {
             int m =pow(2,_i-6);
-            _phasor.beatsDiv_Param = {1};
-            _phasor.beatsMult_Param = vector<float>(1, m);
+            _phasor.setBeatsDiv(1);
+            _phasor.setBeatsMult(m);
         }
         else if(_i<half)
         {
             int d =pow(2,6-_i);
-            _phasor.beatsDiv_Param=vector<float>(1, d);
-            _phasor.beatsMult_Param={1};
+            _phasor.setBeatsDiv(d);
+            _phasor.setBeatsMult(1);
         }
         
         //cout << _i << "   ::  DIV : " << _phasor.beatsDiv_Param << " --- MULT : " << _phasor.beatsMult_Param << endl;
