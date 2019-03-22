@@ -4,7 +4,6 @@
 #define VIDEOGRABBERNODEBASED_H_INCLUDED
 
 #include "VideoSource.h"
-#include "ofMain.h"
 #include "ofxOceanodeNodeModel.h"
 
 
@@ -24,18 +23,17 @@ namespace ofxPm{
         void                                newFrame(ofPixels & frame);
         void                                newFrame(ofTexture & tex);
         VideoFrame                          frame;
-        int                                 numGrabberDevices;
         
-        ofParameter<bool>                   paramSettings;
-        ofParameter<void>                   paramConnect;
-        ofParameter<bool>                   paramGrab;
         ofParameter<int>                    paramDeviceId;
         ofParameter<int>                    paramResolutionX;
         ofParameter<int>                    paramResolutionY;
+        ofParameter<int>                    rotation;
+        ofParameter<bool>                   vFlip;
+        ofParameter<bool>                   hFlip;
         ofParameter<int>                    paramFps;
 
         void                                setGrabberSettings(bool & _b);
-        void                                connectToDevice();
+        void                                selectedDevice(int &identifier);
 
         ofEventListener listener;
     };

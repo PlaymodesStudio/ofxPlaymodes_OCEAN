@@ -7,29 +7,30 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     VideoGrabberNodeBased::VideoGrabberNodeBased(): ofxOceanodeNodeModel("Video Grabber")
     {
-        //numGrabberDevices = VideoGrabberNodeBased::listDevices().size();
-        // TODO : this is provisional !!
-        numGrabberDevices = 2;
+        vector<string> videoDevices = {"None"};
+        for(auto &d : ofVideoGrabber::listDevices()){
+            videoDevices.push_back(d.deviceName);
+        }
         
-        parameters->add(paramDeviceId.set("DeviceId", 0, 0, numGrabberDevices-1));
-        parameters->add(paramGrab.set("Grab",true));
-        parameters->add(paramConnect.set("Connect"));
-        parameters->add(paramResolutionX.set("Resolution X",640,0,1920));
-        parameters->add(paramResolutionY.set("Resolution Y",480,0,1080));
-        parameters->add(paramFps.set("FPS",60,0,60));
+        addParameterToGroupAndInfo(createDropdownAbstractParameter("Device", videoDevices, paramDeviceId)).isSavePreset = false;
+        
+        addParameterToGroupAndInfo(paramResolutionX.set("Resolution X",1280,0,1920)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramResolutionY.set("Resolution Y",720,0,1080)).isSavePreset = false;
+        addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
+        addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramFps.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        listener = paramConnect.newListener(this, &VideoGrabberNodeBased::connectToDevice);
+        listener = paramDeviceId.newListener(this, &VideoGrabberNodeBased::selectedDevice);
         
         color = ofColor::darkGreen;
-
     }
 
 
     //-----------------------------------------------------------------------------------
     VideoGrabberNodeBased::~VideoGrabberNodeBased()
     {
-        cout << "VideoGrabberNodeBased::Destroying Grabber..." << endl;
         ofVideoGrabber::close();
     }
 
@@ -44,15 +45,14 @@ namespace ofxPm{
     {
         if(ofVideoGrabber::isInitialized())
         {
-            if(paramGrab)
+            ofVideoGrabber::update();
+            if(ofVideoGrabber::isFrameNew())
             {
-                ofVideoGrabber::update();
-                if(ofVideoGrabber::isFrameNew())
-                {
-                    newFrame(getPixelsRef());
-                    //newFrame(getTexture());
-                }
-            }            
+                ofPixels &p = getPixels();
+                p.rotate90(rotation);
+                p.mirror(vFlip, hFlip);
+                newFrame(p);
+            }
         }
     }
 
@@ -86,20 +86,30 @@ namespace ofxPm{
         ofVideoGrabber::videoSettings();
     }
     //------------------------------------------------------
-    void VideoGrabberNodeBased::connectToDevice()
-    {
-        cout << "VideoGrabberNodeBased::set Reconnect .... " << endl;
-        
-        VideoGrabberNodeBased::close();
-        VideoGrabberNodeBased::listDevices();
-        VideoGrabberNodeBased::setDeviceID(paramDeviceId);
-        ofVideoGrabber::setDesiredFrameRate(paramFps);
-        
-        ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
-
-        VideoSource::setWidth(ofVideoGrabber::getWidth());
-        VideoSource::setHeight(ofVideoGrabber::getHeight());
-        cout << "VideoGrabberNodeBased::reconnecting to grabber device " << paramDeviceId << " at : " << paramResolutionX << " , " << paramResolutionY << " || FPS : " << paramFps << endl;
+//    void VideoGrabberNodeBased::connectToDevice()
+//    {
+//        cout << "VideoGrabberNodeBased::set Reconnect .... " << endl;
+//
+//        VideoGrabberNodeBased::close();
+//        VideoGrabberNodeBased::listDevices();
+//        VideoGrabberNodeBased::setDeviceID(paramDeviceId);
+//        ofVideoGrabber::setDesiredFrameRate(paramFps);
+//
+//        ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
+//
+//        VideoSource::setWidth(ofVideoGrabber::getWidth());
+//        VideoSource::setHeight(ofVideoGrabber::getHeight());
+//        cout << "VideoGrabberNodeBased::reconnecting to grabber device " << paramDeviceId << " at : " << paramResolutionX << " , " << paramResolutionY << " || FPS : " << paramFps << endl;
+//    }
+    //---------------------------------------------------------
+    void VideoGrabberNodeBased::selectedDevice(int &identifier){
+        close();
+        if(identifier > 0){
+            setDeviceID(identifier-1);
+            ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
+            VideoSource::setWidth(ofVideoGrabber::getWidth());
+            VideoSource::setHeight(ofVideoGrabber::getHeight());
+        }
     }
     
 }
