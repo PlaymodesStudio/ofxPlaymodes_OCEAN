@@ -259,13 +259,11 @@ public:
 	}
 
 	int VideoFrame::getWidth(){
-        ofPixels pix = data->pixels;
-		return pix.getWidth();
+        return data->pixels.getWidth();
 	}
 
 	int VideoFrame::getHeight(){
-        ofPixels pix = data->pixels;
-		return data->pixels.getHeight();
+        return data->pixels.getHeight();
 	}
 
 	int VideoFrame::getPoolSize(const VideoFormat & format){
