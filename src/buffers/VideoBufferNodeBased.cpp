@@ -150,26 +150,10 @@ namespace ofxPm
         int closestPosition=0;
         if(frames.size()>0)
         {
-            TimeDiff tdiff = 1000000000000000;
-            for(int i=0;i<getSizeInFrames();i++)
-            {
-                TimeDiff tdiff2 = abs(ts.epochMicroseconds() - frames[i].getTimestamp().epochMicroseconds());
-                //cout << "Buffer:GetVFr:: Frame : "<< i << " has a TS of : " << frames[i].getTimestamp().raw()  <<  " and we look for " << ts.raw() << " . The diff is = " << tdiff2 << endl;
-                if(tdiff2<tdiff)
-                {
-                    //cout << "!! Found a closest position !! : "<< i << endl;
-                    closestPosition=i;
-                    tdiff=tdiff2;
-                }
+            frame = *std::max_element(frames.begin(), frames.end(), [ts](auto &first, auto &second){
+                return abs(ts.epochMicroseconds() - first.getTimestamp().epochMicroseconds()) > abs(ts.epochMicroseconds() - second.getTimestamp().epochMicroseconds());
                 
-            }
-            //cout<<"Buffer : Getting frame at closest TS : " << ts.raw()<< " :: Closest Position :: " << closestPosition<<endl;
-            if(closestPosition>frames.size())
-            {
-                closestPosition=frames.size();
-            }
-            
-            frame = frames[closestPosition];
+            });
         }
         // ??? is this a good way to go ?
         // i've added a "index position" to a videoFrame ... this allows us to draw header based on pos, not TS?
