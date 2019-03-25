@@ -122,7 +122,6 @@ public:
 
 	VideoFrame::VideoFrame()
 	{
-        bufferIndex=-1;
 
 	}
 

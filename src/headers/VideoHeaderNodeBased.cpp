@@ -101,8 +101,6 @@ namespace ofxPm{
                     currentFrameTs = getNextFrameTimestamp();
                     // fetch closest video frame from buffer
                     frame = paramVideoBufferInput.get()->getVideoFrame(currentFrameTs);
-                    // get the index of the fetched frame
-                    currentFrameIndex = frame.getBufferIndex();
                 }
                 paramVideoBufferInput.get()->unlock();
             }

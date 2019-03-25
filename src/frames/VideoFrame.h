@@ -47,8 +47,6 @@ public:
 	static int getPoolSize(const VideoFormat & format);
 	static int getTotalNumFrames();
 
-    int         getBufferIndex(){return bufferIndex;};
-    void        setBufferIndex(int i){bufferIndex=i;};
 
     bool isNull()
     {
@@ -69,8 +67,6 @@ private:
     static map<VideoFormat,vector< ofPtr<Obj> >  > pool;
     static ofMutex poolMutex;
     static void poolDeleter(Obj * obj);
-    
-    int         bufferIndex;
 
 };
 }

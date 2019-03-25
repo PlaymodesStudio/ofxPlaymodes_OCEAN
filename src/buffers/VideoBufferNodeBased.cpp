@@ -173,7 +173,6 @@ namespace ofxPm
         }
         // ??? is this a good way to go ?
         // i've added a "index position" to a videoFrame ... this allows us to draw header based on pos, not TS?
-        frame.setBufferIndex(closestPosition);
         return frame;
     }
     
