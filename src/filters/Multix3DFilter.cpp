@@ -278,7 +278,7 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             headersInAction++;
             videoHeader.setDelayMs(multixDelaysInMs[i]);
             VideoFrame vf = videoHeader.getNextVideoFrame();
-            frameResolution=ofVec2f(vf.getWidth(),vf.getHeight());
+            frameResolution = ofVec2f(vf.getWidth(),vf.getHeight());
             
             // TRANSFORM VEC
             /////////////////
@@ -311,13 +311,13 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             
             ofPushMatrix();
             
-            ofTranslate(screenResolution.x/2.0,screenResolution.y/2.0,0);
+            ofTranslate(w/2.0,h/2.0,0);
+            
             
             ofRotateDeg(rotatingOnX*360,1,0, 0);
             ofRotateDeg(rotatingOnY*360,0,1, 0);
             ofRotateDeg(rotatingOnZ*360,0,0, 1);
             
-            //ofTranslate(0,-(paramScale*screenResoltion.y/2.0) + (frameResolution.y/2.0),0);
             ofTranslate(ofMap(movingOnX, 0, 1, -ofGetWidth()/2, ofGetWidth()/2), ofMap(movingOnY, 0, 1, -ofGetHeight()/2, ofGetHeight()/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
             
             // scale
@@ -406,6 +406,7 @@ bool Multix3DFilter::isMinmaxBlend() const
                 // setup FBO
                 int resX = paramVideoBufferInput.get()->getWidth();
                 int resY = paramVideoBufferInput.get()->getHeight();
+                //TODO: publish fbo dimensions?
                 fbo.allocate(1920,1080,GL_RGB);
                 
                 
