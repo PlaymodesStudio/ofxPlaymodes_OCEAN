@@ -94,6 +94,16 @@ protected:
 
     
 private:
+    
+    template <typename T>
+    T getValueForPosition(const vector<T> &param, int index){
+        if(param.size() == 1 || param.size() <= index){
+            return param[0];
+        }
+        else{
+            return param[index];
+        }
+    }
 
     int             numHeaders;
     glm::vec2       fboHasToBeAllocated;

@@ -30,15 +30,15 @@ namespace ofxPm{
         parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
         parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
         parameters->add(paramScale.set("Scale",1.6076,0.0,2.0));
-        parameters->add(paramCopiesPositionX.set("Copies Position X",{0},{0},{0}));
-        parameters->add(paramCopiesPositionY.set("Copies Position Y",{0},{0},{0}));
-        parameters->add(paramCopiesPositionZ.set("Copies Position Z",{0},{0},{0}));
-        parameters->add(paramCopiesScale.set("Copies Scale",{1},{1},{1}));
-        parameters->add(paramCopiesRotationX.set("Copies Rotation X",{0},{0},{0}));
-        parameters->add(paramCopiesRotationY.set("Copies Rotation Y",{0},{0},{0}));
-        parameters->add(paramCopiesRotationZ.set("Copies Rotation Z",{0},{0},{0}));
+        parameters->add(paramCopiesPositionX.set("Copies Position X",{0.5},{0},{1}));
+        parameters->add(paramCopiesPositionY.set("Copies Position Y",{0.5},{0},{1}));
+        parameters->add(paramCopiesPositionZ.set("Copies Position Z",{0.5},{0},{1}));
+        parameters->add(paramCopiesScale.set("Copies Scale",{1},{0},{10}));
+        parameters->add(paramCopiesRotationX.set("Copies Rotation X",{0},{0},{1}));
+        parameters->add(paramCopiesRotationY.set("Copies Rotation Y",{0},{0},{1}));
+        parameters->add(paramCopiesRotationZ.set("Copies Rotation Z",{0},{0},{1}));
 
-        parameters->add(paramCopiesOpacity.set("Copies Opacity",{1.0},{1.0},{1.0}));
+        parameters->add(paramCopiesOpacity.set("Copies Opacity",{1.0},{0},{1}));
         parameters->add(paramLinearDistribution.set("Linear Distribution",true));
         parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
         parameters->add(paramOversize.set("Oversize",0,0,1));
@@ -284,115 +284,64 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             /////////////////
             // T X
             //////
-            if(i < paramCopiesPositionX.get().size())
-            {
-                movingOnX = paramCopiesPositionX.get().at(i);
-            }
-            else
-            {
-                movingOnX = 0;
-            }
+            movingOnX = getValueForPosition(paramCopiesPositionX.get(), i);
             // T Y
             //////
-            if(i < paramCopiesPositionY.get().size())
-            {
-                movingOnY = paramCopiesPositionY.get().at(i);
-            }
-            else
-            {
-                movingOnY = 0;
-            }
+            movingOnY = getValueForPosition(paramCopiesPositionY.get(), i);
             // T Z
             //////
-            if(i < paramCopiesPositionZ.get().size())
-            {
-                movingOnZ = paramCopiesPositionZ.get().at(i);
-            }
-            else
-            {
-                movingOnZ = 0;
-            }
+            movingOnZ = getValueForPosition(paramCopiesPositionZ.get(), i);
             // ROTATE VEC
             /////////////////
             // R X
             //////
-            if(i < paramCopiesRotationX.get().size())
-            {
-                rotatingOnX = paramCopiesRotationX.get().at(i);
-            }
-            else
-            {
-                rotatingOnX = 0;
-            }
+            rotatingOnX = getValueForPosition(paramCopiesRotationX.get(), i);
             // R Y
             //////
-            if(i < paramCopiesRotationY.get().size())
-            {
-                rotatingOnY = paramCopiesRotationY.get().at(i);
-            }
-            else
-            {
-                rotatingOnY = 0;
-            }
+            rotatingOnY = getValueForPosition(paramCopiesRotationY.get(), i);
             // R Z
             //////
-            if(i < paramCopiesRotationZ.get().size())
-            {
-                rotatingOnZ = paramCopiesRotationZ.get().at(i);
-            }
-            else
-            {
-                rotatingOnZ = 0;
-            }
+            rotatingOnZ = getValueForPosition(paramCopiesRotationZ.get(), i);
             // SCALE
             //////////
-            if((i < paramCopiesScale.get().size())&&(paramCopiesScale.get().size()!=1))
-            {
-                scaling = paramCopiesScale.get().at(i);
-            }
-            else
-            {
-                scaling = 1.0;
-            }
-
+            scaling = getValueForPosition(paramCopiesScale.get(), i);
             // OPACITY VEC
             ////////////////
-            if(i < paramCopiesOpacity.get().size())
-            {
-                opacFromVec = paramCopiesOpacity.get().at(i);
-            }
-            else
-            {
-                opacFromVec = 1.0;
-            }
-
+            opacFromVec = getValueForPosition(paramCopiesOpacity.get(), i);
             
             ofPushMatrix();
             
-            //ofTranslate(0,-(paramScale*screenResoltion.y/2.0) + (frameResolution.y/2.0),0);
-            ofTranslate(movingOnX,movingOnY,movingOnZ);
             ofTranslate(screenResolution.x/2.0,screenResolution.y/2.0,0);
+            
+            ofRotateDeg(rotatingOnX*360,1,0, 0);
+            ofRotateDeg(rotatingOnY*360,0,1, 0);
+            ofRotateDeg(rotatingOnZ*360,0,0, 1);
+            
+            //ofTranslate(0,-(paramScale*screenResoltion.y/2.0) + (frameResolution.y/2.0),0);
+            ofTranslate(ofMap(movingOnX, 0, 1, -ofGetWidth()/2, ofGetWidth()/2), ofMap(movingOnY, 0, 1, -ofGetHeight()/2, ofGetHeight()/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
+            
             // scale
             ofScale(scaling);
             // rotate to user defined
-            ofRotate(rotatingOnX,1,0, 0);
-            ofRotate(rotatingOnY,0,1, 0);
-            ofRotate(rotatingOnZ,0,0, 1);
+           
 
             // rotate to portrait
-            ofRotate(90,0,0, 1);
+            //TODO: VIDEOFRAME ROTATION
+            //ofRotate(90,0,0, 1);
             // flip x
-            ofRotate(180,1,0,0);
+            //ofRotate(180,1,0,0);
             //ofScale(scaling);
-            ofTranslate((-frameResolution.x*paramScale)/2.0,(-frameResolution.y*paramScale)/2.0,0);
+            //ofTranslate((-frameResolution.x*paramScale)/2.0,(-frameResolution.y*paramScale)/2.0,0);
 
             
             if(!vf.isNull())
             {
+                //ofPushStyle();
+                ofSetRectMode(OF_RECTMODE_CENTER);
                 ofSetColor((opac*opacFromVec*255.0),255.0);
-                vf.getTextureRef().draw(x,y,frameResolution.x * paramScale,frameResolution.y * paramScale);
+                vf.getTextureRef().draw(x,y,frameResolution.x,frameResolution.y);
 //                cout << "Multix3D : i : " << i << " DRAWING at delay Ms  " << multixDelaysInMs[i] << " at Position " << movingOnX <<" ," << movingOnY << " , " << movingOnZ << " Scale : " << scaling << endl;
-
+                //ofPopStyle();
             }
             ofPopMatrix();
         }
