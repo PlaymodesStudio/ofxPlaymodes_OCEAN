@@ -27,6 +27,10 @@ public:
 //    void    setup(ofxPm::VideoBuffer & buffer, int numHeaders=2);
     void    setupNodeBased();
     void update(ofEventArgs &e) override;
+    
+    void presetRecallBeforeSettingParameters(ofJson &json) override{
+        ofDeserialize(json, paramUseBPM);
+    }
 
 
     void    updateValuesPct(vector<float> _vf);
