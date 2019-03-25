@@ -30,6 +30,7 @@ namespace ofxPm{
         parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
         parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
         parameters->add(paramScale.set("Scale",1.6076,0.0,2.0));
+        parameters->add(paramLocalTranslate.set("Translate Locally", false));
         parameters->add(paramCopiesPositionX.set("Copies Position X",{0.5},{0},{1}));
         parameters->add(paramCopiesPositionY.set("Copies Position Y",{0.5},{0},{1}));
         parameters->add(paramCopiesPositionZ.set("Copies Position Z",{0.5},{0},{1}));
@@ -313,12 +314,17 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             
             ofTranslate(w/2.0,h/2.0,0);
             
+            if(!paramLocalTranslate){
+                ofTranslate(ofMap(movingOnX, 0, 1, -w/2, w/2), ofMap(movingOnY, 0, 1, -h/2, h/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
+            }
             
             ofRotateDeg(rotatingOnX*360,1,0, 0);
             ofRotateDeg(rotatingOnY*360,0,1, 0);
             ofRotateDeg(rotatingOnZ*360,0,0, 1);
             
-            ofTranslate(ofMap(movingOnX, 0, 1, -ofGetWidth()/2, ofGetWidth()/2), ofMap(movingOnY, 0, 1, -ofGetHeight()/2, ofGetHeight()/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
+            if(paramLocalTranslate){
+                ofTranslate(ofMap(movingOnX, 0, 1, -w/2, w/2), ofMap(movingOnY, 0, 1, -h/2, h/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
+            }
             
             // scale
             ofScale(scaling);

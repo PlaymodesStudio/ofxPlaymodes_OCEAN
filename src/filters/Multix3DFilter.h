@@ -86,6 +86,7 @@ protected:
     ofParameter<vector<float>>          paramDistributionVector;
     ofParameter<int>                    paramOversize;
     ofParameter<float>                  paramScale;
+    ofParameter<bool>                   paramLocalTranslate;
     ofParameter<vector<float>>          paramCopiesPositionX;
     ofParameter<vector<float>>          paramCopiesPositionY;
     ofParameter<vector<float>>          paramCopiesPositionZ;
