@@ -32,6 +32,7 @@ private:
     // FEATURE NODE
     ofParameter<int>                    paramSides;
     ofParameter<float>                  paramAngle;
+    ofParameter<float>                  paramRotation;
     ofParameter<float>                  paramSlideX;
     ofParameter<float>                  paramSlideY;
     
