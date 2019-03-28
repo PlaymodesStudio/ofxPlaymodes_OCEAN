@@ -259,11 +259,11 @@ void VideoTrioRendererNodeBased::drawIntoFbo(int x,int y,int w,int h)
         ofPushMatrix();
         {
             // TRANSFORM FRAME
-            ofTranslate(paramScale*frameResolution.y/2.0,paramScale*frameResolution.x/2.0,0);
+            ofTranslate(paramScale*frameResolution.x/2.0,paramScale*frameResolution.y/2.0,0);
             // rotate to portrait
-            ofRotate(90,0,0, 1);
+            //ofRotate(90,0,0, 1);
             // flip x
-            ofRotate(180,1,0,0);
+            //ofRotate(180,1,0,0);
             float finalOverlap = paramOverlap*0.75;
             ofSetColor(255*paramOpacity);
             
@@ -273,7 +273,11 @@ void VideoTrioRendererNodeBased::drawIntoFbo(int x,int y,int w,int h)
                 // Left Frame
                 if(!frameRefEsquerra->isNull() || !frameRefEsquerra->isNullPtr())
                 {
-                    frameRefEsquerra->getTextureRef().draw(0,(/**/fbo.getWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/-(paramScale*frameResolution.y)+(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][0]*paramScale*frameResolution.y);
+                    int x = (/**/fbo.getWidth()/2.0)-((paramScale*frameResolution.x)/2.0)/**/-(paramScale*frameResolution.x)+(finalOverlap*paramScale*frameResolution.x);
+                    int y = 0;
+                    int width = flips[paramFlipMode][0]*paramScale*frameResolution.x;
+                    int height = paramScale*frameResolution.y;
+                    frameRefEsquerra->getTextureRef().draw(x, y, width, height);
                 }
             }
             if(frameRefCentre!=NULL)
@@ -281,7 +285,11 @@ void VideoTrioRendererNodeBased::drawIntoFbo(int x,int y,int w,int h)
                 // Center Frame
                 if(!frameRefCentre->isNull() || !frameRefCentre->isNullPtr())
                 {
-                    frameRefCentre->getTextureRef().draw(0,(fbo.getWidth()/2.0)-((paramScale*frameResolution.y)/2.0),paramScale*frameResolution.x,flips[paramFlipMode][1]*paramScale*frameResolution.y);
+                    int x = (/**/fbo.getWidth()/2.0)-((paramScale*frameResolution.x)/2.0);
+                    int y = 0;
+                    int width = flips[paramFlipMode][1]*paramScale*frameResolution.x;
+                    int height = paramScale*frameResolution.y;
+                    frameRefCentre->getTextureRef().draw(x, y, width, height);
                 }
             }
             if(frameRefDreta!=NULL)
@@ -289,8 +297,11 @@ void VideoTrioRendererNodeBased::drawIntoFbo(int x,int y,int w,int h)
                 if(!frameRefDreta->isNull() && !frameRefDreta->isNullPtr())
                 {
                     // Right Frame
-                    frameRefDreta->getTextureRef().draw(0,(/**/fbo.getWidth()/2.0)-((paramScale*frameResolution.y)/2.0)/**/+(paramScale*frameResolution.y)-(finalOverlap*paramScale*frameResolution.x),paramScale*frameResolution.x,flips[paramFlipMode][2]*paramScale*frameResolution.y);
-                    
+                    int x = (/**/fbo.getWidth()/2.0)-((paramScale*frameResolution.x)/2.0)/**/+(paramScale*frameResolution.x)-(finalOverlap*paramScale*frameResolution.x);
+                    int y = 0;
+                    int width = flips[paramFlipMode][2]*paramScale*frameResolution.x;
+                    int height = paramScale*frameResolution.y;
+                    frameRefDreta->getTextureRef().draw(x, y, width, height);
                 }
             }
             ofPopMatrix();
