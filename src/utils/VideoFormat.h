@@ -57,7 +57,8 @@ public:
 	int width, height, numChannels;
 
 	bool operator<(const VideoFormat & f) const{
-		return f.width * f.height * f.numChannels > width * height * numChannels;
+        //return f.width * f.height * f.numChannels > width * height * numChannels;
+        return (f.width * f.height * f.numChannels) + (f.width < f.height ? 1 : 0) > (width * height * numChannels) + (width < height ? 1 : 0);
 	}
 };
 }
