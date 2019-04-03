@@ -85,10 +85,9 @@ namespace ofxPm
         listeners.push(paramFrameIn2.newListener(this, &VideoTrioRendererNodeBased::newVideoFrame2));
         listeners.push(paramFlipMode.newListener(this, &VideoTrioRendererNodeBased::changedFlipMode));
      
-        frameRefCentre = new VideoFrame();
-        frameRefDreta = new VideoFrame();;
-        frameRefEsquerra = new VideoFrame();
-        
+        frameRefCentre = NULL;//new VideoFrame();
+        frameRefDreta = NULL;//new VideoFrame();;
+        frameRefEsquerra = NULL;//new VideoFrame();
 
     }
 
@@ -114,7 +113,7 @@ namespace ofxPm
                 fbo.allocate(w,h);
             }
             vFrame = _frame;
-            drawIntoFbo(0,0,0,0);
+            drawIntoFbo(0,0,w,h);
 
         }
         
@@ -138,7 +137,7 @@ namespace ofxPm
             vFrame2 = _frame2;
             if(vFrame.isNullPtr() || vFrame.getFboRef().getWidth()==1)
             {
-               drawIntoFbo(0,0,0,0);
+               drawIntoFbo(0,0,w,h);
             }
         }
         
@@ -167,7 +166,7 @@ namespace ofxPm
 void VideoTrioRendererNodeBased::drawIntoFbo(int x,int y,int w,int h)
 {
     fbo.begin();
-
+    ofClear(0,0,0);
     // initialize intermediate VideoFrames to NULL
     frameRefCentre = NULL;
     frameRefDreta = NULL;
