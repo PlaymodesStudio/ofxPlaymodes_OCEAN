@@ -19,10 +19,21 @@ namespace ofxPm{
         addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
         addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
         addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramFps.set("FPS",60,0,60));
+        //addParameterToGroupAndInfo(paramFps.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
-        listener = paramDeviceId.newListener(this, &VideoGrabberNodeBased::selectedDevice);
+        listeners.push(paramDeviceId.newListener(this, &VideoGrabberNodeBased::selectedDevice));
+        listeners.push(rotation.newListener([this](int &r){
+            if(r % 2 == 1){
+                if(fbo.getWidth() != paramResolutionY || fbo.getHeight() != paramResolutionX){
+                    fbo.allocate(paramResolutionY, paramResolutionX, GL_RGB);
+                }
+            }else{
+                if(fbo.getWidth() != paramResolutionX || fbo.getHeight() != paramResolutionY){
+                    fbo.allocate(paramResolutionX, paramResolutionY, GL_RGB);
+                }
+            }
+        }));
         
         color = ofColor::darkGreen;
     }
@@ -48,10 +59,17 @@ namespace ofxPm{
             ofVideoGrabber::update();
             if(ofVideoGrabber::isFrameNew())
             {
-                ofPixels &p = getPixels();
-                p.rotate90(rotation);
-                p.mirror(vFlip, hFlip);
-                newFrame(p);
+                fbo.begin();
+                ofClear(0, 0, 0);
+                ofTexture tex;
+                tex.loadData(getPixels());
+                ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
+                ofScale(hFlip ? -1 : 1, vFlip ? -1 : 1);
+                ofRotateDeg(90*rotation);
+                ofTranslate(-paramResolutionX/2, -paramResolutionY/2);
+                tex.draw(0, 0);
+                fbo.end();
+                newFrame(fbo.getTexture());
             }
         }
     }
@@ -107,6 +125,12 @@ namespace ofxPm{
         if(identifier > 0){
             setDeviceID(identifier-1);
             ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
+            ofVideoGrabber::setDesiredFrameRate(ofGetTargetFrameRate());
+            if(rotation % 2 == 0){
+                fbo.allocate(paramResolutionX, paramResolutionY, GL_RGB);
+            }else{
+                fbo.allocate(paramResolutionY, paramResolutionX, GL_RGB);
+            }
             VideoSource::setWidth(ofVideoGrabber::getWidth());
             VideoSource::setHeight(ofVideoGrabber::getHeight());
         }

@@ -34,8 +34,9 @@ namespace ofxPm{
 
         void                                setGrabberSettings(bool & _b);
         void                                selectedDevice(int &identifier);
+        ofFbo                               fbo;
 
-        ofEventListener listener;
+        ofEventListeners listeners;
     };
 }
 
