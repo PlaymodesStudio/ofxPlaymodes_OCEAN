@@ -57,7 +57,9 @@ namespace ofxPm{
         if(ofVideoGrabber::isInitialized())
         {
             ofVideoGrabber::update();
-            if(ofVideoGrabber::isFrameNew())
+            while(!ofVideoGrabber::isFrameNew()){
+                ofVideoGrabber::update();
+            }
             {
                 fbo.begin();
                 ofClear(0, 0, 0);
