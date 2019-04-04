@@ -22,7 +22,6 @@ namespace ofxPm{
 
         lastFrameRendered = ofxPm::VideoFrame();
 
-        parameters = new ofParameterGroup();
         parameters->add(paramFrameIn.set("Frame Input", frame));
         parameters->add(paramFPSNow.set("FPS now",0,0.0,120.0));
         parameters->add(paramFPSAccum.set("FPS Vector",0,0,120));

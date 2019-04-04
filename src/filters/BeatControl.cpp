@@ -19,7 +19,6 @@ namespace ofxPm{
     {
         color = ofColor::orange;
 
-        parameters = new ofParameterGroup();
         parameters->add(paramDivOut.set("Div Out",1,1,32));
         parameters->add(paramMultOut.set("Mult Out",1,1,32));
 

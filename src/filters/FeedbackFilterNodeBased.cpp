@@ -26,8 +26,6 @@ namespace ofxPm{
         cout << "FeedbackFilter::Loading Shader : " << shaderName << endl;
         shader.load(shaderName);
         
-        parameters = new ofParameterGroup();
-        parameters->setName("Feedback");
         parameters->add(paramFrameIn.set("Frame Input", frameToSendOut));
         parameters->add(paramScale.set("Scale",0.98,-1.0,2.0));
         parameters->add(paramMixAmmount.set("Mix Ammount",0.1,0.0,1.0));
