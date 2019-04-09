@@ -8,20 +8,41 @@ namespace ofxPm{
     VideoFileGrabber::VideoFileGrabber(): ofxOceanodeNodeModel("Video File")
     {
         color = ofColor::darkGreen;
-
-        ofVideoPlayer::load("test2.mov");
-        ofVideoPlayer::play();
-        ofVideoPlayer::setVolume(0.0);
         
+        ofDirectory dir;
+        dir.open("movies");
+        if(!dir.exists()){
+            dir.createDirectory("movies");
+        }
+        vector<string> files = {"None"};
+        for(int i = 0; i < dir.listDir() ; i++){
+          files.push_back(dir.getName(i));
+        }
+        addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile));
         parameters->add(paramPlay.set("Play",true));
         parameters->add(paramScratch.set("Scratch",false));
         parameters->add(paramHeader.set("Header",0.0,0.0,1.0));
+        addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
+        addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
         listeners.push(paramScratch.newListener(this, &VideoFileGrabber::scratchChanged));
         listeners.push(paramHeader.newListener(this, &VideoFileGrabber::headerChanged));
         listeners.push(paramPlay.newListener(this, &VideoFileGrabber::playChanged));
-
+        listeners.push(rotation.newListener([this](int &i){
+            fbo.clear();
+        }));
+        listeners.push(paramFile.newListener([this, dir](int &index){
+            if(index == 0){
+                ofVideoPlayer::closeMovie();
+            }else{
+                ofVideoPlayer::load(dir.getPath(index-1));
+                ofVideoPlayer::play();
+                ofVideoPlayer::setLoopState(OF_LOOP_NORMAL);
+                ofVideoPlayer::setVolume(0.0);
+            }
+        }));
         
     }
 
@@ -49,8 +70,24 @@ namespace ofxPm{
             ofVideoPlayer::update();
             if(ofVideoPlayer::isFrameNew())
             {
-                newFrame(ofVideoPlayer::getPixels());
-                //newFrame(getTexture());
+                if(!fbo.isAllocated()){
+                    if(rotation % 2 == 0){
+                        fbo.allocate(ofVideoPlayer::getWidth(), ofVideoPlayer::getHeight(), GL_RGB);
+                    }else{
+                        fbo.allocate(ofVideoPlayer::getHeight(), ofVideoPlayer::getWidth(), GL_RGB);
+                    }
+                }
+                fbo.begin();
+                ofClear(0, 0, 0);
+                ofTexture tex;
+                tex.loadData(getPixels());
+                ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
+                ofScale(hFlip ? -1 : 1, vFlip ? -1 : 1);
+                ofRotateDeg(90*rotation);
+                ofTranslate(-ofVideoPlayer::getWidth()/2, -ofVideoPlayer::getHeight()/2);
+                tex.draw(0, 0);
+                fbo.end();
+                newFrame(fbo.getTexture());
             }
         }
     }
@@ -101,6 +138,4 @@ namespace ofxPm{
     {
         if(paramScratch) ofVideoPlayer::setPosition(_f);
     }
-
-
 }

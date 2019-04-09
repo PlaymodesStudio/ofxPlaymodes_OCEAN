@@ -26,13 +26,18 @@ namespace ofxPm{
         void                                newFrame(ofTexture & tex);
         VideoFrame                          frame;
         
+        ofParameter<int>                    paramFile;
         ofParameter<bool>                   paramPlay;
         ofParameter<bool>                   paramScratch;
         ofParameter<float>                  paramHeader;
+        ofParameter<int>                    rotation;
+        ofParameter<bool>                   hFlip, vFlip;
         
         void                                playChanged(bool & _b);
         void                                scratchChanged(bool & _b);
         void                                headerChanged(float & _f);
+        
+        ofFbo   fbo;
 
         
         ofEventListeners listeners;
