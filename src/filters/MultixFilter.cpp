@@ -172,12 +172,6 @@ VideoFrame MultixFilter::getNextVideoFrame()
 //--------------------------------------------------------
 void MultixFilter::newVideoFrame(VideoFrame & _frame)
 {
-    //set buffer size ?
-    desiredBufferSize = 900;
-    if(paramVideoBufferInput.get()->getBufferSize()!=desiredBufferSize)
-    {
-        paramVideoBufferInput.get()->setBufferSize(desiredBufferSize);
-    }
 
     if(paramNumHeaders>0)
     {
