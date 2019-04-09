@@ -43,7 +43,7 @@ public:
     void                            setOffsetBeatMult(int _n){paramOffsetBeatMult = _n;};
 
     void                            recalculate(int &_i);
-    void                            changedManualOffsetMs(float &f);
+    void                            changedManualOffsetMs(vector<float> &f);
     //    void                                    changedDistributionVector(vector<float> &_b);
 
     // when global BPM changes, it will call this function so I can know the global bpm
@@ -60,7 +60,7 @@ protected:
     //ofParameter<int>                    paramOpacityMode;
     //ofParameter<bool>                   paramLinearDistribution;
     ofParameter<bool>                   paramUseBPM;
-    ofParameter<float>                  paramManualOffsetMs;
+    ofParameter<vector<float>>          paramManualOffsetMs;
     ofParameter<int>                    paramOffsetBeatDiv;
     ofParameter<int>                    paramOffsetBeatMult;
     ofParameter<vector<float>>          paramOpacityVector;

@@ -30,7 +30,7 @@ namespace ofxPm{
         parameters->add(paramUseBPM.set("Use BPM",false));
         parameters->add(paramOffsetBeatDiv.set("Beats Div",1,1,32));
         parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
-        parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,7500));
+        parameters->add(paramManualOffsetMs.set("Manual Offset Ms",{33.0},{0.0},{7500}));
         parameters->add(paramOpacityVector.set("Opacity Vector",{1},{0},{1}));
         //parameters->add(paramLinearDistribution.set("Linear Distribution",true));
         //parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
@@ -55,7 +55,7 @@ namespace ofxPm{
     }
 
     //------------------------------------------------------------------
-    void MultixFilter::changedManualOffsetMs(float &f)
+    void MultixFilter::changedManualOffsetMs(vector<float> &f)
     {
         int i=0;
         recalculate(i);
@@ -77,12 +77,12 @@ namespace ofxPm{
 
             float oneBeatMs = (60.0/myBPM)*1000;
             oneCopyMs = oneBeatMs / BPMfactor;
-            if(oneCopyMs!=paramManualOffsetMs) paramManualOffsetMs = oneCopyMs;
+            if( oneCopyMs != paramManualOffsetMs->at(0)) paramManualOffsetMs = vector<float>(1, oneCopyMs);
         }
         
         else if(!paramUseBPM)
         {
-            oneCopyMs = paramManualOffsetMs;
+            //oneCopyMs = paramManualOffsetMs;
         }
         //this->setNumHeaders(paramNumHeaders);
     
@@ -91,7 +91,11 @@ namespace ofxPm{
             if(true) // not playing with distribution now ...
             {
                 // in linear distribution, the copies are spaced equally a time/distance defined by BPM and beatMult/Div
-                vf.push_back(i*oneCopyMs);
+                if(paramManualOffsetMs->size() != paramNumHeaders){
+                    vf.push_back(i*paramManualOffsetMs->at(0));
+                }else{
+                    vf.push_back(paramManualOffsetMs->at(i));
+                }
                 //cout << "Multix :: Recalculating i : " << i << "Delay :  " << i*oneCopyMs  << endl;
             }
             else
@@ -151,8 +155,7 @@ namespace ofxPm{
             {
                 multixDelaysInMs[i] = _vf[i];
             }
-            if(multixDelaysInMs.size()>0) multixDelaysInMs[0] = 0.0;
-
+            
         }
 
     }
@@ -316,7 +319,5 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
             newVideoFrame(vf);
         }
     }
-
-    
 }
 
