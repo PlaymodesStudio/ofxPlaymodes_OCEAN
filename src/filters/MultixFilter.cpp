@@ -232,15 +232,20 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
         }
          */
         
+        int opIndex;
+        opIndex = ofMap(float(i),0.0,float(paramNumHeaders-1),0.0,float(paramOpacityVector.get().size()-1));
+        opac = paramOpacityVector.get().at(opIndex);
+        
         // OPACITY
-        if((i < paramOpacityVector.get().size()) && (paramOpacityVector.get().size()>1) )
-        {
-            opac = paramOpacityVector.get().at(i);
-        }
-        else
-        {
-            opac = 1.0;
-        }
+//        if((i < paramOpacityVector.get().size()) && (paramOpacityVector.get().size()>1) )
+//        {
+//            opac = paramOpacityVector.get().at(i);
+//        }
+//        else
+//        {
+//            opac = 1.0;
+//            cout << "MULTIX :: setting opac 1 " << endl;
+//        }
 
         //cout << "Multix  : i : " << i << " Opac = " << opac << " Size of VecOpac = " << paramOpacityVector.get().size() << endl;
         
