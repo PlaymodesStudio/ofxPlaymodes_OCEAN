@@ -273,69 +273,67 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
             headersInAction++;
             videoHeader.setDelayMs(multixDelaysInMs[i]);
             VideoFrame vf = videoHeader.getNextVideoFrame();
-            frameResolution = ofVec2f(vf.getWidth(),vf.getHeight());
-            
-            // TRANSFORM VEC
-            /////////////////
-            // T X
-            //////
-            movingOnX = getValueForPosition(paramCopiesPositionX.get(), i);
-            // T Y
-            //////
-            movingOnY = getValueForPosition(paramCopiesPositionY.get(), i);
-            // T Z
-            //////
-            movingOnZ = getValueForPosition(paramCopiesPositionZ.get(), i);
-            // ROTATE VEC
-            /////////////////
-            // R X
-            //////
-            rotatingOnX = getValueForPosition(paramCopiesRotationX.get(), i);
-            // R Y
-            //////
-            rotatingOnY = getValueForPosition(paramCopiesRotationY.get(), i);
-            // R Z
-            //////
-            rotatingOnZ = getValueForPosition(paramCopiesRotationZ.get(), i);
-            // SCALE
-            //////////
-            scaling = getValueForPosition(paramCopiesScale.get(), i);
-            // OPACITY VEC
-            ////////////////
-            opacFromVec = getValueForPosition(paramCopiesOpacity.get(), i);
-            
-            ofPushMatrix();
-            
-            ofTranslate(w/2.0,h/2.0,0);
-            
-            if(!paramLocalTranslate){
-                ofTranslate(ofMap(movingOnX, 0, 1, -w/2, w/2), ofMap(movingOnY, 0, 1, -h/2, h/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
-            }
-            
-            ofRotateDeg(rotatingOnX*360,1,0, 0);
-            ofRotateDeg(rotatingOnY*360,0,1, 0);
-            ofRotateDeg(rotatingOnZ*360,0,0, 1);
-            
-            if(paramLocalTranslate){
-                ofTranslate(ofMap(movingOnX, 0, 1, -w/2, w/2), ofMap(movingOnY, 0, 1, -h/2, h/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
-            }
-            
-            // scale
-            ofScale(scaling);
-            // rotate to user defined
-           
+            if(!vf.isNull()){
+                frameResolution = ofVec2f(vf.getWidth(),vf.getHeight());
+                
+                // TRANSFORM VEC
+                /////////////////
+                // T X
+                //////
+                movingOnX = getValueForPosition(paramCopiesPositionX.get(), i);
+                // T Y
+                //////
+                movingOnY = getValueForPosition(paramCopiesPositionY.get(), i);
+                // T Z
+                //////
+                movingOnZ = getValueForPosition(paramCopiesPositionZ.get(), i);
+                // ROTATE VEC
+                /////////////////
+                // R X
+                //////
+                rotatingOnX = getValueForPosition(paramCopiesRotationX.get(), i);
+                // R Y
+                //////
+                rotatingOnY = getValueForPosition(paramCopiesRotationY.get(), i);
+                // R Z
+                //////
+                rotatingOnZ = getValueForPosition(paramCopiesRotationZ.get(), i);
+                // SCALE
+                //////////
+                scaling = getValueForPosition(paramCopiesScale.get(), i);
+                // OPACITY VEC
+                ////////////////
+                opacFromVec = getValueForPosition(paramCopiesOpacity.get(), i);
+                
+                ofPushMatrix();
+                
+                ofTranslate(w/2.0,h/2.0,0);
+                
+                if(!paramLocalTranslate){
+                    ofTranslate(ofMap(movingOnX, 0, 1, -w/2, w/2), ofMap(movingOnY, 0, 1, -h/2, h/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
+                }
+                
+                ofRotateDeg(rotatingOnX*360,1,0, 0);
+                ofRotateDeg(rotatingOnY*360,0,1, 0);
+                ofRotateDeg(rotatingOnZ*360,0,0, 1);
+                
+                if(paramLocalTranslate){
+                    ofTranslate(ofMap(movingOnX, 0, 1, -w/2, w/2), ofMap(movingOnY, 0, 1, -h/2, h/2), ofMap(movingOnZ, 0, 1, -1000, 1000));
+                }
+                
+                // scale
+                ofScale(scaling);
+                // rotate to user defined
+                
+                
+                // rotate to portrait
+                //TODO: VIDEOFRAME ROTATION
+                //ofRotate(90,0,0, 1);
+                // flip x
+                //ofRotate(180,1,0,0);
+                //ofScale(scaling);
+                //ofTranslate((-frameResolution.x*paramScale)/2.0,(-frameResolution.y*paramScale)/2.0,0);
 
-            // rotate to portrait
-            //TODO: VIDEOFRAME ROTATION
-            //ofRotate(90,0,0, 1);
-            // flip x
-            //ofRotate(180,1,0,0);
-            //ofScale(scaling);
-            //ofTranslate((-frameResolution.x*paramScale)/2.0,(-frameResolution.y*paramScale)/2.0,0);
-
-            
-            if(!vf.isNull())
-            {
                 //ofPushStyle();
                 ofSetRectMode(OF_RECTMODE_CENTER);
                 ofSetColor((opac*opacFromVec*255.0),255.0);
