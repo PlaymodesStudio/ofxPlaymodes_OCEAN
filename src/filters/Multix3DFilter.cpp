@@ -248,7 +248,7 @@ void Multix3DFilter::drawIntoFbo(int x, int y,int w, int h)
     float scaling=0.0;
 
     ofVec2f frameResolution;
-    ofVec2f screenResolution = ofVec2f(1920,1080);
+    ofVec2f screenResolution = ofVec2f(1920,1200);
 
 	for(int i = paramNumHeaders-1; i>=0; i--)
     {
@@ -405,7 +405,7 @@ bool Multix3DFilter::isMinmaxBlend() const
                 int resX = paramVideoBufferInput.get()->getWidth();
                 int resY = paramVideoBufferInput.get()->getHeight();
                 //TODO: publish fbo dimensions?
-                fbo.allocate(1920,1080,GL_RGB);
+                fbo.allocate(1920,1200,GL_RGB);
                 
                 
                 // setup Headers

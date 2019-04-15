@@ -106,7 +106,7 @@ namespace ofxPm
         if(!frameIsNull)
         {
             int w = 1920;
-            int h = 1080;
+            int h = 1200;
 
             if (!isAllocated || w != fbo.getWidth() || h != fbo.getHeight())
             {
@@ -128,7 +128,7 @@ namespace ofxPm
         if(!frameIsNull)
         {
             int w = 1920;
-            int h = 1080;
+            int h = 1200;
             
             if (!isAllocated || w != fbo.getWidth() || h != fbo.getHeight())
             {
