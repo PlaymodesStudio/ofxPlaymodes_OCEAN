@@ -27,7 +27,9 @@ public:
     ofParameter<float>          paramOpacity;
 
     void presetHasLoaded() override {
-        parameters->getBool("Show Window") = true;
+        if(parameters->getBool("Show Window") == false){
+            parameters->getBool("Show Window") = true;
+        }
     }
 
 
