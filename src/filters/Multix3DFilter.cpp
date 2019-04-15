@@ -176,7 +176,7 @@ namespace ofxPm{
             {
                 multixDelaysInMs[i] = _vf[i];
             }
-            if(multixDelaysInMs.size()>0) multixDelaysInMs[0] = 0.0;
+            //if(multixDelaysInMs.size()>0) multixDelaysInMs[0] = 0.0;
 
 
         }
