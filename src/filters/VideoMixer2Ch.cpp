@@ -35,7 +35,7 @@ namespace ofxPm{
         listeners.push(paramFrameIn.newListener(this, &VideoMixer2Ch::newVideoFrame));
         listeners.push(paramFrameIn2.newListener(this, &VideoMixer2Ch::newVideoFrame2));
         
-        textureIn2.allocate(640,480,GL_RGB);
+        textureIn2.allocate(1,1,GL_RGB);
 
     }
     //------------------------------------------------------------
@@ -48,6 +48,13 @@ namespace ofxPm{
     {
         if(!_frame.isNull())
         {
+            int fw,fh;
+            fw = _frame.getWidth();
+            fh = _frame.getHeight();
+            if(fw!=textureIn2.getWidth() || fh!=textureIn2.getHeight())
+            {
+                textureIn2.allocate(fw,fh,GL_RGB);
+            }
             textureIn2 = _frame.getTextureRef();
         }
         else textureIn2.clear();
@@ -58,6 +65,13 @@ namespace ofxPm{
     {
         bool isAllocated = fbo.isAllocated();
         bool frameIsNull = _frame.isNull();
+        float thereIstextureIn2=0.0;
+        
+        if(textureIn2.getWidth()>1)
+        {
+            cout << textureIn2.getWidth() << endl;
+            thereIstextureIn2=1.0;
+        }
         
         if(!frameIsNull)
         {
@@ -79,6 +93,7 @@ namespace ofxPm{
                         shader.setUniformTexture("tex1",textureIn2,12);
                         shader.setUniform1f("u_crossfade",paramCrossfade);
                         shader.setUniform1i("u_mixMode", paramMixMode);
+                        shader.setUniform1f("u_isChannel2", thereIstextureIn2);
                         ofSetColor(255);
                         int w = _frame.getWidth();
                         int h = _frame.getHeight();
