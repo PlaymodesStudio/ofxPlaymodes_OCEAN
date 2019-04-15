@@ -231,11 +231,16 @@ void MultixFilter::drawIntoFbo(int x, int y,int w, int h)
 
         }
          */
-        
-        int opIndex;
-        opIndex = ofMap(float(i),0.0,float(paramNumHeaders-1),0.0,float(paramOpacityVector.get().size()-1));
-        opac = paramOpacityVector.get().at(opIndex);
-        
+        if(paramOpacityVector.get().size()>1)
+        {
+            int opIndex;
+            opIndex = ofMap(float(i),0.0,float(paramNumHeaders-1),0.0,float(paramOpacityVector.get().size()-1));
+            opac = paramOpacityVector.get().at(opIndex);
+        }
+        else
+        {
+            opac = 1.0;
+        }
         // OPACITY
 //        if((i < paramOpacityVector.get().size()) && (paramOpacityVector.get().size()>1) )
 //        {
