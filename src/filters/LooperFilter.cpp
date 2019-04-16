@@ -20,8 +20,6 @@ namespace ofxPm{
     {
         color = ofColor::darkMagenta;
 
-        int i=1;
-        loopTimeChanged(i);
         BPMfactor=1.0;
         restart=false;
         phasorNumCycles=0;
@@ -292,6 +290,12 @@ namespace ofxPm{
         }
     }
 
+    void LooperFilter::setBpm(float _bpm){
+        myBPM=_bpm;
+        int i;
+        loopTimeChanged(i);
+        _phasor.setBpm(_bpm);
+    }
     
 }
 
