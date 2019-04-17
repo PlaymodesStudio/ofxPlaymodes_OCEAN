@@ -25,6 +25,7 @@ namespace ofxPm{
     private:
         ofParameter<int>    mirrorSize;
         ofParameter<float>  spacing;
+        ofParameter<float>  scale;
         ofParameter<bool> mirrorInvert;
         
         ofEventListeners listeners;

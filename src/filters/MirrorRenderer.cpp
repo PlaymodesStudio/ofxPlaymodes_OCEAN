@@ -17,6 +17,7 @@ namespace ofxPm
         parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
         parameters->add(mirrorSize.set("Size", 1, 1, 10));
         parameters->add(spacing.set("Spacing", 1, 0, 2));
+        parameters->add(scale.set("Scale", 1, 0, 2));
         parameters->add(mirrorInvert.set("Invert", false));
         parameters->add(paramFrameOut.set("Frame Out", VideoFrame()));
         
@@ -41,13 +42,14 @@ namespace ofxPm
                     if(i < mirrorSize){
                         int distance = step*(i+1);
                         int spacingAmount = ((1920/2)-distance) * spacing;
-                        ofTranslate((1920/2)-spacingAmount , 0);
+                        ofTranslate((1920/2)-spacingAmount , fbo.getHeight()*(1-scale));
                     }else{
                         int distance = step*(i+1);
                         int spacingAmount = (distance-(1920/2)) * spacing;
-                        ofTranslate(spacingAmount + (1920/2) , 0);
+                        ofTranslate(spacingAmount + (1920/2) , fbo.getHeight()*(1-scale));
                     }
                     ofScale((i%2 == mirrorInvert) ? -1200.0/1280.0 : 1200.0/1280.0, 1200.0/1280.0);
+                    ofScale(scale, scale);
                     ofTranslate(-(w/2), 0);
                     
                     frame.getTextureRef().draw(0,0);
