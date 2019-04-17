@@ -258,7 +258,7 @@ void VideoTrioRendererNodeBased::drawIntoFbo(int x,int y,int w,int h)
         ofPushMatrix();
         {
             // TRANSFORM FRAME
-            ofTranslate(paramScale*frameResolution.x/2.0,paramScale*frameResolution.y/2.0,0);
+            ofTranslate(paramScale*frameResolution.x/2.0,fbo.getHeight()-(paramScale*frameResolution.y/2.0),0);
             // rotate to portrait
             //ofRotate(90,0,0, 1);
             // flip x
