@@ -75,6 +75,7 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::drawInExternalWindow(ofEventArgs &e)
     {
+        ofHideCursor();
         draw(0,0,ofGetWidth(),ofGetHeight());
     }
     //--------------------------------------------------------------
