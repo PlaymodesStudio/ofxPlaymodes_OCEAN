@@ -18,10 +18,10 @@ namespace ofxPm{
         for(int i = 0; i < dir.listDir() ; i++){
           files.push_back(dir.getName(i));
         }
-        addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile));
-        parameters->add(paramPlay.set("Play",true));
-        parameters->add(paramScratch.set("Scratch",false));
-        parameters->add(paramHeader.set("Header",0.0,0.0,1.0));
+        addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramPlay.set("Play",true)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramScratch.set("Scratch",false)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramHeader.set("Header",0.0,0.0,1.0)).isSavePreset = false;
         addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
         addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
         addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
