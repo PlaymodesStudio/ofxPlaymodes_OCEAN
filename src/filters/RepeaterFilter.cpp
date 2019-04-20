@@ -19,15 +19,6 @@ namespace ofxPm{
     {
         color = ofColor::darkMagenta;
 
-        int i=1;
-        loopTimeChanged(i);
-        loopStartedAtMs=0.0;
-        loopDurationMsWhenTriggered=0.0;
-        BPMfactor=1.0;
-        restart=false;
-        oldDoLoop=false;
-        phasorNumCycles=0;
-        
         parameters->add(paramFrameIn.set("Frame In", myFrame));
         addParameterToGroupAndInfo(paramDoLoop.set("Loop", false)).isSavePreset = false;
         parameters->add(paramRestart.set("Restart"));
@@ -40,7 +31,16 @@ namespace ofxPm{
         
         parameters->add(paramFrameOut.set("Frame Output", myFrame));
 
-
+        int i=1;
+        loopTimeChanged(i);
+        loopStartedAtMs=0.0;
+        loopDurationMsWhenTriggered=0.0;
+        BPMfactor=1.0;
+        restart=false;
+        oldDoLoop=false;
+        phasorNumCycles=0;
+        
+        
         listeners.push(paramRestart.newListener(this,&RepeaterFilter::doRestart));
         listeners.push(paramDoLoop.newListener(this, &RepeaterFilter::doLoopChanged));
         listeners.push(paramCapturedTimeBeatMult.newListener(this, &RepeaterFilter::loopTimeChanged));
@@ -49,7 +49,7 @@ namespace ofxPm{
         
         listeners.push(_phasor.phasorCycle.newListener(this, &RepeaterFilter::phasorCycleEvent));
         
-        //buffer.setupNodeBased();
+        buffer.setupNodeBased();
         videoHeader.setup(&buffer);
         //cout << "Repeater : setting up buffer !! "<< buffer.getMaxSize() << " __ " << buffer.getSizeInFrames()  << endl;
         buffer.resume();
@@ -66,7 +66,7 @@ namespace ofxPm{
     //--------------------------------------------------------
     void RepeaterFilter::newVideoFrame(VideoFrame & _frame)
     {
-        /*
+        
         bool frameIsNull = _frame.isNull();
         int buffNumFrames = buffer.getSizeInFrames();
         ofxPm::VideoFrame vfAux;
@@ -138,7 +138,7 @@ namespace ofxPm{
                 paramFrameOut = vfAux;
             }
         }
-         */
+        
     }
 
     //-----------------------------------------

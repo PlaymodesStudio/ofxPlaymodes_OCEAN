@@ -43,7 +43,12 @@ protected:
     void                                doLoopChanged(bool& _b);
     void                                doRestart();
     // when global BPM changes, it will call this function so I can know the global bpm
-    void                                setBpm(float _bpm) override{myBPM=_bpm;int i;loopTimeChanged(i);};
+    void                                setBpm(float _bpm) override{
+        myBPM=_bpm;
+        int i;
+        loopTimeChanged(i);
+        _phasor.setBpm(_bpm);
+    };
 private:
 
     // rendering
