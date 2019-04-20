@@ -91,6 +91,7 @@ namespace ofxPm{
                         res[0]=_frame.getWidth();
                         res[1]=_frame.getHeight();
                         shader.setUniform2fv("u_resolution",res);
+                        delete[] res;
                         
                         ofSetColor(255);
                         _frame.getTextureRef().draw(0,0,_frame.getWidth(),_frame.getHeight());
