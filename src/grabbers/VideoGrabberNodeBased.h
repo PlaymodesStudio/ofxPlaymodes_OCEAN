@@ -31,6 +31,8 @@ namespace ofxPm{
         ofParameter<bool>                   vFlip;
         ofParameter<bool>                   hFlip;
         ofParameter<int>                    paramFps;
+        ofParameter<bool> showGuides;
+        
 
         void                                setGrabberSettings(bool & _b);
         void                                selectedDevice(int &identifier);

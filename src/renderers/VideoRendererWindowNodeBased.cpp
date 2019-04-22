@@ -21,6 +21,7 @@ namespace ofxPm
         color = ofColor::yellow;
         backImage.load("./imgs/1920x1080.png");
 
+        addParameterToGroupAndInfo(showFps.set("Show FPS", false)).isSavePreset = false;
         parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
         parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
 
@@ -76,6 +77,9 @@ namespace ofxPm
     void VideoRendererWindowNodeBased::drawInExternalWindow(ofEventArgs &e)
     {
         draw(0,0,ofGetWidth(),ofGetHeight());
+        if(showFps){
+            ofDrawBitmapString(ofToString(ofGetFrameRate()), 10, 10);
+        }
     }
     //--------------------------------------------------------------
     void VideoRendererWindowNodeBased::showMyExternalWindow(bool b)

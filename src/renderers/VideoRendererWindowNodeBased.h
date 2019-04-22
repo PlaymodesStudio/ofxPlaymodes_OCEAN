@@ -36,6 +36,8 @@ public:
 private:
     VideoFrame  vFrame;
     ofImage     backImage;
+    
+    ofParameter<bool> showFps;
 
     void drawInExternalWindow(ofEventArgs &e) override;
     void keyPressed(ofKeyEventArgs &a) override;

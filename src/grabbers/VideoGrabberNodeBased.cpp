@@ -19,6 +19,7 @@ namespace ofxPm{
         addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
         addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
         addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(showGuides.set("Show Guides", false)).isSavePreset = false;
         //addParameterToGroupAndInfo(paramFps.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
@@ -65,11 +66,19 @@ namespace ofxPm{
                 ofClear(0, 0, 0);
                 ofTexture tex;
                 tex.loadData(getPixels());
+                ofPushMatrix();
                 ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
                 ofScale(hFlip ? -1 : 1, vFlip ? -1 : 1);
                 ofRotateDeg(90*rotation);
                 ofTranslate(-paramResolutionX/2, -paramResolutionY/2);
                 tex.draw(0, 0);
+                ofPopMatrix();
+                if(showGuides){
+                    ofDrawLine(fbo.getWidth()/2, 0, fbo.getWidth()/2, fbo.getHeight());
+                    ofDrawLine(0, fbo.getHeight()/2, fbo.getWidth(), fbo.getHeight()/2);
+                    ofDrawLine(0, 0, fbo.getWidth(), fbo.getHeight());
+                    ofDrawLine(fbo.getWidth(), 0, 0, fbo.getHeight());
+                }
                 fbo.end();
                 newFrame(fbo.getTexture());
             }
