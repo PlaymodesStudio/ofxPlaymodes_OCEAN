@@ -38,15 +38,15 @@ namespace ofxPm
                 }
                 for(int i = 0; i < mirrorSize*2; i++){
                     ofPushMatrix();
-                    int step = 1920/((mirrorSize*2)+1);
+                    float step = 1920/((mirrorSize*2)+1);
                     if(i < mirrorSize){
-                        int distance = step*(i+1);
-                        int spacingAmount = ((1920/2)-distance) * spacing;
-                        ofTranslate((1920/2)-spacingAmount , fbo.getHeight()*(1-scale));
+                        float distance = step*(i+1);
+                        float spacingAmount = ((1920.0f/2.0f)-distance) * spacing;
+                        ofTranslate((1920.0f/2.0f)-spacingAmount , fbo.getHeight()*(1-scale));
                     }else{
-                        int distance = step*(i+1);
-                        int spacingAmount = (distance-(1920/2)) * spacing;
-                        ofTranslate(spacingAmount + (1920/2) , fbo.getHeight()*(1-scale));
+                        float distance = step*(i+1);
+                        float spacingAmount = (distance-(1920.0f/2.0f)) * spacing;
+                        ofTranslate(spacingAmount + (1920.0f/2.0f) , fbo.getHeight()*(1-scale));
                     }
                     ofScale((i%2 == mirrorInvert) ? -1200.0/1280.0 : 1200.0/1280.0, 1200.0/1280.0);
                     ofScale(scale, scale);
