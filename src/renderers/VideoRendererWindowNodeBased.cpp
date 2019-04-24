@@ -78,7 +78,12 @@ namespace ofxPm
     {
         draw(0,0,ofGetWidth(),ofGetHeight());
         if(showFps){
-            ofDrawBitmapString(ofToString(ofGetFrameRate()), 10, 10);
+            ofPushStyle();
+            if(ofGetFrameRate() < 55){
+                ofSetColor(255, 0, 0);
+            }
+            ofDrawBitmapString(ofToString(ofGetFrameRate()), 10, ofGetHeight() - 10);
+            ofPopStyle();
         }
     }
     //--------------------------------------------------------------
