@@ -20,6 +20,7 @@ namespace ofxPm{
         addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
         addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
         addParameterToGroupAndInfo(showGuides.set("Show Guides", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(waitForFrame.set("Wait for Frame", true)).isSavePreset = false;
         //addParameterToGroupAndInfo(paramFps.set("FPS",60,0,60));
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
@@ -58,8 +59,13 @@ namespace ofxPm{
         if(ofVideoGrabber::isInitialized())
         {
             ofVideoGrabber::update();
-            while(!ofVideoGrabber::isFrameNew()){
-                ofVideoGrabber::update();
+            if(waitForFrame){
+                while(!ofVideoGrabber::isFrameNew()){
+                    ofVideoGrabber::update();
+                }
+            }
+            else{
+                if(!ofVideoGrabber::isFrameNew()) return;
             }
             {
                 fbo.begin();

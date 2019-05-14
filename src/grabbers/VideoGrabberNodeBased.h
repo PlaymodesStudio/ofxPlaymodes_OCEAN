@@ -32,6 +32,7 @@ namespace ofxPm{
         ofParameter<bool>                   hFlip;
         ofParameter<int>                    paramFps;
         ofParameter<bool> showGuides;
+        ofParameter<bool> waitForFrame;
         
 
         void                                setGrabberSettings(bool & _b);
