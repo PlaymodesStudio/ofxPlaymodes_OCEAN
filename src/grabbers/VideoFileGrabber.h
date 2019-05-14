@@ -32,6 +32,7 @@ namespace ofxPm{
         ofParameter<float>                  paramHeader;
         ofParameter<int>                    rotation;
         ofParameter<bool>                   hFlip, vFlip;
+        ofParameter<int>                    sizeInFrames;
         
         void                                playChanged(bool & _b);
         void                                scratchChanged(bool & _b);
