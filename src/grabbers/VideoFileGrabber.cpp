@@ -14,8 +14,10 @@ namespace ofxPm{
         if(!dir.exists()){
             dir.createDirectory("movies");
         }
+        int size = dir.listDir();
+        dir.sort();
         vector<string> files = {"None"};
-        for(int i = 0; i < dir.listDir() ; i++){
+        for(int i = 0; i < size ; i++){
           files.push_back(dir.getName(i));
         }
         addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile)).isSavePreset = false;
