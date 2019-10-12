@@ -1,7 +1,7 @@
 
 
-#ifndef VIDEOFILEGRABBER_H_INCLUDED
-#define VIDEOFILEGRABBER_H_INCLUDED
+#ifndef IMAGEFILEGRABBER_H_INCLUDED
+#define IMAGEFILEGRABBER_H_INCLUDED
 
 #include "VideoSource.h"
 #include "ofMain.h"
@@ -9,11 +9,11 @@
 
 
 namespace ofxPm{
-    class VideoFileGrabber: public VideoSource, public ofVideoPlayer, public ofxOceanodeNodeModel
+    class ImageFileGrabber: public VideoSource, public ofImage, public ofxOceanodeNodeModel
     {
     public:
-        VideoFileGrabber();
-        virtual ~VideoFileGrabber();
+        ImageFileGrabber();
+        virtual ~ImageFileGrabber();
         
         void                            update(ofEventArgs &e);
         VideoFrame                      getNextVideoFrame();
@@ -27,16 +27,14 @@ namespace ofxPm{
         VideoFrame                          frame;
         
         ofParameter<int>                    paramFile;
-        ofParameter<bool>                   paramPlay;
-        ofParameter<bool>                   paramScratch;
-        ofParameter<float>                  paramHeader;
-        ofParameter<int>                    paramRotation;
-        ofParameter<bool>                   paramHFlip,paramVFlip;
         ofParameter<float>                  paramOpacity;
+        ofParameter<int>                    paramRotation;
+        ofParameter<bool>                   paramHFlip, paramVFlip;
+
         
-        void                                playChanged(bool & _b);
-        void                                scratchChanged(bool & _b);
-        void                                headerChanged(float & _f);
+//        void                                playChanged(bool & _b);
+//        void                                scratchChanged(bool & _b);
+//        void                                headerChanged(float & _f);
         
         ofFbo   fbo;
 
@@ -45,4 +43,4 @@ namespace ofxPm{
     };
 }
 
-#endif // VIDEOFILEGRABBER_H_INCLUDED
+#endif // IMAGEFILEGRABBER_H_INCLUDED

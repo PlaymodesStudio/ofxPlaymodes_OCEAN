@@ -24,15 +24,16 @@ namespace ofxPm{
         addParameterToGroupAndInfo(paramPlay.set("Play",true)).isSavePreset = false;
         addParameterToGroupAndInfo(paramScratch.set("Scratch",false)).isSavePreset = false;
         addParameterToGroupAndInfo(paramHeader.set("Header",0.0,0.0,1.0)).isSavePreset = false;
-        addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
-        addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramRotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramVFlip.set("Vertical Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramHFlip.set("Horizontal Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(paramOpacity.set("Opacity",1.0)).isSavePreset = false;
         parameters->add(paramFrameOut.set("Frame Output", frame));
         
         listeners.push(paramScratch.newListener(this, &VideoFileGrabber::scratchChanged));
         listeners.push(paramHeader.newListener(this, &VideoFileGrabber::headerChanged));
         listeners.push(paramPlay.newListener(this, &VideoFileGrabber::playChanged));
-        listeners.push(rotation.newListener([this](int &i){
+        listeners.push(paramRotation.newListener([this](int &i){
             fbo.clear();
         }));
         listeners.push(paramFile.newListener([this, dir](int &index){
@@ -73,23 +74,29 @@ namespace ofxPm{
             if(ofVideoPlayer::isFrameNew())
             {
                 if(!fbo.isAllocated()){
-                    if(rotation % 2 == 0){
+                    if(paramRotation % 2 == 0){
                         fbo.allocate(ofVideoPlayer::getWidth(), ofVideoPlayer::getHeight(), GL_RGB);
                     }else{
                         fbo.allocate(ofVideoPlayer::getHeight(), ofVideoPlayer::getWidth(), GL_RGB);
                     }
                 }
-                fbo.begin();
-                ofClear(0, 0, 0);
-                ofTexture tex;
-                tex.loadData(getPixels());
-                ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
-                ofScale(hFlip ? -1 : 1, vFlip ? -1 : 1);
-                ofRotateDeg(90*rotation);
-                ofTranslate(-ofVideoPlayer::getWidth()/2, -ofVideoPlayer::getHeight()/2);
-                tex.draw(0, 0);
-                fbo.end();
-                newFrame(fbo.getTexture());
+                if(paramOpacity>0.0)
+                {
+                    fbo.begin();
+                    {
+                        ofClear(0, 0, 0);
+                        ofTexture tex;
+                        tex.loadData(getPixels());
+                        ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
+                        ofScale(paramHFlip ? -1 : 1, paramVFlip ? -1 : 1);
+                        ofRotateDeg(90*paramRotation);
+                        ofTranslate(-ofVideoPlayer::getWidth()/2, -ofVideoPlayer::getHeight()/2);
+                        ofSetColor(255.0 * paramOpacity);
+                        tex.draw(0, 0);
+                    }
+                    fbo.end();
+                    newFrame(fbo.getTexture());
+                }
             }
         }
     }
