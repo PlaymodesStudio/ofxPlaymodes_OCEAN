@@ -69,7 +69,7 @@ namespace ofxPm{
         
         if(textureIn2.getWidth()>1)
         {
-            cout << textureIn2.getWidth() << endl;
+            //cout << textureIn2.getWidth() << endl;
             thereIstextureIn2=1.0;
         }
         
@@ -91,7 +91,7 @@ namespace ofxPm{
                     {
                         shader.setUniformTexture("tex0",_frame.getTextureRef(),11);
                         shader.setUniformTexture("tex1",textureIn2,12);
-                        shader.setUniform1f("u_crossfade",paramCrossfade);
+                        shader.setUniform1f("u_crossfade",1.0-paramCrossfade);
                         shader.setUniform1i("u_mixMode", paramMixMode);
                         shader.setUniform1f("u_isChannel2", thereIstextureIn2);
                         ofSetColor(255);
