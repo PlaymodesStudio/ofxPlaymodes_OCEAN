@@ -20,7 +20,7 @@ namespace ofxPm{
         }
         int size = dir.listDir();
         dir.sort();
-        vector<string> files = {"None"};
+        files = {"None"};
         for(int i = 0; i < size ; i++){
           files.push_back(dir.getName(i));
         }
