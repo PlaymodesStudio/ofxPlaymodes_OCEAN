@@ -22,7 +22,7 @@ public:
     ,numChannels(pixels.getNumChannels()){}
 
 	VideoFormat(ofTexture & tex)
-	:width(tex.getWidth())
+ 	:width(tex.getWidth())
 	,height(tex.getHeight())
 	,numChannels(0)
     {

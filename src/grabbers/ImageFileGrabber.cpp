@@ -20,7 +20,7 @@ namespace ofxPm{
         for(int i = 0; i < size ; i++){
           files.push_back(dir.getName(i));
         }
-        addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile)).isSavePreset = false;
+        addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile)).isSavePreset = true;
         //addParameterToGroupAndInfo(opacity.set("Opacity", false)).isSavePreset = false;
         addParameterToGroupAndInfo(paramRotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
         addParameterToGroupAndInfo(paramVFlip.set("Vertical Flip", false)).isSavePreset = false;
@@ -39,6 +39,7 @@ namespace ofxPm{
                 //ofVideoPlayer::closeMovie();
             }else{
                 ofImage::load(dir.getPath(index-1));
+                //fbo.allocate(ofImage::getWidth(), ofImage::getHeight(), GL_RGB);
                 //ofVideoPlayer::play();
                 //ofVideoPlayer::setLoopState(OF_LOOP_NORMAL);
                 //ofVideoPlayer::setVolume(0.0);
@@ -65,26 +66,31 @@ namespace ofxPm{
     void ImageFileGrabber::update(ofEventArgs &e)
     {
 
-        if(!fbo.isAllocated())
+        if(!fbo.isAllocated() && ofImage::isAllocated() )
         {
+            cout << "ImageFileGrabber : allocating FBO on update. From Image : " << ofImage::getWidth() << " , " << ofImage::getHeight() << endl;
             fbo.allocate(ofImage::getWidth(), ofImage::getHeight(), GL_RGB);
+            cout << "ImageFileGrabber : allocated FBO : " << fbo.getWidth() << " , " << fbo.getHeight() << endl;
         }
-        if(paramOpacity>0.0)
+        else
         {
-            fbo.begin();
+            if(paramOpacity>0.0)
             {
-                ofClear(0, 0, 0);
-                ofTexture tex;
-                tex.loadData(getPixels());
-                ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
-                ofScale(paramHFlip ? -1 : 1, paramVFlip ? -1 : 1);
-                ofRotateDeg(90*paramRotation);
-                ofTranslate(-ofImage::getWidth()/2, -ofImage::getHeight()/2);
-                ofSetColor(255.0 * paramOpacity);
-                tex.draw(0, 0);
-            }
-            fbo.end();
+                fbo.begin();
+                {
+                    ofClear(0, 0, 0);
+                    ofTexture tex;
+                    tex.loadData(getPixels());
+                    ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
+                    ofScale(paramHFlip ? -1 : 1, paramVFlip ? -1 : 1);
+                    ofRotateDeg(90*paramRotation);
+                    ofTranslate(-ofImage::getWidth()/2, -ofImage::getHeight()/2);
+                    ofSetColor(255.0 * paramOpacity);
+                    tex.draw(0, 0);
+                }
+                fbo.end();
                 newFrame(fbo.getTexture());
+            }
         }
     }
 

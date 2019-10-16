@@ -1,12 +1,16 @@
 
 
 #include "VideoFileGrabber.h"
+#include "ofGstVideoPlayer.h"
+
 
 namespace ofxPm{
     
     //-----------------------------------------------------------------------------------
     VideoFileGrabber::VideoFileGrabber(): ofxOceanodeNodeModel("Video File")
     {
+        ofVideoPlayer::setPlayer(ofPtr<ofGstVideoPlayer>(new ofGstVideoPlayer));
+
         color = ofColor::darkGreen;
         
         ofDirectory dir;
@@ -71,13 +75,15 @@ namespace ofxPm{
         if(ofVideoPlayer::isPlaying() || ofVideoPlayer::isPaused())
         {
             ofVideoPlayer::update();
-            if(ofVideoPlayer::isFrameNew())
+            if(true) //ofVideoPlayer::isFrameNew())
             {
                 if(!fbo.isAllocated()){
                     if(paramRotation % 2 == 0){
                         fbo.allocate(ofVideoPlayer::getWidth(), ofVideoPlayer::getHeight(), GL_RGB);
+                        cout << " FBOKK" << endl;
                     }else{
                         fbo.allocate(ofVideoPlayer::getHeight(), ofVideoPlayer::getWidth(), GL_RGB);
+                        cout << " FBOKK 2" << endl;
                     }
                 }
                 if(paramOpacity>0.0)
@@ -85,14 +91,15 @@ namespace ofxPm{
                     fbo.begin();
                     {
                         ofClear(0, 0, 0);
-                        ofTexture tex;
-                        tex.loadData(getPixels());
+//                        ofTexture tex;
+//                        tex.loadData(getPixels());
                         ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
                         ofScale(paramHFlip ? -1 : 1, paramVFlip ? -1 : 1);
                         ofRotateDeg(90*paramRotation);
                         ofTranslate(-ofVideoPlayer::getWidth()/2, -ofVideoPlayer::getHeight()/2);
                         ofSetColor(255.0 * paramOpacity);
-                        tex.draw(0, 0);
+//                        tex.draw(0, 0);
+                        ofVideoPlayer::draw(0,0);
                     }
                     fbo.end();
                     newFrame(fbo.getTexture());
