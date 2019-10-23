@@ -43,14 +43,15 @@ namespace ofxPm{
         listeners.push(paramFile.newListener([this, dir](int &index){
             if(index == 0){
                 ofVideoPlayer::closeMovie();
-            }else{
+            }else if(oldParamFile != index){
                 ofVideoPlayer::load(dir.getPath(index-1));
                 ofVideoPlayer::play();
                 ofVideoPlayer::setLoopState(OF_LOOP_NORMAL);
-                ofVideoPlayer::setVolume(0.0);
+                ofVideoPlayer::setVolume(1.0);
             }
+            oldParamFile = index;
         }));
-        
+        oldParamFile = 0;
     }
 
 

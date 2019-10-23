@@ -54,6 +54,8 @@ namespace ofxPm{
         
         ofFbo   fbo;
         
+        int oldParamFile;
+        
         vector<string> files;
 
         
