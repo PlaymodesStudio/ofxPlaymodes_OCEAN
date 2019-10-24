@@ -70,14 +70,15 @@ namespace ofxPm{
             {
                 fbo.begin();
                 ofClear(0, 0, 0);
-                ofTexture tex;
-                tex.loadData(getPixels());
+//                ofTexture tex;
+//                tex.loadData(getPixels());
                 ofPushMatrix();
                 ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
                 ofScale(hFlip ? -1 : 1, vFlip ? -1 : 1);
                 ofRotateDeg(90*rotation);
                 ofTranslate(-paramResolutionX/2, -paramResolutionY/2);
-                tex.draw(0, 0);
+                //tex.draw(0, 0);
+                ofVideoGrabber::draw(0 ,0);
                 ofPopMatrix();
                 if(showGuides){
                     ofDrawLine(fbo.getWidth()/2, 0, fbo.getWidth()/2, fbo.getHeight());
@@ -141,7 +142,7 @@ namespace ofxPm{
         close();
         if(identifier > 0){
             setDeviceID(identifier-1);
-            ofVideoGrabber::setup(paramResolutionX,paramResolutionY);
+            ofVideoGrabber::setup(paramResolutionX,paramResolutionY, true);
             ofVideoGrabber::setDesiredFrameRate(ofGetTargetFrameRate());
             if(rotation % 2 == 0){
                 fbo.allocate(paramResolutionX, paramResolutionY, GL_RGB);
