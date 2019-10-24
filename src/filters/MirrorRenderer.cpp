@@ -21,7 +21,7 @@ namespace ofxPm
         parameters->add(mirrorInvert.set("Invert", false));
         parameters->add(paramFrameOut.set("Frame Out", VideoFrame()));
         
-        fbo.allocate(1920, 1200);
+        fbo.allocate(1920, 1080);
         
         listeners.push(paramFrameIn.newListener([this](VideoFrame & frame){
             if(!frame.isNull()){
@@ -48,7 +48,7 @@ namespace ofxPm
                         float spacingAmount = (distance-(1920.0f/2.0f)) * spacing;
                         ofTranslate(spacingAmount + (1920.0f/2.0f) , fbo.getHeight()*(1-scale));
                     }
-                    ofScale((i%2 == mirrorInvert) ? -1200.0/1280.0 : 1200.0/1280.0, 1200.0/1280.0);
+                    ofScale((i%2 == mirrorInvert) ? -1800.0/1280.0 : 1800.0/1280.0, 1080.0/1280.0);
                     ofScale(scale, scale);
                     ofTranslate(-(w/2), 0);
                     

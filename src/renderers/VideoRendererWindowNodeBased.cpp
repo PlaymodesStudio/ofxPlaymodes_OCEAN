@@ -92,7 +92,7 @@ namespace ofxPm
         //ofxOceanodeNodeModelExternalWindow::showExternalWindow(b);
         showWindow = b;
         setExternalWindowPosition(ofGetScreenWidth(),0);
-        setExternalWindowShape(1920,1200);
+        setExternalWindowShape(1920,1080);
         //setExternalWindowFullScreen(true);
     }
 
