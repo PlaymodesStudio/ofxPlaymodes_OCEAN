@@ -19,6 +19,7 @@ namespace ofxPm{
         addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
         addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
         addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
+        addParameterToGroupAndInfo(topMask.set("Top Mask", 0, 0, 1280)).isSavePreset = false;
         addParameterToGroupAndInfo(showGuides.set("Show Guides", false)).isSavePreset = false;
         addParameterToGroupAndInfo(waitForFrame.set("Wait for Frame", true)).isSavePreset = false;
         //addParameterToGroupAndInfo(paramFps.set("FPS",60,0,60));
@@ -80,6 +81,10 @@ namespace ofxPm{
                 //tex.draw(0, 0);
                 ofVideoGrabber::draw(0 ,0);
                 ofPopMatrix();
+                ofPushStyle();
+                ofSetColor(0);
+                ofDrawRectangle(0, 0, 720, topMask);
+                ofPopStyle();
                 if(showGuides){
                     ofDrawLine(fbo.getWidth()/2, 0, fbo.getWidth()/2, fbo.getHeight());
                     ofDrawLine(0, fbo.getHeight()/2, fbo.getWidth(), fbo.getHeight()/2);

@@ -30,6 +30,7 @@ namespace ofxPm{
         ofParameter<int>                    rotation;
         ofParameter<bool>                   vFlip;
         ofParameter<bool>                   hFlip;
+        ofParameter<int>                    topMask;
         ofParameter<int>                    paramFps;
         ofParameter<bool> showGuides;
         ofParameter<bool> waitForFrame;
