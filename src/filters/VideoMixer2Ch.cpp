@@ -25,11 +25,11 @@ namespace ofxPm{
         shader.load(shaderName);
         cout << "Mixer::Loading Shader : " << shaderName << endl;
 
-        parameters->add(paramFrameIn.set("Frame Input 1", VideoFrame()));
-        parameters->add(paramFrameIn2.set("Frame Input 2", VideoFrame()));
-        parameters->add(paramCrossfade.set("Crossfade",0.0,0.0,1.0));
-        parameters->add(paramMixMode.set("Mix Mode",0,0,2));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input 1", VideoFrame()));
+        addParameter(paramFrameIn2.set("Frame Input 2", VideoFrame()));
+        addParameter(paramCrossfade.set("Crossfade",0.0,0.0,1.0));
+        addParameter(paramMixMode.set("Mix Mode",0,0,2));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         
         listeners.push(paramFrameIn.newListener(this, &VideoMixer2Ch::newVideoFrame));

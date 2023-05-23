@@ -25,14 +25,14 @@ namespace ofxPm{
         shader.load(shaderName);
         cout << "kaleidoscopyNodeBased::Loading Shader : " << shaderName << endl;
         
-        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input", VideoFrame()));
 
-        parameters->add(paramSides.set("Sides",2,0,24));
-        parameters->add(paramAngle.set("Angle",0.0,0.0,1.0));
-        parameters->add(paramRotation.set("Rotation", 0.0, 0.0, 1.0));
-        parameters->add(paramSlideX.set("Slide x",0.5,0.0,1.0));
-        parameters->add(paramSlideY.set("Slide y",0.5,0.0,1.0));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramSides.set("Sides",2,0,24));
+        addParameter(paramAngle.set("Angle",0.0,0.0,1.0));
+        addParameter(paramRotation.set("Rotation", 0.0, 0.0, 1.0));
+        addParameter(paramSlideX.set("Slide x",0.5,0.0,1.0));
+        addParameter(paramSlideY.set("Slide y",0.5,0.0,1.0));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         listener = paramFrameIn.newListener(this, &kaleidoscopeNodeBased::newVideoFrame);
         

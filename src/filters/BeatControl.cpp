@@ -19,10 +19,10 @@ namespace ofxPm{
     {
         color = ofColor::orange;
 
-        parameters->add(paramDivOut.set("Div Out",1,1,32));
-        parameters->add(paramMultOut.set("Mult Out",1,1,32));
+        addParameter(paramDivOut.set("Div Out",1,1,32));
+        addParameter(paramMultOut.set("Mult Out",1,1,32));
 
-        parameters->add(createDropdownAbstractParameter("Beats", {"1/32","1/16","1/8", "1/4", "1/2", "1","2","4","8","16","32"}, paramBeatsDropDown));
+        addParameterDropdown(paramBeatsDropDown, "Beats", 5, {"1/32","1/16","1/8", "1/4", "1/2", "1","2","4","8","16","32"});
 
         listener = paramBeatsDropDown.newListener(this, &BeatControl::changedBeats);
         

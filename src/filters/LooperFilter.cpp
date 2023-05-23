@@ -5,7 +5,7 @@ namespace ofxPm{
 
     //------------------------------------------------------------------
     LooperFilter::LooperFilter():
-        ofxOceanodeNodeModelLocalPreset("Looper FX")
+        ofxOceanodeNodeModel("Looper FX")
     {
         color = ofColor::orange;
         setupNodeBased();
@@ -25,22 +25,22 @@ namespace ofxPm{
         phasorNumCycles=0;
         paramOffsetMs=0;
         
-        parameters->add(paramFrameIn.set("Frame In", myFrame));
-        parameters->add(paramBufferSize.set("Buffer Size",240,1,2000));
-        addParameterToGroupAndInfo(paramDoPlay.set("PLAY", false));//.isSavePreset = false;
-        addParameterToGroupAndInfo(paramShowOnRec.set("Show On Rec", true));//.isSavePreset = false;
-        addParameterToGroupAndInfo(paramDoRefresh.set("Refresh", false));//.isSavePreset = false;
-        parameters->add(paramRefreshLoopAt.set("Refresh Loop At",4,2,32));
-        parameters->add(paramRestart.set("Restart"));
-        parameters->add(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
-        parameters->add(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
-        addParameterToGroupAndInfo(paramGatePct.set("Gate",0.0,0.0,1.0));
-        parameters->add(paramSpeedBoost.set("Speed Boost",1.0,-4.0,4.0));
-        parameters->add(paramOffsetMs.set("Offset",0.0,0.0,4000.0));
-        addParameterToGroupAndInfo(paramDoLoop.set("Loop", false));//.isSavePreset = false;
-        addParameterToGroupAndInfo(paramDoRec.set("Rec", true));//.isSavePreset = false;
-        addParameterToGroupAndInfo(paramPhasorOut.set("Phasor Out",0.0,0.0,1.0));//.isSavePreset = false;
-        parameters->add(paramFrameOut.set("Frame Output", myFrame));
+        addParameter(paramFrameIn.set("Frame In", myFrame));
+        addParameter(paramBufferSize.set("Buffer Size",240,1,2000));
+        addParameter(paramDoPlay.set("PLAY", false));//.isSavePreset = false;
+        addParameter(paramShowOnRec.set("Show On Rec", true));//.isSavePreset = false;
+        addParameter(paramDoRefresh.set("Refresh", false));//.isSavePreset = false;
+        addParameter(paramRefreshLoopAt.set("Refresh Loop At",4,2,32));
+        addParameter(paramRestart.set("Restart"));
+        addParameter(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
+        addParameter(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
+        addParameter(paramGatePct.set("Gate",0.0,0.0,1.0));
+        addParameter(paramSpeedBoost.set("Speed Boost",1.0,-4.0,4.0));
+        addParameter(paramOffsetMs.set("Offset",0.0,0.0,4000.0));
+        addParameter(paramDoLoop.set("Loop", false));//.isSavePreset = false;
+        addParameter(paramDoRec.set("Rec", true));//.isSavePreset = false;
+        addParameter(paramPhasorOut.set("Phasor Out",0.0,0.0,1.0));//.isSavePreset = false;
+        addParameter(paramFrameOut.set("Frame Output", myFrame));
 
         listeners.push(paramRestart.newListener(this,&LooperFilter::doRestart));
         listeners.push(paramDoLoop.newListener(this, &LooperFilter::doLoopChanged));
@@ -61,6 +61,7 @@ namespace ofxPm{
         loopTimeChanged(k);
         buffer.setupNodeBased();
         buffer.setBufferSize(paramBufferSize);
+        _phasor.setup();
         
     }
     //--------------------------------------------------------

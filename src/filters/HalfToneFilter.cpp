@@ -25,12 +25,12 @@ namespace ofxPm{
         cout << "HalfTone::Loading Shader : " << shaderName << endl;
         shader.load(shaderName);
         
-        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        parameters->add(paramColorSteps.set("Color Steps",8,0.0,32.0));
-        parameters->add(paramScale.set("Scale",0.25,0.0,4.0));
-        parameters->add(paramTimeFactor.set("Time Factor",0.03,0.0,4.0));
-        parameters->add(paramBlur.set("Blur",1.0,0.0,10.0));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input", VideoFrame()));
+        addParameter(paramColorSteps.set("Color Steps",8,0.0,32.0));
+        addParameter(paramScale.set("Scale",0.25,0.0,4.0));
+        addParameter(paramTimeFactor.set("Time Factor",0.03,0.0,4.0));
+        addParameter(paramBlur.set("Blur",1.0,0.0,10.0));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         listener = paramFrameIn.newListener(this, &HalfToneFilter::newVideoFrame);
         

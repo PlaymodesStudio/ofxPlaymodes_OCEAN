@@ -14,12 +14,12 @@ namespace ofxPm
     }
     
     void MirrorRenderer::setup(){
-        parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
-        parameters->add(mirrorSize.set("Size", 1, 1, 10));
-        parameters->add(spacing.set("Spacing", 1, 0, 2));
-        parameters->add(scale.set("Scale", 1, 0, 2));
-        parameters->add(mirrorInvert.set("Invert", false));
-        parameters->add(paramFrameOut.set("Frame Out", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame In", VideoFrame()));
+        addParameter(mirrorSize.set("Size", 1, 1, 10));
+        addParameter(spacing.set("Spacing", 1, 0, 2));
+        addParameter(scale.set("Scale", 1, 0, 2));
+        addParameter(mirrorInvert.set("Invert", false));
+        addParameter(paramFrameOut.set("Frame Out", VideoFrame()));
         
         fbo.allocate(1920, 1080);
         

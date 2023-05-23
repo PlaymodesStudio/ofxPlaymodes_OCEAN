@@ -22,15 +22,15 @@ namespace ofxPm
         microsOneSec=-1;
         
         // parametersGroup
-        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        addParameterToGroupAndInfo(paramBufferSize.set("Buffer Size",240,1,2000));
+        addParameter(paramFrameIn.set("Frame Input", VideoFrame()));
+        addParameter(paramBufferSize.set("Buffer Size",240,1,2000));
         //addParameterToGroupAndInfo(paramIsRecording.set("Is recording",true));
-        addParameterToGroupAndInfo(paramIsRecording.set("Is recording",true)).isSavePreset = false;
+        addParameter(paramIsRecording.set("Is recording",true), ofxOceanodeParameterFlags_DisableSavePreset);
 
         
-        parameters->add(paramFPS.set("FPS",60,0,60));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
-        parameters->add(paramVideoBufferOut.set("Buffer Output",nullptr));
+        addParameter(paramFPS.set("FPS",60,0,60));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramVideoBufferOut.set("Buffer Output",nullptr));
         
         listeners.push(paramIsRecording.newListener(this,&VideoBufferNodeBased::changedIsRecording));
         // do this the last to avoid sending nullptr frame
@@ -150,7 +150,7 @@ namespace ofxPm
         int closestPosition=0;
         if(frames.size()>0)
         {
-            frame = *std::max_element(frames.begin(), frames.end(), [ts](auto &first, auto &second){
+            frame = *std::max_element(frames.begin(), frames.end(), [ts](VideoFrame &first, VideoFrame &second){
                 return abs(ts.epochMicroseconds() - first.getTimestamp().epochMicroseconds()) > abs(ts.epochMicroseconds() - second.getTimestamp().epochMicroseconds());
                 
             });

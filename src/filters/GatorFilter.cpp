@@ -37,12 +37,12 @@ namespace ofxPm{
         doGate = true;
         
         // setup params
-        parameters->add(paramFrameIn.set("Frame In", myFrame));
-        parameters->add(paramBlackOrWhite.set("Black or White", true));
-        parameters->add(paramDoRestart.set("Restart"));
-        parameters->add(paramGateFreqBPM.set("Frequency BPM",6,0,numB-1));
-        parameters->add(paramBypass.set("Bypass",false));
-        parameters->add(paramFrameOut.set("Frame Output", myFrame));
+        addParameter(paramFrameIn.set("Frame In", myFrame));
+        addParameter(paramBlackOrWhite.set("Black or White", true));
+        addParameter(paramDoRestart.set("Restart"));
+        addParameter(paramGateFreqBPM.set("Frequency BPM",6,0,numB-1));
+        addParameter(paramBypass.set("Bypass",false));
+        addParameter(paramFrameOut.set("Frame Output", myFrame));
 
         listeners.push(paramFrameIn.newListener(this, &GatorFilter::newVideoFrame));
         listeners.push(paramGateFreqBPM.newListener(this, &GatorFilter::freqChanged));
@@ -51,6 +51,7 @@ namespace ofxPm{
         listeners.push(_phasor.phasorCycle.newListener(this, &GatorFilter::phasorCycleEvent));
         
         //setFrameResolution(1280, 720);
+        _phasor.setup();
 
 
     }

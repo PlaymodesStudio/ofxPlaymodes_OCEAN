@@ -1,7 +1,7 @@
 
 
 #include "VideoFileGrabber.h"
-#include "ofGstVideoPlayer.h"
+//#include "ofGstVideoPlayer.h"
 
 
 namespace ofxPm{
@@ -9,7 +9,7 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     VideoFileGrabber::VideoFileGrabber(): ofxOceanodeNodeModel("Video File")
     {
-        ofVideoPlayer::setPlayer(ofPtr<ofGstVideoPlayer>(new ofGstVideoPlayer));
+        //ofVideoPlayer::setPlayer(ofPtr<ofGstVideoPlayer>(new ofGstVideoPlayer));
 
         color = ofColor::darkGreen;
         
@@ -24,15 +24,15 @@ namespace ofxPm{
         for(int i = 0; i < size ; i++){
           files.push_back(dir.getName(i));
         }
-        addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramPlay.set("Play",true)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramScratch.set("Scratch",false)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramHeader.set("Header",0.0,0.0,1.0)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramRotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramVFlip.set("Vertical Flip", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramHFlip.set("Horizontal Flip", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramOpacity.set("Opacity",1.0)).isSavePreset = false;
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameterDropdown(paramFile, "File", 0, files);
+        addParameter(paramPlay.set("Play",true));
+        addParameter(paramScratch.set("Scratch",false));
+        addParameter(paramHeader.set("Header",0.0,0.0,1.0));
+        addParameter(paramRotation.set("Rotation 90x",0,0,3));
+        addParameter(paramVFlip.set("Vertical Flip", false));
+        addParameter(paramHFlip.set("Horizontal Flip", false));
+        addParameter(paramOpacity.set("Opacity",1.0));
+        addParameter(paramFrameOut.set("Frame Output", frame));
         
         listeners.push(paramScratch.newListener(this, &VideoFileGrabber::scratchChanged));
         listeners.push(paramHeader.newListener(this, &VideoFileGrabber::headerChanged));

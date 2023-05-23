@@ -1,5 +1,6 @@
 
 #include "VideoRendererNodeBased.h"
+#include "imgui.h"
 
 
 namespace ofxPm
@@ -23,12 +24,12 @@ namespace ofxPm
     {
         color = ofColor::yellow;
 
-        parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
-        parameters->add(paramResolutionX.set("Resolution X",320,0,1920));
-        parameters->add(paramResolutionY.set("Resolution Y",240,0,1080));
-        parameters->add(paramPositionX.set("Position X",0,0,1920));
-        parameters->add(paramPositionY.set("Position Y",0,0,1080));
-        parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
+        addParameter(paramFrameIn.set("Frame In", VideoFrame()));
+        addParameter(paramResolutionX.set("Resolution X",320,0,1920));
+        addParameter(paramResolutionY.set("Resolution Y",240,0,1080));
+        addParameter(paramPositionX.set("Position X",0,0,1920));
+        addParameter(paramPositionY.set("Position Y",0,0,1080));
+        addParameter(paramOpacity.set("Opacity",1.0,0.0,1.0));
 
                         
         frameInListener = paramFrameIn.newListener(this, &VideoRendererNodeBased::newVideoFrame);
@@ -48,14 +49,20 @@ namespace ofxPm
     //--------------------------------------------------------------
     void VideoRendererNodeBased::draw(int x,int y,int w,int h)
     {
+        ImGui::Begin(getParameterGroup().getName().c_str());
         if(!vFrame.isNull())
         {
             if(vFrame.getTextureRef().isAllocated())
             {
                 ofSetColor(255*paramOpacity);
-                vFrame.getTextureRef().draw(x,y,w,h);
+//                vFrame.getTextureRef().draw(x,y,w,h);
+                auto size2 = ImGui::GetContentRegionAvail();
+                
+                ImTextureID textureID = (ImTextureID)(uintptr_t)vFrame.getTextureRef().texData.textureID;
+                ImGui::Image(textureID, size2);
             }
         }
+        ImGui::End();
     }
     //--------------------------------------------------------------
     void VideoRendererNodeBased::draw()

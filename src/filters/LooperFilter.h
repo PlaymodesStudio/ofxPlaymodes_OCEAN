@@ -6,14 +6,14 @@
 #include "VideoFilter.h"
 #include "VideoBufferNodeBased.h"
 #include "VideoHeaderNodeBased.h"
-#include "ofxOceanodeNodeModelLocalPreset.h"
+//#include "ofxOceanodeNodeModelLocalPreset.h"
 #include "basePhasor.h"
 
 #include "ofMain.h"
 
 namespace ofxPm{
         
-class LooperFilter: public VideoFilter,public ofxOceanodeNodeModelLocalPreset
+class LooperFilter: public VideoFilter,public ofxOceanodeNodeModel
 {
 public:
     LooperFilter();

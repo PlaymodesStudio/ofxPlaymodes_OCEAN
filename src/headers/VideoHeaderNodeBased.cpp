@@ -23,7 +23,6 @@ namespace ofxPm{
         width = -11;
         height = -11;
         
-        autoBPM = false;
         oldBufferSize = 0;
         
         setupNodeBased();
@@ -64,16 +63,16 @@ namespace ofxPm{
         offsetFrames = 0.0;
         
         
-        parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
-        parameters->add(paramManualOrBPM.set("Timming Man/BPM", false));
+        addParameter(paramVideoBufferInput.set("Buffer Input", nullptr));
+        addParameter(paramManualOrBPM.set("Timming Man/BPM", false));
         ofParameter<char> pc("Manual",' ');
-        parameters->add(pc);
-        parameters->add(paramDelayMs.set("Delay Ms",0.0,0.0,4000));
+        addParameter(pc);
+        addParameter(paramDelayMs.set("Delay Ms",0.0,0.0,4000));
         ofParameter<char> pc2("BPM",' ');
-        parameters->add(pc2);
-        parameters->add(paramBeatDiv.set("Beats Div",1,1,32));
-        parameters->add(paramBeatMult.set("Beats Mult",1,1,32));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(pc2);
+        addParameter(paramBeatDiv.set("Beats Div",1,1,32));
+        addParameter(paramBeatMult.set("Beats Mult",1,1,32));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         
         listener = paramVideoBufferInput.newListener(this, &VideoHeaderNodeBased::changedVideoBuffer);

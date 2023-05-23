@@ -25,10 +25,10 @@ namespace ofxPm{
         shader.load(shaderName);
         cout << "LumaFilter::Loading Shader : " << shaderName << endl;
         
-        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        addParameterToGroupAndInfo(paramLumaThrshold.set("Threshold",0.25,0.0,1.0)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramLumaSmooth.set("Smooth",0.25,0.0,1.0)).isSavePreset = false;
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input", VideoFrame()));
+        addParameter(paramLumaThrshold.set("Threshold",0.25,0.0,1.0));
+        addParameter(paramLumaSmooth.set("Smooth",0.25,0.0,1.0));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         listeners.push(paramLumaThrshold.newListener(this, &LumaFilterNodeBased::setLumaThreshold));
         listeners.push(paramLumaSmooth.newListener(this, &LumaFilterNodeBased::setLumaSmooth));

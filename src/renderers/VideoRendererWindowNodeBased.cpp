@@ -21,9 +21,9 @@ namespace ofxPm
         color = ofColor::yellow;
         backImage.load("./imgs/1920x1080.png");
 
-        addParameterToGroupAndInfo(showFps.set("Show FPS", false)).isSavePreset = false;
-        parameters->add(paramFrameIn.set("Frame In", VideoFrame()));
-        parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
+        addParameter(showFps.set("Show FPS", false), ofxOceanodeParameterFlags_DisableSavePreset);
+        addParameter(paramFrameIn.set("Frame In", VideoFrame()));
+        addParameter(paramOpacity.set("Opacity",1.0,0.0,1.0), ofxOceanodeParameterFlags_DisableSavePreset);
 
                         
         listener = paramFrameIn.newListener(this, &VideoRendererWindowNodeBased::newVideoFrame);

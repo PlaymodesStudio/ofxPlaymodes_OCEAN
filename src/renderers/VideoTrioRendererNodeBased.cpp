@@ -31,21 +31,21 @@ namespace ofxPm
             pix[i] = 0;
         }
         //blackFrame = VideoFrame::newVideoFrame(pix);
-        parameters->add(paramFrameIn.set("Frame In 1", VideoFrame::newVideoFrame(pix)));
-        parameters->add(paramFrameIn2.set("Frame In 2", VideoFrame::newVideoFrame(pix)));
-        parameters->add(paramOpacity.set("Opacity",1.0,0.0,1.0));
-        parameters->add(paramScale.set("Scale",1.6076,0.0,2.0));
-        parameters->add(paramOverlap.set("Overlap",0.25,-1.0,1.0));
-        parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
+        addParameter(paramFrameIn.set("Frame In 1", VideoFrame::newVideoFrame(pix)));
+        addParameter(paramFrameIn2.set("Frame In 2", VideoFrame::newVideoFrame(pix)));
+        addParameter(paramOpacity.set("Opacity",1.0,0.0,1.0));
+        addParameter(paramScale.set("Scale",1.6076,0.0,2.0));
+        addParameter(paramOverlap.set("Overlap",0.25,-1.0,1.0));
+        addParameter(paramMinMaxBlend.set("MinMax Blend",true));
         
 //        // EDGE BLEND
 //        ofParameter<char> pc("Edge Blend",' ');
-//        parameters->add(pc);
+//        addParameter(pc);
 //        ofParameterGroup* p = edgeBlend.getParameterGroup();
 //        for(int i=1 ; i<p->size()-1; i++)
 //        {
 //            ofAbstractParameter &absParam = p->get(i);
-//            parameters->add(absParam);
+//            addParameter(absParam);
 //        }
 //        ofParameter<float> &fp = parameters->getFloat("Width");
 //        fp.set(0.0214);
@@ -65,7 +65,7 @@ namespace ofxPm
         flips.push_back(flips3);
         flips3 = {1,-1,-1};
         flips.push_back(flips3);
-        parameters->add(createDropdownAbstractParameter("Flips", {">>>", "<>>", ">><", "<<<", "<<>", "><<"}, paramFlipMode));
+        addParameterDropdown(paramFlipMode, "Flips", 0, {">>>", "<>>", ">><", "<<<", "<<>", "><<"});
 
         // LAYOUTS
         // populate layout vector for output
@@ -78,8 +78,8 @@ namespace ofxPm
         layouts.push_back(layout3);
         layout3 = {2,2,2};
         layouts.push_back(layout3);
-        parameters->add(createDropdownAbstractParameter("Layout", {"1-1-1", "2-1-2", "1-2-1", "2-2-2"}, paramLayout));
-        parameters->add(paramFrameOut.set("Frame Out", VideoFrame()));
+        addParameterDropdown(paramLayout, "Layout", 0, {"1-1-1", "2-1-2", "1-2-1", "2-2-2"});
+        addParameter(paramFrameOut.set("Frame Out", VideoFrame()));
         
         listeners.push(paramFrameIn.newListener(this, &VideoTrioRendererNodeBased::newVideoFrame));
         listeners.push(paramFrameIn2.newListener(this, &VideoTrioRendererNodeBased::newVideoFrame2));

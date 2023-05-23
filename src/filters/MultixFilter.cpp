@@ -18,25 +18,24 @@ namespace ofxPm{
     //------------------------------------------------------------------
     void MultixFilter::setupNodeBased()
     {
-        autoBPM=false;
         color = ofColor::white;
         oldBufferSize=0;
         desiredBufferSize=900;
         
-        parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
-        parameters->add(paramNumHeaders.set("Num Headers",1,1,900));
-        //parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
-        parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
-        parameters->add(paramUseBPM.set("Use BPM",false));
-        parameters->add(paramOffsetBeatDiv.set("Beats Div",1,1,32));
-        parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
-        parameters->add(paramManualOffsetMs.set("Manual Offset Ms",{33.0},{0.0},{7500}));
-        parameters->add(paramOpacityVector.set("Opacity Vector",{1},{0},{1}));
-        //parameters->add(paramLinearDistribution.set("Linear Distribution",true));
-        //parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
-        parameters->add(paramOversize.set("Oversize",0,0,1));
+        addParameter(paramVideoBufferInput.set("Buffer Input", nullptr));
+        addParameter(paramNumHeaders.set("Num Headers",1,1,900));
+        //addParameter(paramOpacityMode.set("Opacity Mode",0,0,2));
+        addParameter(paramMinMaxBlend.set("MinMax Blend",true));
+        addParameter(paramUseBPM.set("Use BPM",false));
+        addParameter(paramOffsetBeatDiv.set("Beats Div",1,1,32));
+        addParameter(paramOffsetBeatMult.set("Beats Mult",1,1,32));
+        addParameter(paramManualOffsetMs.set("Manual Offset Ms",{33.0},{0.0},{7500}));
+        addParameter(paramOpacityVector.set("Opacity Vector",{1},{0},{1}));
+        //addParameter(paramLinearDistribution.set("Linear Distribution",true));
+        //addParameter(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
+        addParameter(paramOversize.set("Oversize",0,0,1));
         
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameter(paramFrameOut.set("Frame Output", frame));
 
         listeners.push(paramOffsetBeatDiv.newListener(this, &MultixFilter::recalculate));
         listeners.push(paramOffsetBeatMult.newListener(this, &MultixFilter::recalculate));

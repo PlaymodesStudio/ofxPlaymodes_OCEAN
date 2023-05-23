@@ -20,10 +20,10 @@ namespace ofxPm{
         color = ofColor::yellow;
         fps = -1;
         
-        parameters->add(paramFrameIn.set("Frame Input 1", VideoFrame()));
-        parameters->add(paramFrameIn2.set("Frame Input 2", VideoFrame()));
-        parameters->add(paramSwitchTo.set("Switch",0,0,1));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input 1", VideoFrame()));
+        addParameter(paramFrameIn2.set("Frame Input 2", VideoFrame()));
+        addParameter(paramSwitchTo.set("Switch",0,0,1));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         listeners.push(paramFrameIn.newListener(this, &VideoSwitcher::newVideoFrame));
         listeners.push(paramFrameIn2.newListener(this, &VideoSwitcher::newVideoFrame2));

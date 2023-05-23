@@ -19,8 +19,8 @@ namespace ofxPm{
         ~MirrorRenderer(){};
         
         void setup() override;
-        VideoFrame getNextVideoFrame() override{};
-        float getFps() override{};
+        VideoFrame getNextVideoFrame() override{VideoFrame f; return f;};
+        float getFps() override{return 120.0;};
         
     private:
         ofParameter<int>    mirrorSize;

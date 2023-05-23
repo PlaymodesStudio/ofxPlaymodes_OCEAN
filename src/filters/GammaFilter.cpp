@@ -25,11 +25,11 @@ namespace ofxPm{
         shader.load(shaderName);
         cout << "GammaFilter::Loading Shader : " << shaderName << endl;
         
-        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        addParameterToGroupAndInfo(paramMin.set("Min",0,0.0,1.0)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramMax.set("Max",1.0,0.0,1.0)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramGamma.set("Gamma",1.0,0.0,4.0)).isSavePreset = false;
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input", VideoFrame()));
+        addParameter(paramMin.set("Min",0,0.0,1.0));
+        addParameter(paramMax.set("Max",1.0,0.0,1.0));
+        addParameter(paramGamma.set("Gamma",1.0,0.0,4.0));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         listeners.push(paramMin.newListener(this, &GammaFilter::setMin));
         listeners.push(paramMax.newListener(this, &GammaFilter::setMax));

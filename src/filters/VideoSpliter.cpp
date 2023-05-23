@@ -19,9 +19,9 @@ namespace ofxPm{
         color = ofColor::yellow;
         fps = -1;
         
-        parameters->add(paramFrameIn.set("Frame Input 1", VideoFrame()));
-        parameters->add(paramFrameOut.set("Frame Output 1", VideoFrame()));
-        parameters->add(paramFrameOut2.set("Frame Output 2", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input 1", VideoFrame()));
+        addParameter(paramFrameOut.set("Frame Output 1", VideoFrame()));
+        addParameter(paramFrameOut2.set("Frame Output 2", VideoFrame()));
 
         listener = paramFrameIn.newListener(this, &VideoSpliter::newVideoFrame);
 

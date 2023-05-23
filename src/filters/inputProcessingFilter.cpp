@@ -25,22 +25,22 @@ namespace ofxPm{
         cout << "inputProcessingFilter::Loading Shader : " << shaderName << endl;
         shader.load(shaderName);
         
-        parameters->add(paramFrameIn.set("Frame Input", frame));
+        addParameter(paramFrameIn.set("Frame Input", frame));
         ofParameter<char> lk("Luma Key",' ');
-        parameters->add(lk);
-        parameters->add(paramLumaThrshold.set("Threshold",0.25,0.0,1.0));
-        parameters->add(paramLumaSmooth.set("Smooth",0.25,0.0,1.0));
+        addParameter(lk);
+        addParameter(paramLumaThrshold.set("Threshold",0.25,0.0,1.0));
+        addParameter(paramLumaSmooth.set("Smooth",0.25,0.0,1.0));
         ofParameter<char> gg("Gradient",' ');
-        parameters->add(gg);
-        parameters->add(paramGradientWidth.set("Width",0.25,0.0,1.0));
-        parameters->add(paramGradientXorY.set("X or Y",1,0,1));
+        addParameter(gg);
+        addParameter(paramGradientWidth.set("Width",0.25,0.0,1.0));
+        addParameter(paramGradientXorY.set("X or Y",1,0,1));
         ofParameter<char> ll("Levels",' ');
-        parameters->add(ll);
-        parameters->add(paramMin.set("Min",0,0.0,1.0));
-        parameters->add(paramMax.set("Max",1.0,0.0,1.0));
-        parameters->add(paramGamma.set("Gamma",1.0,0.0,4.0));
+        addParameter(ll);
+        addParameter(paramMin.set("Min",0,0.0,1.0));
+        addParameter(paramMax.set("Max",1.0,0.0,1.0));
+        addParameter(paramGamma.set("Gamma",1.0,0.0,4.0));
 
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameter(paramFrameOut.set("Frame Output", frame));
                 
         listeners.push(paramLumaThrshold.newListener(this, &inputProcessingFilter::setLumaThreshold));
         listeners.push(paramLumaSmooth.newListener(this, &inputProcessingFilter::setLumaSmooth));

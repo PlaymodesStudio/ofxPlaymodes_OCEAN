@@ -23,7 +23,7 @@ namespace ofxPm{
         void update(ofEventArgs &e) override;
         
         
-        VideoFrame getNextVideoFrame(){};
+        VideoFrame getNextVideoFrame(){return paramFrameIn2;};
         void newVideoFrame(VideoFrame & frame);
         void newVideoFrame2(VideoFrame & frame2);
         float getFps(){return fps;};

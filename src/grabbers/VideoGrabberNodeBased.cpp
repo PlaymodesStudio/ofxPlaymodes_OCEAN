@@ -12,18 +12,18 @@ namespace ofxPm{
             videoDevices.push_back(d.deviceName);
         }
         
-        addParameterToGroupAndInfo(createDropdownAbstractParameter("Device", videoDevices, paramDeviceId)).isSavePreset = false;
+        addParameterDropdown(paramDeviceId, "Device", 0, videoDevices);
         
-        addParameterToGroupAndInfo(paramResolutionX.set("Resolution X",1280,0,1920)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramResolutionY.set("Resolution Y",720,0,1080)).isSavePreset = false;
-        addParameterToGroupAndInfo(rotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
-        addParameterToGroupAndInfo(vFlip.set("Vertical Flip", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(hFlip.set("Horizontal Flip", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(topMask.set("Top Mask", 0, 0, 1280)).isSavePreset = false;
-        addParameterToGroupAndInfo(showGuides.set("Show Guides", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(waitForFrame.set("Wait for Frame", true)).isSavePreset = false;
-        //addParameterToGroupAndInfo(paramFps.set("FPS",60,0,60));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameter(paramResolutionX.set("Resolution X",1280,0,1920));
+        addParameter(paramResolutionY.set("Resolution Y",720,0,1080));
+        addParameter(rotation.set("Rotation 90x",0,0,3));
+        addParameter(vFlip.set("Vertical Flip", false));
+        addParameter(hFlip.set("Horizontal Flip", false));
+        addParameter(topMask.set("Top Mask", 0, 0, 1280));
+        addParameter(showGuides.set("Show Guides", false));
+        addParameter(waitForFrame.set("Wait for Frame", true));
+        //addParameter(paramFps.set("FPS",60,0,60));
+        addParameter(paramFrameOut.set("Frame Output", frame));
         
         listeners.push(paramDeviceId.newListener(this, &VideoGrabberNodeBased::selectedDevice));
         listeners.push(rotation.newListener([this](int &r){

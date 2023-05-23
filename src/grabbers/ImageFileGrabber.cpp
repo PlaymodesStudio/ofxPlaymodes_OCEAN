@@ -20,13 +20,13 @@ namespace ofxPm{
         for(int i = 0; i < size ; i++){
           files.push_back(dir.getName(i));
         }
-        addParameterToGroupAndInfo(createDropdownAbstractParameter("File", files, paramFile)).isSavePreset = true;
+        addParameterDropdown(paramFile, "File", 0, files);
         //addParameterToGroupAndInfo(opacity.set("Opacity", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramRotation.set("Rotation 90x",0,0,3)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramVFlip.set("Vertical Flip", false)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramHFlip.set("Horizontal Flip", false)).isSavePreset = false;
-        parameters->add(paramOpacity.set("Opacity", 1.0));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameter(paramRotation.set("Rotation 90x",0,0,3));
+        addParameter(paramVFlip.set("Vertical Flip", false));
+        addParameter(paramHFlip.set("Horizontal Flip", false));
+        addParameter(paramOpacity.set("Opacity", 1.0));
+        addParameter(paramFrameOut.set("Frame Output", frame));
         
 //        listeners.push(paramScratch.newListener(this, &ImageFileGrabber::scratchChanged));
 //        listeners.push(paramHeader.newListener(this, &ImageFileGrabber::headerChanged));

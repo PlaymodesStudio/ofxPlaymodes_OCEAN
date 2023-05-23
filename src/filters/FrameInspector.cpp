@@ -22,12 +22,12 @@ namespace ofxPm{
 
         lastFrameRendered = ofxPm::VideoFrame();
 
-        parameters->add(paramFrameIn.set("Frame Input", frame));
-        parameters->add(paramFPSNow.set("FPS now",0,0.0,120.0));
-        parameters->add(paramFPSAccum.set("FPS Vector",0,0,120));
-        parameters->add(paramFrameWidth.set("Frame Width",0,0,2048));
-        parameters->add(paramFrameHeight.set("Frame Height",0,0,2048));
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameter(paramFrameIn.set("Frame Input", frame));
+        addParameter(paramFPSNow.set("FPS now",0,0.0,120.0));
+        addParameter(paramFPSAccum.set("FPS Vector",0,0,120));
+        addParameter(paramFrameWidth.set("Frame Width",0,0,2048));
+        addParameter(paramFrameHeight.set("Frame Height",0,0,2048));
+        addParameter(paramFrameOut.set("Frame Output", frame));
         
         listener = paramFrameIn.newListener(this, &FrameInspector::newVideoFrame);
         

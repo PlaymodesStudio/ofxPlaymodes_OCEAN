@@ -5,7 +5,7 @@ namespace ofxPm{
 
     //------------------------------------------------------------------
     RepeaterFilter::RepeaterFilter():
-        ofxOceanodeNodeModelLocalPreset("Repeater FX")
+        ofxOceanodeNodeModel("Repeater FX")
     {
         color = ofColor::orange;
         setupNodeBased();
@@ -19,17 +19,17 @@ namespace ofxPm{
     {
         color = ofColor::darkMagenta;
 
-        parameters->add(paramFrameIn.set("Frame In", myFrame));
-        addParameterToGroupAndInfo(paramDoLoop.set("Loop", false)).isSavePreset = false;
-        parameters->add(paramRestart.set("Restart"));
-        parameters->add(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
-        parameters->add(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
-//        parameters->add(paramGatePct.set("Gate",0.0,0.0,1.0));
-        addParameterToGroupAndInfo(paramGatePct.set("Gate",0.0,0.0,1.0)).isSavePreset = false;
-        parameters->add(paramRefreshLoopAt.set("Refresh At",4,0,32));
-        parameters->add(paramSpeedBoost.set("Speed Boost",1.0,-4.0,4.0));
+        addParameter(paramFrameIn.set("Frame In", myFrame));
+        addParameter(paramDoLoop.set("Loop", false), ofxOceanodeParameterFlags_DisableSavePreset);
+        addParameter(paramRestart.set("Restart"));
+        addParameter(paramCapturedTimeBeatDiv.set("Time Div",1,1,32));
+        addParameter(paramCapturedTimeBeatMult.set("Time Mult",1,1,32));
+//        addParameter(paramGatePct.set("Gate",0.0,0.0,1.0));
+        addParameter(paramGatePct.set("Gate",0.0,0.0,1.0));
+        addParameter(paramRefreshLoopAt.set("Refresh At",4,0,32));
+        addParameter(paramSpeedBoost.set("Speed Boost",1.0,-4.0,4.0));
         
-        parameters->add(paramFrameOut.set("Frame Output", myFrame));
+        addParameter(paramFrameOut.set("Frame Output", myFrame));
 
         int i=1;
         loopTimeChanged(i);
@@ -40,6 +40,7 @@ namespace ofxPm{
         oldDoLoop=false;
         phasorNumCycles=0;
         
+        _phasor.setup();
         
         listeners.push(paramRestart.newListener(this,&RepeaterFilter::doRestart));
         listeners.push(paramDoLoop.newListener(this, &RepeaterFilter::doLoopChanged));

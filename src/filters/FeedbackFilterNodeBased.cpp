@@ -26,12 +26,12 @@ namespace ofxPm{
         cout << "FeedbackFilter::Loading Shader : " << shaderName << endl;
         shader.load(shaderName);
         
-        parameters->add(paramFrameIn.set("Frame Input", frameToSendOut));
-        parameters->add(paramScale.set("Scale",0.98,-1.0,2.0));
-        parameters->add(paramMixAmmount.set("Mix Ammount",0.1,0.0,1.0));
-        parameters->add(paramOriginX.set("OriginX",0.5,-1.0,1.0));
-        parameters->add(paramOriginY.set("OriginY",0.5,-1.0,1.0));
-        parameters->add(paramFrameOut.set("Frame Output", frameToSendOut));
+        addParameter(paramFrameIn.set("Frame Input", frameToSendOut));
+        addParameter(paramScale.set("Scale",0.98,-1.0,2.0));
+        addParameter(paramMixAmmount.set("Mix Ammount",0.1,0.0,1.0));
+        addParameter(paramOriginX.set("OriginX",0.5,-1.0,1.0));
+        addParameter(paramOriginY.set("OriginY",0.5,-1.0,1.0));
+        addParameter(paramFrameOut.set("Frame Output", frameToSendOut));
         
         listener = paramFrameIn.newListener(this, &FeedbackFilterNodeBased::newVideoFrame);
     }

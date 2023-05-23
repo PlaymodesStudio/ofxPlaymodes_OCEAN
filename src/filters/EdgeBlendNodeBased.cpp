@@ -25,10 +25,10 @@ namespace ofxPm{
         shader.load(shaderName);
         cout << "EdgeBlendNodeBased::Loading Shader : " << shaderName << endl;
         
-        parameters->add(paramFrameIn.set("Frame Input", frame));
-        addParameterToGroupAndInfo(paramGradientWidth.set("Width",0.25,0.0,1.0)).isSavePreset = false;
-        addParameterToGroupAndInfo(paramGradientXorY.set("X or Y",1,0,1)).isSavePreset = false;
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameter(paramFrameIn.set("Frame Input", frame));
+        addParameter(paramGradientWidth.set("Width",0.25,0.0,1.0));
+        addParameter(paramGradientXorY.set("X or Y",1,0,1));
+        addParameter(paramFrameOut.set("Frame Output", frame));
         
         listeners.push(paramGradientWidth.newListener(this, &EdgeBlendNodeBased::setGradientWidth));
         listeners.push(paramGradientXorY.newListener(this, &EdgeBlendNodeBased::setGradientXorY));

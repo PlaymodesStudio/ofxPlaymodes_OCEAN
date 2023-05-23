@@ -18,33 +18,32 @@ namespace ofxPm{
     //------------------------------------------------------------------
     void Multix3DFilter::setupNodeBased()
     {
-        autoBPM=false;
         color = ofColor::white;
 
-        parameters->add(paramVideoBufferInput.set("Buffer Input", nullptr));
-        parameters->add(paramNumHeaders.set("Num Headers",1,1,480));
-        parameters->add(paramOpacityMode.set("Opacity Mode",0,0,2));
-        parameters->add(paramMinMaxBlend.set("MinMax Blend",true));
-        parameters->add(paramUseBPM.set("Use BPM",true));
-        parameters->add(paramOffsetBeatDiv.set("Beats Div",1,1,32));
-        parameters->add(paramOffsetBeatMult.set("Beats Mult",1,1,32));
-        parameters->add(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
-        parameters->add(paramScale.set("Scale",1.6076,0.0,2.0));
-        parameters->add(paramLocalTranslate.set("Translate Locally", false));
-        parameters->add(paramCopiesPositionX.set("Copies Position X",{0.5},{0},{1}));
-        parameters->add(paramCopiesPositionY.set("Copies Position Y",{0.5},{0},{1}));
-        parameters->add(paramCopiesPositionZ.set("Copies Position Z",{0.5},{0},{1}));
-        parameters->add(paramCopiesScale.set("Copies Scale",{1},{0},{10}));
-        parameters->add(paramCopiesRotationX.set("Copies Rotation X",{0},{0},{1}));
-        parameters->add(paramCopiesRotationY.set("Copies Rotation Y",{0},{0},{1}));
-        parameters->add(paramCopiesRotationZ.set("Copies Rotation Z",{0},{0},{1}));
+        addParameter(paramVideoBufferInput.set("Buffer Input", nullptr));
+        addParameter(paramNumHeaders.set("Num Headers",1,1,480));
+        addParameter(paramOpacityMode.set("Opacity Mode",0,0,2));
+        addParameter(paramMinMaxBlend.set("MinMax Blend",true));
+        addParameter(paramUseBPM.set("Use BPM",true));
+        addParameter(paramOffsetBeatDiv.set("Beats Div",1,1,32));
+        addParameter(paramOffsetBeatMult.set("Beats Mult",1,1,32));
+        addParameter(paramManualOffsetMs.set("Manual Offset Ms",33.0,0.0,4000.0));
+        addParameter(paramScale.set("Scale",1.6076,0.0,2.0));
+        addParameter(paramLocalTranslate.set("Translate Locally", false));
+        addParameter(paramCopiesPositionX.set("Copies Position X",{0.5},{0},{1}));
+        addParameter(paramCopiesPositionY.set("Copies Position Y",{0.5},{0},{1}));
+        addParameter(paramCopiesPositionZ.set("Copies Position Z",{0.5},{0},{1}));
+        addParameter(paramCopiesScale.set("Copies Scale",{1},{0},{10}));
+        addParameter(paramCopiesRotationX.set("Copies Rotation X",{0},{0},{1}));
+        addParameter(paramCopiesRotationY.set("Copies Rotation Y",{0},{0},{1}));
+        addParameter(paramCopiesRotationZ.set("Copies Rotation Z",{0},{0},{1}));
 
-        parameters->add(paramCopiesOpacity.set("Copies Opacity",{1.0},{0},{1}));
-        parameters->add(paramLinearDistribution.set("Linear Distribution",true));
-        parameters->add(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
-        parameters->add(paramOversize.set("Oversize",0,0,1));
+        addParameter(paramCopiesOpacity.set("Copies Opacity",{1.0},{0},{1}));
+        addParameter(paramLinearDistribution.set("Linear Distribution",true));
+        addParameter(paramDistributionVector.set("Distribution Vector",{0},{0},{1}));
+        addParameter(paramOversize.set("Oversize",0,0,1));
         
-        parameters->add(paramFrameOut.set("Frame Output", frame));
+        addParameter(paramFrameOut.set("Frame Output", frame));
 
         listeners.push(paramOffsetBeatDiv.newListener(this, &Multix3DFilter::recalculate));
         listeners.push(paramOffsetBeatMult.newListener(this, &Multix3DFilter::recalculate));

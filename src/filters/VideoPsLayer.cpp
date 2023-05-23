@@ -21,12 +21,12 @@ namespace ofxPm{
         color = ofColor::yellow;
         fps = -1;
         
-        parameters->add(paramFrameIn.set("Frame Input 1", VideoFrame()));
-        parameters->add(paramFrameIn2.set("Frame Input 2", VideoFrame()));
-        parameters->add(paramOpacityBase.set("Opacity Base",1,0.0,1.0));
-        parameters->add(paramOpacityTarget.set("Opacity Target",1,0.0,1.0));
-        parameters->add(paramBlendMode.set("Blend Mode",0,0,25.0));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input 1", VideoFrame()));
+        addParameter(paramFrameIn2.set("Frame Input 2", VideoFrame()));
+        addParameter(paramOpacityBase.set("Opacity Base",1,0.0,1.0));
+        addParameter(paramOpacityTarget.set("Opacity Target",1,0.0,1.0));
+        addParameter(paramBlendMode.set("Blend Mode",0,0,25.0));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
                 
         listener = paramFrameIn2.newListener(this, &VideoPsLayer::newVideoFrame);
         

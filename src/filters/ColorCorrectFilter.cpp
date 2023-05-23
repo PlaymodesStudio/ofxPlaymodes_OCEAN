@@ -25,11 +25,11 @@ namespace ofxPm{
         shader.load(shaderName);
         cout << "ColorCorrect::Loading Shader : " << shaderName << endl;
         
-        parameters->add(paramFrameIn.set("Frame Input", VideoFrame()));
-        parameters->add(paramRed.set("Red",1.0,0.0,10.0));
-        parameters->add(paramGreen.set("Green",1.0,0.0,10.0));
-        parameters->add(paramBlue.set("Blue",1.0,0.0,10.0));
-        parameters->add(paramFrameOut.set("Frame Output", VideoFrame()));
+        addParameter(paramFrameIn.set("Frame Input", VideoFrame()));
+        addParameter(paramRed.set("Red",1.0,0.0,10.0));
+        addParameter(paramGreen.set("Green",1.0,0.0,10.0));
+        addParameter(paramBlue.set("Blue",1.0,0.0,10.0));
+        addParameter(paramFrameOut.set("Frame Output", VideoFrame()));
         
         listener = paramFrameIn.newListener(this, &ColorCorrectFilter::newVideoFrame);
         
