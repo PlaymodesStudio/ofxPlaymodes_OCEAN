@@ -81,10 +81,8 @@ namespace ofxPm{
                 if(!fbo.isAllocated()){
                     if(paramRotation % 2 == 0){
                         fbo.allocate(ofVideoPlayer::getWidth(), ofVideoPlayer::getHeight(), GL_RGB);
-                        cout << " FBOKK" << endl;
                     }else{
                         fbo.allocate(ofVideoPlayer::getHeight(), ofVideoPlayer::getWidth(), GL_RGB);
-                        cout << " FBOKK 2" << endl;
                     }
                 }
                 if(paramOpacity>0.0)
