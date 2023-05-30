@@ -7,12 +7,13 @@ namespace ofxPm{
     //-----------------------------------------------------------------------------------
     VideoGrabberNodeBased::VideoGrabberNodeBased(): ofxOceanodeNodeModel("Video Grabber")
     {
-        vector<string> videoDevices = {"None"};
+        videoDevices.clear();
+        videoDevices = {"None"};
         for(auto &d : ofVideoGrabber::listDevices()){
             videoDevices.push_back(d.deviceName);
         }
         
-        addParameterDropdown(paramDeviceId, "Device", 0, videoDevices);
+        addParameterDropdown(paramDeviceId, "Device", 0, videoDevices, ofxOceanodeParameterFlags_DisableSavePreset);
         
         addParameter(paramResolutionX.set("Resolution X",1280,0,1920));
         addParameter(paramResolutionY.set("Resolution Y",720,0,1080));
@@ -158,5 +159,23 @@ namespace ofxPm{
             VideoSource::setHeight(ofVideoGrabber::getHeight());
         }
     }
-    
+
+    void VideoGrabberNodeBased::presetSave(ofJson &json){
+        json["DeviceName"] = videoDevices[paramDeviceId];
+    }
+        
+    void VideoGrabberNodeBased::presetRecallAfterSettingParameters(ofJson &json){
+        string name = "None";
+        if(json.count("DeviceName") == 1){
+            name = json["DeviceName"];
+        }
+        auto it = std::find(videoDevices.begin(), videoDevices.end(), name);
+        
+        if(it != videoDevices.end()){
+            paramDeviceId = it - videoDevices.begin();
+        }else{
+            paramDeviceId = 0;
+        }
+    }
+
 }
