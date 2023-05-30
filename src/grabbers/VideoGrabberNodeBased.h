@@ -18,6 +18,9 @@ namespace ofxPm{
         VideoFrame                      getNextVideoFrame();
         float                           getFps();             // ugly! need to be able to override the fps of the grabber. ofVideoGrabber doesn't have a getFps !!
         void                            setFps(float fps);
+        
+        void presetSave(ofJson &json) override;
+        void presetRecallAfterSettingParameters(ofJson &json) override;
 
     private:
         void                                newFrame(ofPixels & frame);
@@ -41,6 +44,8 @@ namespace ofxPm{
         ofFbo                               fbo;
 
         ofEventListeners listeners;
+        
+        vector<string> videoDevices;
     };
 }
 
