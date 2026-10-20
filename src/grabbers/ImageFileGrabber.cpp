@@ -63,36 +63,53 @@ namespace ofxPm{
     }
 
     //-----------------------------------------------------------------------------------
-    void ImageFileGrabber::update(ofEventArgs &e)
-    {
+void ImageFileGrabber::update(ofEventArgs &e)
+{
+	// Check if image is properly loaded before proceeding
+	if(!ofImage::isAllocated() || paramFile == 0)
+	{
+		return; // Don't process if no image is loaded
+	}
 
-        if(!fbo.isAllocated() && ofImage::isAllocated() )
-        {
-            cout << "ImageFileGrabber : allocating FBO on update. From Image : " << ofImage::getWidth() << " , " << ofImage::getHeight() << endl;
-            fbo.allocate(ofImage::getWidth(), ofImage::getHeight(), GL_RGB);
-            cout << "ImageFileGrabber : allocated FBO : " << fbo.getWidth() << " , " << fbo.getHeight() << endl;
-        }
-        else
-        {
-            if(paramOpacity>0.0)
-            {
-                fbo.begin();
-                {
-                    ofClear(0, 0, 0);
-                    ofTexture tex;
-                    tex.loadData(getPixels());
-                    ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
-                    ofScale(paramHFlip ? -1 : 1, paramVFlip ? -1 : 1);
-                    ofRotateDeg(90*paramRotation);
-                    ofTranslate(-ofImage::getWidth()/2, -ofImage::getHeight()/2);
-                    ofSetColor(255.0 * paramOpacity);
-                    tex.draw(0, 0);
-                }
-                fbo.end();
-                newFrame(fbo.getTexture());
-            }
-        }
-    }
+	if(!fbo.isAllocated())
+	{
+		cout << "ImageFileGrabber : allocating FBO on update. From Image : " << ofImage::getWidth() << " , " << ofImage::getHeight() << endl;
+		fbo.allocate(ofImage::getWidth(), ofImage::getHeight(), GL_RGB);
+		cout << "ImageFileGrabber : allocated FBO : " << fbo.getWidth() << " , " << fbo.getHeight() << endl;
+	}
+	
+	if(paramOpacity > 0.0 && fbo.isAllocated())
+	{
+		fbo.begin();
+		{
+			ofClear(0, 0, 0);
+			
+			// Additional safety check for pixels
+			const ofPixels& pixels = getPixels();
+			if(pixels.isAllocated() && pixels.getWidth() > 0 && pixels.getHeight() > 0)
+			{
+				ofTexture tex;
+				tex.loadData(pixels);
+				
+				ofPushMatrix();
+				ofTranslate(fbo.getWidth()/2, fbo.getHeight()/2);
+				ofScale(paramHFlip ? -1 : 1, paramVFlip ? -1 : 1);
+				ofRotateDeg(90*paramRotation);
+				ofTranslate(-ofImage::getWidth()/2, -ofImage::getHeight()/2);
+				ofSetColor(255.0 * paramOpacity);
+				tex.draw(0, 0);
+				ofPopMatrix();
+			}
+		}
+		fbo.end();
+		
+		// Only create new frame if we successfully rendered
+		if(pixels.isAllocated())
+		{
+			newFrame(fbo.getTexture());
+		}
+	}
+}
 
     //-----------------------------------------------------------------------------------
     void ImageFileGrabber::newFrame(ofPixels & pixels)
